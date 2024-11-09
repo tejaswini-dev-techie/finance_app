@@ -7,6 +7,8 @@ import 'package:hp_finance/DataModel/Dashboard/pigmy_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/user_dashboard_data_model.dart';
 import 'package:hp_finance/DataModel/LearnAboutPigmySavings/learn_about_pigmy_savings_data_model.dart';
 import 'package:hp_finance/DataModel/Profile/profile_data_model.dart';
+import 'package:hp_finance/DataModel/TransactionHistory/pigmy_transaction_history_data_model.dart';
+import 'package:hp_finance/DataModel/TransactionHistory/transaction_history_data_model.dart';
 import 'package:hp_finance/DataModel/WithdrawPigmy/withdraw_pigmy_details_data_model.dart';
 import 'package:hp_finance/Network/api_urls.dart';
 import 'package:hp_finance/Network/network.dart';
@@ -856,4 +858,104 @@ class NetworkService {
     return null;
   }
   /* Post Image */
+
+  /* PIGMY Transaction History */
+  // var pigmyTansRes = {
+  //   "status": true,
+  //   "logout": false,
+  //   "message": "Loaded Successfully",
+  //   "data": {
+  //     "pigmy_hist_list": [
+  //       {
+  //         "id": "1",
+  //         "header_text": "PAID TO",
+  //         "mem_name": "HP FINANCE",
+  //         "payment_date": "16th August 2024 6:45 PM",
+  //         "footer_text": "PIGMYCODE1234",
+  //         "amt_text": "₹1200",
+  //         "pay_status": "PAID",
+  //         "pay_status_type": "1",
+  //         "acc_status": "ACTIVE",
+  //         "acc_status_type": "1"
+  //       }
+  //     ]
+  //   }
+  // };
+  Future<PigmyTransactionHistoryDataModel>
+      pigmyTransactionHistoryDetailsService({
+    int? page,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['page'] = "$page";
+        return _network
+            .httpGetQuery(
+          apiHitTimeout,
+          APIURLs.pigmyTransactionDetURL,
+          queryParams: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return PigmyTransactionHistoryDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* PIGMY Transaction History */
+
+  /* Transaction History */
+  var transRes = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "transaction_hist_list": [
+        {
+          "id": "1",
+          "header_text": "PAID TO",
+          "mem_name": "HP FINANCE",
+          "payment_date": "16th August 2024 6:45 PM",
+          "footer_text": "PIGMYCODE1234",
+          "amt_text": "₹1200",
+          "pay_status": "PAID",
+          "pay_status_type": "1",
+          "transaction_details": {
+            "header_text": "PAID TO",
+            "title": "HP FINANCE",
+            "subtitle": "16th August 2024 6:45 PM",
+            "amt_text": "1200",
+            "pay_status": "PAID",
+            "pay_status_type": "1",
+            "transaction_acc_details": {
+              "title": "",
+              "subtitle": "",
+              "type": "1"
+            }
+          }
+        }
+      ]
+    }
+  };
+  Future<TransactionHistoryDataModel> transactionHistoryDetailsService({
+    int? page,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['page'] = "$page";
+        return _network
+            .httpGetQuery(
+          apiHitTimeout,
+          APIURLs.transactionDetURL,
+          queryParams: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return TransactionHistoryDataModel.fromJson(transRes);
+          },
+        );
+      },
+    );
+  }
+  /* Transaction History */
 }

@@ -451,6 +451,7 @@ class Network {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $secKey',
         },
+
         // body: jsonEncode(body),
       ).timeout(Duration(seconds: apiTimeout)); // Applying timeout
 
@@ -636,6 +637,103 @@ class Network {
         errorType: erType,
         postData: body,
         errorStatusCode: erStatusCode,
+      );
+
+      return {
+        "status": false,
+        "logout": false,
+        "message": "Something went wrong. Please try again"
+      };
+    }
+  }
+
+  Future<dynamic> httpGetQuery(int apiTimeout, String url,
+      {Map<String, dynamic>? queryParams}) async {
+    try {
+      // Logging the start of the API call
+      printUtil.printMsg("<<< Method GET >>>");
+      printUtil.printMsg("<<< API Call Start to $url >>>");
+      printUtil.printMsg("<<< Request >>>");
+      printUtil.printMsg(queryParams.toString());
+
+      String? secKey = await SharedPreferencesUtil.getSharedPref(
+              SharedPreferenceConstants.prefSecretKey) ??
+          "";
+
+      // Build the URI with query parameters
+      final uri = Uri.parse(url).replace(queryParameters: queryParams);
+
+      // Set the request headers and make the GET request
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $secKey',
+        },
+      ).timeout(Duration(seconds: apiTimeout)); // Applying timeout
+
+      final int statusCode = response.statusCode;
+
+      // Logging the response status
+      printUtil.printMsg("<<< API Status Code $statusCode >>>");
+
+      // Logging the raw response
+      printUtil.printMsg("<<< Response >>>");
+      printUtil.printMsg(response.body);
+
+      // If the status code is not 200, return the predefined response
+      if (statusCode != 200) {
+        final Map<String, dynamic> res = jsonDecode(response.body);
+        printUtil.printMsg(
+            "<<< Response ERROR: $statusCode => ${response.body} >>>");
+        return res;
+      }
+
+      // Handle the response
+      try {
+        final Map<String, dynamic> res = jsonDecode(response.body);
+        printUtil.printMsg("<<< API Call End >>>");
+
+        // Check for logout flag in the response
+        if (res['logout'] != null && res['logout'] == true) {
+          _clearSession("");
+          return {
+            "status": false,
+            "logout": true,
+            "message": "Something went wrong. Please try again"
+          };
+        } else {
+          return res;
+        }
+      } catch (e) {
+        printUtil.printMsg("Error parsing response: $e");
+        return {
+          "status": false,
+          "logout": false,
+          "message": "Something went wrong. Please try again"
+        };
+      }
+    } catch (e) {
+      String erMessage = e.toString();
+      String erType = "Other";
+
+      if (e is http.ClientException) {
+        erMessage = e.message;
+        erType = "ClientException";
+      } else if (e is TimeoutException) {
+        erMessage = "Connection timeout";
+        erType = "Timeout";
+      }
+
+      // Logging the error
+      printUtil.printMsg("<<< Error: $erMessage >>>");
+
+      _triggerAPIErrorLog(
+        apiName: url,
+        errorMessage: erMessage,
+        errorType: erType,
+        postData: queryParams,
+        errorStatusCode: "",
       );
 
       return {

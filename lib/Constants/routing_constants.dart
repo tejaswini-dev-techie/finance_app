@@ -31,4 +31,7 @@ class RoutingConstants {
       "/verifyCustomersDetailsScreen";
   static const String routeAgentUpdatePaymentDetailsScreen =
       "/agentUpdatePaymentDetailsScreen";
+
+  /* Custom Camera */
+  static const String routeCapturePhotoCamera = "/routeCapturePhotoCamera";
 }

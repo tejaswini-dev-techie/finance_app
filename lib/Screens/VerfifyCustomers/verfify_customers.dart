@@ -12,7 +12,9 @@ import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/widgets/add_doc_image_placeholder.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
+import 'package:hp_finance/Utils/helper_util.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
+import 'package:hp_finance/Utils/print_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
@@ -1191,26 +1193,55 @@ class _VerifyCustomersDetailsScreenState
                                             .checkInternetConnection()
                                             .then((internet) async {
                                           if (internet) {
-                                            // Upload Profile Photo
-                                            compressedPhotosAadhaarList = [];
-                                            compressedPhotosAadhaarList =
-                                                await pickPhotos(
-                                              maxImagesCount: 1,
+                                            showDocsAlertDialog(
                                               context: context,
-                                              compressedPhotosList:
-                                                  compressedPhotosAadhaarList,
-                                              invalidFormatErrorText: "Invalid",
-                                            );
+                                              onCaptureAction: () async {
+                                                compressedPhotosAadhaarList =
+                                                    [];
+                                                compressedPhotosAadhaarList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosAadhaarList,
+                                                );
 
-                                            aadhaarImagePath =
-                                                await NetworkService()
-                                                    .imageUpload(
-                                              compressedPhotosAadhaarList[0]
-                                                  .path,
-                                            );
+                                                aadhaarImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosAadhaarList[0]
+                                                      .path,
+                                                );
 
-                                            refreshAadhaarImage.value =
-                                                !refreshAadhaarImage.value;
+                                                refreshAadhaarImage.value =
+                                                    !refreshAadhaarImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosAadhaarList =
+                                                    [];
+                                                compressedPhotosAadhaarList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosAadhaarList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                aadhaarImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosAadhaarList[0]
+                                                      .path,
+                                                );
+
+                                                refreshAadhaarImage.value =
+                                                    !refreshAadhaarImage.value;
+                                              },
+                                            );
                                           } else {
                                             ToastUtil().showSnackBar(
                                               context: context,
@@ -1241,25 +1272,53 @@ class _VerifyCustomersDetailsScreenState
                                             .checkInternetConnection()
                                             .then((internet) async {
                                           if (internet) {
-                                            // Upload Profile Photo
-                                            compressedPhotosPanList = [];
-                                            compressedPhotosPanList =
-                                                await pickPhotos(
-                                              maxImagesCount: 1,
+                                            showDocsAlertDialog(
                                               context: context,
-                                              compressedPhotosList:
-                                                  compressedPhotosPanList,
-                                              invalidFormatErrorText: "Invalid",
-                                            );
+                                              onCaptureAction: () async {
+                                                compressedPhotosPanList = [];
+                                                compressedPhotosPanList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosPanList,
+                                                );
 
-                                            panImagePath =
-                                                await NetworkService()
-                                                    .imageUpload(
-                                              compressedPhotosPanList[0].path,
-                                            );
+                                                panImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosPanList[0]
+                                                      .path,
+                                                );
 
-                                            refreshPanImage.value =
-                                                !refreshPanImage.value;
+                                                refreshPanImage.value =
+                                                    !refreshPanImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosPanList = [];
+                                                compressedPhotosPanList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosPanList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                panImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosPanList[0]
+                                                      .path,
+                                                );
+
+                                                refreshPanImage.value =
+                                                    !refreshPanImage.value;
+                                              },
+                                            );
                                           } else {
                                             ToastUtil().showSnackBar(
                                               context: context,
@@ -1290,26 +1349,53 @@ class _VerifyCustomersDetailsScreenState
                                             .checkInternetConnection()
                                             .then((internet) async {
                                           if (internet) {
-                                            // Upload Profile Photo
-                                            compressedPhotosChequeList = [];
-                                            compressedPhotosChequeList =
-                                                await pickPhotos(
-                                              maxImagesCount: 1,
+                                            showDocsAlertDialog(
                                               context: context,
-                                              compressedPhotosList:
-                                                  compressedPhotosChequeList,
-                                              invalidFormatErrorText: "Invalid",
-                                            );
+                                              onCaptureAction: () async {
+                                                compressedPhotosChequeList = [];
+                                                compressedPhotosChequeList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosChequeList,
+                                                );
 
-                                            chequeImagePath =
-                                                await NetworkService()
-                                                    .imageUpload(
-                                              compressedPhotosChequeList[0]
-                                                  .path,
-                                            );
+                                                chequeImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosChequeList[0]
+                                                      .path,
+                                                );
 
-                                            refreshChequeImage.value =
-                                                !refreshChequeImage.value;
+                                                refreshChequeImage.value =
+                                                    !refreshChequeImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosChequeList = [];
+                                                compressedPhotosChequeList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosChequeList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                chequeImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosChequeList[0]
+                                                      .path,
+                                                );
+
+                                                refreshChequeImage.value =
+                                                    !refreshChequeImage.value;
+                                              },
+                                            );
                                           } else {
                                             ToastUtil().showSnackBar(
                                               context: context,
@@ -1340,26 +1426,57 @@ class _VerifyCustomersDetailsScreenState
                                             .checkInternetConnection()
                                             .then((internet) async {
                                           if (internet) {
-                                            // Upload Profile Photo
-                                            compressedPhotosRCHOLDERList = [];
-                                            compressedPhotosRCHOLDERList =
-                                                await pickPhotos(
-                                              maxImagesCount: 1,
+                                            showDocsAlertDialog(
                                               context: context,
-                                              compressedPhotosList:
-                                                  compressedPhotosRCHOLDERList,
-                                              invalidFormatErrorText: "Invalid",
-                                            );
+                                              onCaptureAction: () async {
+                                                compressedPhotosRCHOLDERList =
+                                                    [];
+                                                compressedPhotosRCHOLDERList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosRCHOLDERList,
+                                                );
 
-                                            rcHOLDERImagePath =
-                                                await NetworkService()
-                                                    .imageUpload(
-                                              compressedPhotosRCHOLDERList[0]
-                                                  .path,
-                                            );
+                                                rcHOLDERImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosRCHOLDERList[
+                                                          0]
+                                                      .path,
+                                                );
 
-                                            refreshRCHOLDERImage.value =
-                                                !refreshRCHOLDERImage.value;
+                                                refreshRCHOLDERImage.value =
+                                                    !refreshRCHOLDERImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosRCHOLDERList =
+                                                    [];
+                                                compressedPhotosRCHOLDERList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosRCHOLDERList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                rcHOLDERImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosRCHOLDERList[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshRCHOLDERImage.value =
+                                                    !refreshRCHOLDERImage.value;
+                                              },
+                                            );
                                           } else {
                                             ToastUtil().showSnackBar(
                                               context: context,
@@ -1391,26 +1508,59 @@ class _VerifyCustomersDetailsScreenState
                                             .then((internet) async {
                                           if (internet) {
                                             // Upload Profile Photo
-                                            compressedPhotosPropertyDocList =
-                                                [];
-                                            compressedPhotosPropertyDocList =
-                                                await pickPhotos(
-                                              maxImagesCount: 1,
+                                            showDocsAlertDialog(
                                               context: context,
-                                              compressedPhotosList:
-                                                  compressedPhotosPropertyDocList,
-                                              invalidFormatErrorText: "Invalid",
-                                            );
+                                              onCaptureAction: () async {
+                                                compressedPhotosPropertyDocList =
+                                                    [];
+                                                compressedPhotosPropertyDocList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosPropertyDocList,
+                                                );
 
-                                            propertyDocImagePath =
-                                                await NetworkService()
-                                                    .imageUpload(
-                                              compressedPhotosPropertyDocList[0]
-                                                  .path,
-                                            );
+                                                propertyDocImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosPropertyDocList[
+                                                          0]
+                                                      .path,
+                                                );
 
-                                            refreshPropertyDocImage.value =
-                                                !refreshPropertyDocImage.value;
+                                                refreshPropertyDocImage.value =
+                                                    !refreshPropertyDocImage
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosPropertyDocList =
+                                                    [];
+                                                compressedPhotosPropertyDocList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosPropertyDocList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                propertyDocImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosPropertyDocList[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshPropertyDocImage.value =
+                                                    !refreshPropertyDocImage
+                                                        .value;
+                                              },
+                                            );
                                           } else {
                                             ToastUtil().showSnackBar(
                                               context: context,
@@ -1442,25 +1592,62 @@ class _VerifyCustomersDetailsScreenState
                                             .checkInternetConnection()
                                             .then((internet) async {
                                           if (internet) {
-                                            compressedPhotosPassBookList = [];
-                                            compressedPhotosPassBookList =
-                                                await pickPhotos(
-                                              maxImagesCount: 1,
+                                            showDocsAlertDialog(
                                               context: context,
-                                              compressedPhotosList:
-                                                  compressedPhotosPassBookList,
-                                              invalidFormatErrorText: "Invalid",
+                                              onCaptureAction: () async {
+                                                compressedPhotosPassBookList =
+                                                    [];
+                                                compressedPhotosPassBookList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosPassBookList,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "passBookImagePath: 1 ${compressedPhotosPassBookList[0].path}");
+                                                passBookImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosPassBookList[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "passBookImagePath: 2$passBookImagePath");
+                                                refreshPassBookImage.value =
+                                                    !refreshPassBookImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosPassBookList =
+                                                    [];
+                                                compressedPhotosPassBookList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosPassBookList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "passBookImagePath: 1 ${compressedPhotosPassBookList[0].path}");
+                                                passBookImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosPassBookList[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "passBookImagePath: 2$passBookImagePath");
+                                                refreshPassBookImage.value =
+                                                    !refreshPassBookImage.value;
+                                              },
                                             );
-
-                                            passBookImagePath =
-                                                await NetworkService()
-                                                    .imageUpload(
-                                              compressedPhotosPassBookList[0]
-                                                  .path,
-                                            );
-
-                                            refreshPassBookImage.value =
-                                                !refreshPassBookImage.value;
                                           } else {
                                             ToastUtil().showSnackBar(
                                               context: context,
@@ -1750,6 +1937,84 @@ class _VerifyCustomersDetailsScreenState
     );
   }
 
+  /* Capture Picture */
+  Future<List<File>> capturePhoto(
+      {required maxImagesCount,
+      required BuildContext? context,
+      required List<File> compressedPhotosList,
+      required int type, // 1: means  default, 2 : means only picture
+      required String screenName}) async {
+    try {
+      RegExp regExpImg = RegExp(
+        r'.png|.jp|.heic',
+        caseSensitive: false,
+        multiLine: false,
+      );
+      Map<Permission, PermissionStatus> permissionStatus;
+      bool isGrantedPermission = false;
+      permissionStatus = await permissionServices(
+        permissionRequestList: [
+          Permission.camera,
+          if (type != 2) Permission.microphone,
+        ],
+      );
+      isGrantedPermission = ((type != 2)
+          ? (permissionStatus[Permission.camera]!.isGranted &&
+              permissionStatus[Permission.microphone]!.isGranted)
+          : (permissionStatus[Permission.camera]!.isGranted));
+
+      if (isGrantedPermission) {
+        PrintUtil().printMsg("enter granted");
+        if (maxImagesCount == 1) {
+          compressedPhotosList = [];
+        }
+        if (compressedPhotosList.length != maxImagesCount) {
+          List photosList = [];
+          Map<String, dynamic> data = {};
+          data = {
+            "type": type,
+          };
+
+          var res = await Navigator.pushNamed(
+            context!,
+            RoutingConstants.routeCapturePhotoCamera,
+            arguments: {'data': data},
+          );
+          print("Result: $res");
+          if (res != null) {
+            photosList.add(res);
+          }
+
+          if (photosList.isNotEmpty) {
+            for (int i = 0; i < photosList.length; i++) {
+              if (!regExpImg.hasMatch(photosList[i].split('/').last)) {
+                // ignore: use_build_context_synchronously
+                ToastUtil().showSnackBar(
+                    context: context,
+                    message: "Invalid file format",
+                    isError: true);
+              } else {
+                PrintUtil().printMsg("photoCompressedFile: ${photosList[i]}");
+                XFile? photoCompressedFile =
+                    await compressImage(File(photosList[i]));
+                PrintUtil().printMsg(
+                    "photoCompressedFile: ${photoCompressedFile?.path}");
+                compressedPhotosList.insert(
+                  0,
+                  File(photoCompressedFile?.path ?? ""),
+                );
+              }
+            }
+          }
+        }
+        return compressedPhotosList;
+      }
+    } catch (e) {
+      return compressedPhotosList;
+    }
+    return compressedPhotosList;
+  }
+
   /* Pick Image from Gallery */
   Future<List<File>> pickPhotos({
     required int maxImagesCount,
@@ -1872,4 +2137,125 @@ class _VerifyCustomersDetailsScreenState
     /*{Permission.camera: PermissionStatus.granted, Permission.storage: PermissionStatus.granted}*/
     return statuses;
   }
+
+  /* Alert Dialog for Updating KYC Docs */
+  void showDocsAlertDialog({
+    required BuildContext context,
+    required Function onCaptureAction,
+    required Function onGalleryAction,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () {
+            Navigator.pop(context);
+            return Future.value(false);
+          },
+          child: Dialog(
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: 40.sp,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.sp)),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(
+                  16.sp,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Choose",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.sp,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onCaptureAction();
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Capture a Photo',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12.sp,
+                            color: ColorConstants.blackColor,
+                          )
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onGalleryAction();
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Pick from Gallery',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12.sp,
+                            color: ColorConstants.blackColor,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.sp,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Dismiss',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  /* Alert Dialog for Updating KYC Docs */
 }

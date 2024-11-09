@@ -36,6 +36,7 @@ class ImageConstants {
   static const String noLoansImage = "assets/images/no_loans_image.png";
   static const String noGroupLoansImage =
       "assets/images/no_group_loans_image.png";
+  static const String noDataFoundImage = "assets/images/no_data_image.png";
   /* No Data Found */
 
   /* Payment */

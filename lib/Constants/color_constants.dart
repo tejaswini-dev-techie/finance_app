@@ -28,4 +28,9 @@ class ColorConstants {
   /* Red */
   static const redColor = Color(0xffD14343);
   static const mintRedColor = Color(0xffED4E4E);
+
+  static const List<Color> cameraGradientColor = [
+    Color(0xff4A90E2), // Light Blue
+    Color(0xff007AFF), // Medium Blue
+  ];
 }

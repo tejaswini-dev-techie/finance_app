@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Screens/CreateAccountScreen/create_account_screen.dart';
 import 'package:hp_finance/Screens/CreatePigmySavingsAccount/create_pigmy_savings_acc_screen.dart';
+import 'package:hp_finance/Screens/CustomCamera/capture_photo_camera.dart';
 import 'package:hp_finance/Screens/Dashboard/dashboard_screen.dart';
 import 'package:hp_finance/Screens/Enquiry/enquiry_screen.dart';
 import 'package:hp_finance/Screens/GroupMembersDetails/group_members_details_screen.dart';
@@ -373,6 +374,27 @@ class RouteGenerator {
           }
         }
       /* Payment - Agent Collecting Amount from Customers Details */
+
+      /* Capture Photo */
+      case RoutingConstants.routeCapturePhotoCamera:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+                builder: (_) => CapturePhotoCamera(
+                      type: data['data']['type'] ?? 1,
+                    ),
+                settings: RouteSettings(name: settings.name));
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const CapturePhotoCamera(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
 
       /* Error Route */
       default:
