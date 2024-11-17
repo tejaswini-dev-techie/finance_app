@@ -5,6 +5,7 @@ import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/image_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Constants/sharedpreference_constants.dart';
+import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/group_loans_tab/group_loans_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/home_tab/home_tab.dart';
@@ -12,6 +13,7 @@ import 'package:hp_finance/Screens/Dashboard/tabs/loans_tab/loans_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/pigmy_tab.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
 import 'package:hp_finance/Utils/sharedpreferences_util.dart';
+import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/widgets_util/alert_model.dart';
 import 'package:sizer/sizer.dart';
 
@@ -52,7 +54,7 @@ class _DashboardState extends State<Dashboard> {
     updateTabIndex.dispose();
   }
 
-  backAction() {
+  backAction({int type = 0}) {
     popupAlertDialog(
       internetAlert: internetAlert,
       context: context,
@@ -64,11 +66,27 @@ class _DashboardState extends State<Dashboard> {
       onSecondaryButtonTap: () {
         Navigator.pop(context);
       },
-      onPrimaryButtonTap: () {
-        SharedPreferencesUtil.addSharedPref(
-            SharedPreferenceConstants.prefisAlreadyLogin, "0");
-        exit(0);
-        // (Platform.isIOS)
+      onPrimaryButtonTap: () async {
+        if (type == 1) {
+          var res = await NetworkService().logoutService();
+          if (res != null && res['status'] != null && res['status'] == true) {
+            SharedPreferencesUtil.addSharedPref(
+                SharedPreferenceConstants.prefisAlreadyLogin, "0");
+            if (!mounted) return;
+            ToastUtil().showSnackBar(
+              context: context,
+              message: res['message'] ?? "Logged Out Successfully",
+            );
+            Future.delayed(const Duration(seconds: 1)).then(
+              (value) => Navigator.pushReplacementNamed(
+                context,
+                RoutingConstants.routeLoginScreen,
+              ),
+            );
+          }
+        } else {
+          exit(0);
+        } // (Platform.isIOS)
         //     ?
         //     // force exit in ios
         //     FlutterExitApp.exitApp(iosForceExit: true)
@@ -91,8 +109,8 @@ class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   final ValueNotifier<bool> updateTabIndex = ValueNotifier<bool>(false);
   static List<Widget> widgetOptions = <Widget>[
-    const HomeTab(),
-    // const AgentsTab(),
+    // const HomeTab(),
+    const AgentsTab(),
     const PigmyTab(),
     const LoansTab(),
     const GroupLoansTab(),
@@ -236,7 +254,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       const Spacer(),
                       InkWell(
-                        onTap: () => backAction(),
+                        onTap: () => backAction(type: 1),
                         child: Image.asset(
                           ImageConstants.logoutImage,
                           width: 28.sp,

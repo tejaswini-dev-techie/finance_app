@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
-import 'package:hp_finance/DataModel/Dashboard/pigmy_data_model.dart';
+import 'package:hp_finance/DataModel/Dashboard/agents_dashboard_data_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
-class InfoCards extends StatelessWidget {
-  final PigmyMenusList? pigmyMenuDet;
+class AgentsInfoCards extends StatelessWidget {
+  final AgentMenusList? menuDet;
 
-  const InfoCards({
+  const AgentsInfoCards({
     super.key,
-    required this.pigmyMenuDet,
+    required this.menuDet,
   });
 
   @override
@@ -33,7 +33,7 @@ class InfoCards extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.network(
-            pigmyMenuDet?.menuImg ?? "",
+            menuDet?.menuImg ?? "",
             scale: 5.0,
             fit: BoxFit.fill,
             height: 24.sp,
@@ -70,7 +70,7 @@ class InfoCards extends StatelessWidget {
             },
           ),
           Text(
-            pigmyMenuDet?.menuTitle ?? "",
+            menuDet?.menuTitle ?? "",
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -81,7 +81,7 @@ class InfoCards extends StatelessWidget {
             ),
           ),
           Text(
-            pigmyMenuDet?.menuSubtile ?? "",
+            menuDet?.menuSubtile ?? "",
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

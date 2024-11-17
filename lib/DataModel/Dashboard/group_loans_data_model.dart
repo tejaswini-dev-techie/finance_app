@@ -61,7 +61,7 @@ class Data {
     }
     repayAllText = json['repay_all_text'];
     transactionHistoryText = json['transaction_history_text'];
-    groupMemDet = json['group_mem_det'];
+    groupMemDet = json['group_mem_det'] ?? "Group Members Details";
     upcomingText = json['upcoming_text'];
     if (json['upcoming_list'] != null) {
       upcomingList = <UpcomingList>[];

@@ -11,6 +11,7 @@ class APIURLs {
   static const pigmyURL = "$baseURL/pigmy/pigmy-list";
   static const loanURL = "$baseURL/loan/loan-list";
   static const groupLoanURL = "$baseURL/loan/group-loan/list";
+  static const agentsDashboardURL = "$baseURL/agent/get-dashbaord-details";
 
   static const learnAboutPigmyURL = "$baseURL/pigmy/learn-about-pigmy";
 
@@ -41,5 +42,14 @@ class APIURLs {
 
   static const imageUploadURL = "$baseURL/util/image-upload";
 
-  static const transactionDetURL = "$baseURL/";
+  static const transactionDetURL = "$baseURL/loan/loan-transaction";
+
+  static const verifyCustomerDashboardURL =
+      "$baseURL/agent/verify-customer-dashboard";
+  static const groupMemberDetailsURL = "$baseURL/agent/get-group-member-detail";
+  static const logoutURL = "$baseURL/auth/logout";
+
+  /* Update Payment Details */
+  static const updatePaymentPrefetchDetailsURL = "$baseURL/";
+  static const updatePaymentDetailsURL = "$baseURL/";
 }

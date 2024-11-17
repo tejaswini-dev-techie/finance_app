@@ -1,8 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/image_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
-import 'package:hp_finance/Utils/app_language_util.dart';
+import 'package:hp_finance/Screens/GroupMembersDetails/bloc/group_members_details_bloc.dart';
+import 'package:hp_finance/Utils/internet_util.dart';
+import 'package:hp_finance/Utils/toast_util.dart';
+import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
+import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 class GroupMembersDetailsScreen extends StatefulWidget {
@@ -14,26 +22,29 @@ class GroupMembersDetailsScreen extends StatefulWidget {
 }
 
 class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
-  String internetAlert = "";
-  String groupMembersDetailsText = "";
+  final GroupMembersDetailsBloc groupMembersDetailsBloc =
+      GroupMembersDetailsBloc();
+
+  /* Controllers */
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
     super.initState();
-    getAppContentDet();
+    groupMembersDetailsBloc.add(
+      GetGroupMemDetEvent(
+        page: 1,
+        showLoading: true,
+      ),
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  getAppContentDet() async {
-    var appContent = await AppLanguageUtil().getAppContentDetails();
-    internetAlert = appContent['action_items']['internet_alert'] ?? "";
-    groupMembersDetailsText =
-        appContent['group_mem_det']['group_mem_det_text'] ?? "";
-    setState(() {});
+    groupMembersDetailsBloc.close();
+    _refreshController.dispose();
   }
 
   backAction() {
@@ -92,7 +103,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      groupMembersDetailsText,
+                      groupMembersDetailsBloc.groupMembersDetailsText,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12.sp,
@@ -108,125 +119,331 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
               ),
             ),
           ),
-          body: ListView.separated(
-            itemCount: 5,
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.sp,
-              vertical: 24.sp,
-            ),
-            itemBuilder: (context, index) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 7,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 4.sp),
-                          child: Image.asset(
-                            ImageConstants.profileImage,
-                            width: 34.sp,
-                            height: 34.sp,
+          body: BlocBuilder<GroupMembersDetailsBloc, GroupMembersDetailsState>(
+            bloc: groupMembersDetailsBloc,
+            builder: (context, state) {
+              if (state is GroupMembersDetailsLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.darkBlueColor,
+                  ),
+                );
+              } else if (state is GroupMembersDetailsLoaded) {
+                return (groupMembersDetailsBloc.grpMemList != null &&
+                        groupMembersDetailsBloc.grpMemList!.isNotEmpty)
+                    ? NotificationListener<ScrollEndNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (!groupMembersDetailsBloc.saving) {
+                            if (!groupMembersDetailsBloc.endPage) {
+                              groupMembersDetailsBloc.saving = true;
+                              groupMembersDetailsBloc.add(
+                                GetGroupMemDetEvent(
+                                  page: groupMembersDetailsBloc.page,
+                                  oldGrpMemList:
+                                      groupMembersDetailsBloc.grpMemList ?? [],
+                                  showLoading: false,
+                                ),
+                              );
+                            }
+                          }
+                          return true;
+                        },
+                        child: SmartRefresher(
+                          controller: _refreshController,
+                          enablePullDown: true,
+                          header: const MaterialClassicHeader(
+                            distance: 40,
+                            color: ColorConstants.whiteColor,
+                            backgroundColor: ColorConstants.greenColor,
+                          ),
+                          enablePullUp: groupMembersDetailsBloc.endPage
+                              ? false
+                              : (groupMembersDetailsBloc.isNetworkConnected ==
+                                      false)
+                                  ? false
+                                  : true,
+                          onRefresh: () {
+                            InternetUtil().checkInternetConnection().then(
+                              (internet) {
+                                if (internet) {
+                                  groupMembersDetailsBloc.add(
+                                    GetGroupMemDetEvent(
+                                      page: 1,
+                                      showLoading: true,
+                                    ),
+                                  );
+                                  _refreshController.refreshCompleted();
+                                } else {
+                                  _refreshController.refreshFailed();
+
+                                  ToastUtil().showSnackBar(
+                                    context: context,
+                                    message:
+                                        groupMembersDetailsBloc.internetAlert,
+                                    isError: true,
+                                  );
+                                }
+                              },
+                            );
+                          },
+                          child: ListView.separated(
+                            itemCount:
+                                groupMembersDetailsBloc.grpMemList!.length,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.sp,
+                              vertical: 24.sp,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 7,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 4.sp),
+                                          child: Image.network(
+                                            groupMembersDetailsBloc
+                                                    .grpMemList![index]
+                                                    .profileImg ??
+                                                "",
+                                            scale: 5.0,
+                                            fit: BoxFit.fill,
+                                            height: 24.sp,
+                                            width: 24.sp,
+                                            filterQuality: Platform.isIOS
+                                                ? FilterQuality.medium
+                                                : FilterQuality.low,
+                                            loadingBuilder:
+                                                (BuildContext? context,
+                                                    Widget? child,
+                                                    ImageChunkEvent?
+                                                        loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child!;
+                                              }
+                                              return Shimmer.fromColors(
+                                                baseColor: Colors.grey[300]!,
+                                                highlightColor:
+                                                    Colors.grey[400]!,
+                                                enabled: true,
+                                                child: Image.asset(
+                                                  ImageConstants.profileImage,
+                                                  width: 34.sp,
+                                                  height: 34.sp,
+                                                ),
+                                              );
+                                            },
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Shimmer.fromColors(
+                                                baseColor: Colors.grey[300]!,
+                                                highlightColor:
+                                                    Colors.grey[400]!,
+                                                enabled: true,
+                                                child: Image.asset(
+                                                  ImageConstants.profileImage,
+                                                  width: 34.sp,
+                                                  height: 34.sp,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                groupMembersDetailsBloc
+                                                        .grpMemList![index]
+                                                        .headerText ??
+                                                    "",
+                                                style: TextStyle(
+                                                  fontSize: 8.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                ),
+                                              ),
+                                              Text(
+                                                groupMembersDetailsBloc
+                                                        .grpMemList![index]
+                                                        .memName ??
+                                                    "",
+                                                style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                  color:
+                                                      ColorConstants.blackColor,
+                                                ),
+                                              ),
+                                              Text(
+                                                groupMembersDetailsBloc
+                                                        .grpMemList![index]
+                                                        .joinedDate ??
+                                                    "",
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                ),
+                                              ),
+                                              Text(
+                                                groupMembersDetailsBloc
+                                                        .grpMemList![index]
+                                                        .footerText ??
+                                                    "",
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 3,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          groupMembersDetailsBloc
+                                                  .grpMemList![index].amtText ??
+                                              "",
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                        ),
+                                        Text(
+                                          groupMembersDetailsBloc
+                                                  .grpMemList![index]
+                                                  .payStatus ??
+                                              "",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: (groupMembersDetailsBloc
+                                                        .grpMemList![index]
+                                                        .payStatusType ==
+                                                    "2")
+                                                ? ColorConstants.mintRedColor
+                                                : ColorConstants.mintGreenColor,
+                                          ),
+                                        ),
+                                        Text(
+                                          groupMembersDetailsBloc
+                                                  .grpMemList![index]
+                                                  .accStatus ??
+                                              "",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: (groupMembersDetailsBloc
+                                                        .grpMemList![index]
+                                                        .accStatusType ==
+                                                    "2")
+                                                ? ColorConstants.mintRedColor
+                                                : ColorConstants.mintGreenColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 2.sp),
+                                child: Divider(
+                                  color: ColorConstants.lighterBlueColor,
+                                  thickness: 1.2.sp,
+                                ),
+                              );
+                            },
                           ),
                         ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                (index == 0) ? "Group Leader" : "Group Member",
-                                style: TextStyle(
-                                  fontSize: 8.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: ColorConstants.lightBlackColor,
+                      )
+                    : SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 84.sp,
+                            ),
+                            Container(
+                              width: SizerUtil.width,
+                              height: 250.sp,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    ImageConstants.noDataFoundImage,
+                                  ),
+                                  fit: BoxFit.contain,
                                 ),
                               ),
-                              Text(
-                                "RAM",
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.sp),
+                              child: Text(
+                                groupMembersDetailsBloc.noDataFoundText ??
+                                    "No Data found!!!",
                                 style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
                                   color: ColorConstants.blackColor,
                                 ),
                               ),
-                              Text(
-                                "Joined on 16th August 2024",
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: ColorConstants.lightBlackColor,
-                                ),
-                              ),
-                              Text(
-                                "Rashtreeya Vidyala Road, Jayanagar, Bangalore, Karnataka",
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: ColorConstants.lightBlackColor,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      );
+              } else if (state is GroupMembersDetailsNoInternet) {
+                return noInternetWidget(
+                  context: context,
+                  retryAction: () => groupMembersDetailsBloc.add(
+                    GetGroupMemDetEvent(
+                      page: 1,
+                      showLoading: true,
                     ),
                   ),
-                  Flexible(
-                    flex: 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          (index == 1)
-                              ? '\u002D \u20B91500'
-                              : '\u002B \u20B94200',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                            color: ColorConstants.darkBlueColor,
-                          ),
-                        ),
-                        Text(
-                          (index == 1) ? "DUE" : "PAID",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w700,
-                            color: (index == 1)
-                                ? ColorConstants.mintRedColor
-                                : ColorConstants.mintGreenColor,
-                          ),
-                        ),
-                        Text(
-                          (index == 1) ? "CLOSED" : "ACTIVE",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w700,
-                            color: (index == 1)
-                                ? ColorConstants.mintRedColor
-                                : ColorConstants.mintGreenColor,
-                          ),
-                        ),
-                      ],
+                  state: 1,
+                );
+              } else {
+                return noInternetWidget(
+                  context: context,
+                  retryAction: () => groupMembersDetailsBloc.add(
+                    GetGroupMemDetEvent(
+                      page: 1,
+                      showLoading: true,
                     ),
                   ),
-                ],
-              );
-            },
-            separatorBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 2.sp),
-                child: Divider(
-                  color: ColorConstants.lighterBlueColor,
-                  thickness: 1.2.sp,
-                ),
-              );
+                  state: 2,
+                );
+              }
             },
           ),
         ),

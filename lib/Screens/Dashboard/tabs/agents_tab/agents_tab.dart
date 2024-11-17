@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
-import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/widgets/info_cards.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab_bloc_components/agents_tab_bloc.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/widgets/info_cards_agents.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/home_tab/widgets/home_tab_shimmer.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
+import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:sizer/sizer.dart';
 
 class AgentsTab extends StatefulWidget {
@@ -14,22 +18,18 @@ class AgentsTab extends StatefulWidget {
 }
 
 class _AgentsTabState extends State<AgentsTab> {
-  /* JSON Text */
-  String? internetAlert = "Please check your internet connection!";
-  /* JSON Text */
-
-  String? findCustomerDetailsText = "Find Customer Details";
-  String? verifyCustomerDetailsText = "Verify Customer Details";
-  String? updatePaymentDetailsText = "Update Payment Details";
+  final AgentsTabBloc agentsTabBloc = AgentsTabBloc();
 
   @override
   void initState() {
     super.initState();
+    agentsTabBloc.add(GetAgentsDetailsEvent());
   }
 
   @override
   void dispose() {
     super.dispose();
+    agentsTabBloc.close();
   }
 
   void onFindCustomerDetailsAction() {
@@ -43,7 +43,8 @@ class _AgentsTabState extends State<AgentsTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: internetAlert ?? "Please check your internet connection",
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
             isError: true,
           );
         }
@@ -62,7 +63,8 @@ class _AgentsTabState extends State<AgentsTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: internetAlert ?? "Please check your internet connection",
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
             isError: true,
           );
         }
@@ -81,7 +83,8 @@ class _AgentsTabState extends State<AgentsTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: internetAlert ?? "Please check your internet connection",
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
             isError: true,
           );
         }
@@ -91,123 +94,174 @@ class _AgentsTabState extends State<AgentsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.sp,
-          vertical: 10.sp,
-        ),
-        child: Column(
-          children: [
-            /* Info Cards */
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: 18,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12.sp,
-                mainAxisSpacing: 16.sp,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return const InfoCards();
-              },
-            ),
-            /* Info Cards */
+    return BlocBuilder<AgentsTabBloc, AgentsTabState>(
+      bloc: agentsTabBloc,
+      builder: (context, state) {
+        if (state is AgentsTabLoading) {
+          return const HomeTabShimmer();
+        } else if (state is AgentsTabLoaded) {
+          return (agentsTabBloc.userData != null)
+              ? SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.sp,
+                      vertical: 10.sp,
+                    ),
+                    child: Column(
+                      children: [
+                        /* Info Cards */
+                        (agentsTabBloc.userData?.agentMenusList != null &&
+                                agentsTabBloc
+                                    .userData!.agentMenusList!.isNotEmpty)
+                            ? GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: agentsTabBloc
+                                    .userData?.agentMenusList!.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 12.sp,
+                                  mainAxisSpacing: 16.sp,
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return AgentsInfoCards(
+                                    menuDet: agentsTabBloc
+                                        .userData?.agentMenusList![index],
+                                  );
+                                },
+                              )
+                            : const SizedBox.shrink(),
+                        /* Info Cards */
 
-            SizedBox(
-              height: 8.sp,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.sp),
-              child: InkWell(
-                onTap: () => onFindCustomerDetailsAction(),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        findCustomerDetailsText ?? "",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: ColorConstants.darkBlueColor,
-                          fontWeight: FontWeight.w700,
+                        SizedBox(
+                          height: 8.sp,
                         ),
-                      ),
+                        (agentsTabBloc.userData?.findBtnText != null &&
+                                agentsTabBloc.userData!.findBtnText!.isNotEmpty)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                child: InkWell(
+                                  onTap: () => onFindCustomerDetailsAction(),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          agentsTabBloc.userData?.findBtnText ??
+                                              "",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: ColorConstants.darkBlueColor,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: ColorConstants.darkBlueColor,
+                                        size: 12.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.verifyBtnText != null &&
+                                agentsTabBloc
+                                    .userData!.verifyBtnText!.isNotEmpty)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                child: InkWell(
+                                  onTap: () => onVerifyCustomerDetailsAction(),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          agentsTabBloc
+                                                  .userData?.verifyBtnText ??
+                                              "",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: ColorConstants.darkBlueColor,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: ColorConstants.darkBlueColor,
+                                        size: 12.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.updatePaymentDetText != null &&
+                                agentsTabBloc
+                                    .userData!.updatePaymentDetText!.isNotEmpty)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                child: InkWell(
+                                  onTap: () => onUpdatePaymentDetailsAction(),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          agentsTabBloc.userData
+                                                  ?.updatePaymentDetText ??
+                                              "",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: ColorConstants.darkBlueColor,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: ColorConstants.darkBlueColor,
+                                        size: 12.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
                     ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: ColorConstants.darkBlueColor,
-                      size: 12.sp,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.sp),
-              child: InkWell(
-                onTap: () => onVerifyCustomerDetailsAction(),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        verifyCustomerDetailsText ?? "",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: ColorConstants.darkBlueColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: ColorConstants.darkBlueColor,
-                      size: 12.sp,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.sp),
-              child: InkWell(
-                onTap: () => onUpdatePaymentDetailsAction(),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        updatePaymentDetailsText ?? "",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: ColorConstants.darkBlueColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: ColorConstants.darkBlueColor,
-                      size: 12.sp,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+                  ),
+                )
+              : const SizedBox.shrink();
+        } else if (state is AgentsTabNoInternet) {
+          return noInternetWidget(
+            context: context,
+            retryAction: () => agentsTabBloc.add(GetAgentsDetailsEvent()),
+            state: 1,
+          );
+        } else {
+          return noInternetWidget(
+            context: context,
+            retryAction: () => agentsTabBloc.add(GetAgentsDetailsEvent()),
+            state: 2,
+          );
+        }
+      },
     );
   }
 }

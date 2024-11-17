@@ -22,21 +22,6 @@ class GroupLoansTab extends StatefulWidget {
 class _GroupLoansTabState extends State<GroupLoansTab> {
   final GroupLoansBloc groupLoansBloc = GroupLoansBloc();
 
-  // /* JSON Text */
-  // String? internetAlert = "Please check your internet connection!";
-  // /* JSON Text */
-
-  // String? enquireNowText = "ENQUIRE NOW";
-  // String? noLoansTitleText = "Join a Group Loan Today!";
-  // String? noLoansSubTitleText =
-  //     "Ready to achieve more together? Our Group Loans offer collective support and flexible terms to help you and your group reach your goals. Whether it’s for community projects or joint ventures, now is the perfect time to benefit from shared financial power. Start your Group Loan journey today and see what you can achieve together!";
-  // String? transactionHistoryText = "Check Transaction History";
-  // String? groupMembersText = "Group Members Details";
-
-  // String? popupTitle = "Pay All";
-  // String? cancelText = "CANCEL";
-  // String? btnText = "COMPLETE PAYMENT";
-
   @override
   void initState() {
     super.initState();

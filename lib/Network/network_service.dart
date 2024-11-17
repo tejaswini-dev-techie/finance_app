@@ -1,12 +1,15 @@
 import 'dart:convert';
 
 import 'package:hp_finance/Constants/sharedpreference_constants.dart';
+import 'package:hp_finance/DataModel/Dashboard/agents_dashboard_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/group_loans_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/loans_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/pigmy_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/user_dashboard_data_model.dart';
 import 'package:hp_finance/DataModel/LearnAboutPigmySavings/learn_about_pigmy_savings_data_model.dart';
+import 'package:hp_finance/DataModel/PaymentDetails/update_payment_details_data_model.dart';
 import 'package:hp_finance/DataModel/Profile/profile_data_model.dart';
+import 'package:hp_finance/DataModel/SearchCustomersDetails/group_mem_details_data_model.dart';
 import 'package:hp_finance/DataModel/TransactionHistory/pigmy_transaction_history_data_model.dart';
 import 'package:hp_finance/DataModel/TransactionHistory/transaction_history_data_model.dart';
 import 'package:hp_finance/DataModel/WithdrawPigmy/withdraw_pigmy_details_data_model.dart';
@@ -951,11 +954,197 @@ class NetworkService {
         )
             .then(
           (dynamic res) {
-            return TransactionHistoryDataModel.fromJson(transRes);
+            return TransactionHistoryDataModel.fromJson(res);
           },
         );
       },
     );
   }
   /* Transaction History */
+
+  /* Agents Dashboard */
+  var agentsRes = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "agent_menus_list": [
+        {
+          "menu_id": "1",
+          "menu_title": "PIGMY ID",
+          "menu_img": "",
+          "menu_subtile": "1234"
+        },
+        {
+          "menu_id": "2",
+          "menu_title": "Savings Balance",
+          "menu_img": "",
+          "menu_subtile": "₹1200"
+        }
+      ],
+      "find_btn_text": "Find Customer Details",
+      "verify_btn_text": "Verify Customer Details",
+      "update_payment_det_text": "UpdatePaymentdetails"
+    }
+  };
+  Future<AgentsDashboardDataModel> agentsDashboardService() {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        return _network
+            .httpGet(apiHitTimeout, APIURLs.verifyCustomerDashboardURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return AgentsDashboardDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Agents Dashboard */
+
+  /* Group Member Details */
+  var grpRes = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "group_members_list": [
+        {
+          "group_id": "1",
+          "header_text": "Group Leader",
+          "profile_img": "",
+          "mem_name": "RAM",
+          "joined_date": "Joined on 16th August 2024",
+          "footer_text": "LOANID1234",
+          "amt_text": "₹1200",
+          "pay_status": "PAID",
+          "pay_status_type": "1",
+          "acc_status": "ACTIVE",
+          "acc_status_type": "1"
+        },
+        {
+          "group_id": "2",
+          "header_text": "Group Member",
+          "profile_img": "",
+          "mem_name": "RAM",
+          "joined_date": "Joined on 16th August 2024",
+          "footer_text": "LOANID1234",
+          "amt_text": "₹1200",
+          "pay_status": "PAID",
+          "pay_status_type": "1",
+          "acc_status": "CLOSED",
+          "acc_status_type": "2"
+        }
+      ]
+    }
+  };
+  Future<GroupMembersDetailsDataModel> groupMemDetailsService({int? page}) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['page'] = "$page";
+        return _network
+            .httpGet(apiHitTimeout, APIURLs.groupMemberDetailsURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return GroupMembersDetailsDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Group Member Details */
+
+  /* Logout */
+  Future<dynamic> logoutService() {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        return _network
+            .httpGet(apiHitTimeout, APIURLs.logoutURL, body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Logout */
+
+  /* Update Payment Details Prefetch */
+  var payRes = {
+    "status": true,
+    "logout": false,
+    "data": {
+      "id": "2",
+      "name": "Tejaswini D",
+      "mob_num": "7259889622",
+      "code_id": "1234",
+      "agent": "RAM",
+      "amt_to_be_paid": "1200",
+      "date": "16/10/2024",
+      "due": "100"
+    }
+  };
+  Future<UpdatePaymentDetailsDataModel> updatePaymentPrefetchDetailsService(
+      {int? id}) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = "$id";
+        // return _network
+        //     .httpGet(apiHitTimeout, APIURLs.updatePaymentPrefetchDetailsURL,
+        //         body: paramsKeyVal)
+        //     .then(
+        //   (dynamic res) {
+        return UpdatePaymentDetailsDataModel.fromJson(payRes);
+        //   },
+        // );
+      },
+    );
+  }
+  /* Update Payment Details Prefetch */
+
+  /* Update Payment Details */
+  var resultUpdatePayment = {
+    "status": true,
+    "logout": false,
+    "message": "Profile details updated successfully"
+  };
+  Future<dynamic> updatePaymentDetails({
+    required String? userName,
+    required String? mobNum,
+    required String? code,
+    required String? agent,
+    required String? amtPaid,
+    required String? amtDue,
+    required String? date,
+    required String? paymentType,
+    required String? paymentMode,
+    required String? paymentStatus,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['userName'] = userName;
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['codeID'] = code;
+        paramsKeyVal['agent'] = agent;
+        paramsKeyVal['amountPaid'] = amtPaid;
+        paramsKeyVal['due'] = amtDue;
+        paramsKeyVal['date'] = date;
+        paramsKeyVal['paymentType'] = paymentType;
+        paramsKeyVal['paymentMode'] = paymentMode;
+        paramsKeyVal['paymentStatus'] = paymentStatus;
+        return _network
+            .httpPut(apiHitTimeout, APIURLs.updatePaymentDetailsURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return resultUpdatePayment;
+          },
+        );
+      },
+    );
+  }
+  /* Update Payment Details */
 }
