@@ -15,7 +15,9 @@ import 'package:sizer/sizer.dart';
 
 class UpdateCustomersPaymentDetailsScreen extends StatefulWidget {
   final String? title;
-  const UpdateCustomersPaymentDetailsScreen({super.key, this.title});
+  final String? customerID;
+  const UpdateCustomersPaymentDetailsScreen(
+      {super.key, this.title, this.customerID});
 
   @override
   State<UpdateCustomersPaymentDetailsScreen> createState() =>
@@ -84,7 +86,9 @@ class _UpdateCustomersPaymentDetailsScreenState
   @override
   void initState() {
     super.initState();
-    updatePaymentDetailsBloc.add(GetPaymentDetailsEvent());
+    updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
+      cusID: widget.customerID,
+    ));
     _nameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _loanCodeController.addListener(_validateFields);
@@ -235,7 +239,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                       valueListenable: isDisabled,
                       builder: (context, bool values, _) {
                         return buttonWidgetHelperUtil(
-                          isDisabled: isDisabled.value,
+                          isDisabled: false,
                           buttonText: updatePaymentDetailsBloc.updateText,
                           onButtonTap: () => onSubmitAction(),
                           context: context,
@@ -1061,14 +1065,18 @@ class _UpdateCustomersPaymentDetailsScreenState
                   return noInternetWidget(
                     context: context,
                     retryAction: () =>
-                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent()),
+                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
+                      cusID: widget.customerID,
+                    )),
                     state: 1,
                   );
                 } else {
                   return noInternetWidget(
                     context: context,
                     retryAction: () =>
-                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent()),
+                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
+                      cusID: widget.customerID,
+                    )),
                     state: 2,
                   );
                 }

@@ -53,7 +53,7 @@ class UpdatePaymentDetailsBloc
 
       Future<Data?> getUserDetails() async {
         await NetworkService()
-            .updatePaymentPrefetchDetailsService()
+            .updatePaymentPrefetchDetailsService(id: event.cusID ?? "")
             .then((UpdatePaymentDetailsDataModel? respObj) {
           if (respObj != null && respObj.data != null) {
             userData = respObj.data;

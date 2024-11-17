@@ -52,4 +52,6 @@ class APIURLs {
   /* Update Payment Details */
   static const updatePaymentPrefetchDetailsURL = "$baseURL/";
   static const updatePaymentDetailsURL = "$baseURL/";
+
+  static const searchIntermittentDetailsURL = "$baseURL/";
 }

@@ -10,6 +10,7 @@ import 'package:hp_finance/DataModel/LearnAboutPigmySavings/learn_about_pigmy_sa
 import 'package:hp_finance/DataModel/PaymentDetails/update_payment_details_data_model.dart';
 import 'package:hp_finance/DataModel/Profile/profile_data_model.dart';
 import 'package:hp_finance/DataModel/SearchCustomersDetails/group_mem_details_data_model.dart';
+import 'package:hp_finance/DataModel/SearchCustomersDetails/search_intermittent_data_model.dart';
 import 'package:hp_finance/DataModel/TransactionHistory/pigmy_transaction_history_data_model.dart';
 import 'package:hp_finance/DataModel/TransactionHistory/transaction_history_data_model.dart';
 import 'package:hp_finance/DataModel/WithdrawPigmy/withdraw_pigmy_details_data_model.dart';
@@ -1088,7 +1089,7 @@ class NetworkService {
     }
   };
   Future<UpdatePaymentDetailsDataModel> updatePaymentPrefetchDetailsService(
-      {int? id}) {
+      {required String? id}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['id'] = "$id";
@@ -1147,4 +1148,109 @@ class NetworkService {
     );
   }
   /* Update Payment Details */
+
+  /* Search Intermittent Screen */
+  var searchRes = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "profile_image": "",
+      "name": "RAM",
+      "ph_num": "+91 877665654554 | +91 8767545678",
+      "email_id": "abc@gmail.com",
+      "address":
+          "Bhuvaneshwari Nagar, T Dasarahalli, Bangalore, Karnataka, 560057",
+      "documents_text": "Documents",
+      "docs_list": [
+        {"id": "1", "title": "PAN", "image_path": ""},
+        {"id": "2", "title": "AADHAAR", "image_path": ""}
+      ],
+      "list_details": [
+        {
+          "list_det_title": "PIGMY",
+          "list_det": [
+            {
+              "id": "1",
+              "title": "PIGMYCODE1234",
+              "subtitle": "Due as on\n16th August 2024",
+              "amt": "₹1200",
+              "pay_now_text": "PAY NOW"
+            },
+            {
+              "id": "1",
+              "title": "PIGMYCODE1234",
+              "subtitle": "Paid as on\n16th August 2024",
+              "amt": "₹1200",
+              "pay_now_text": ""
+            },
+            {
+              "id": "1",
+              "title": "PIGMYCODE1234",
+              "subtitle": "Paid as on\n16th August 2024",
+              "amt": "₹1200",
+              "pay_now_text": ""
+            },
+            {
+              "id": "1",
+              "title": "PIGMYCODE1234",
+              "subtitle": "Paid as on\n16th August 2024",
+              "amt": "₹1200",
+              "pay_now_text": ""
+            }
+          ]
+        },
+        {
+          "list_det_title": "LOAN",
+          "list_det_menu": [
+            {
+              "menu_id": "1",
+              "menu_title": "PIGMY ID",
+              "menu_img": "",
+              "menu_subtile": "1234"
+            },
+            {
+              "menu_id": "2",
+              "menu_title": "Savings Balance",
+              "menu_img": "",
+              "menu_subtile": "\u20B91200"
+            }
+          ],
+          "list_det": [
+            {
+              "id": "1",
+              "title": "PIGMYCODE1234",
+              "subtitle": "Due as on\n16th August 2024",
+              "amt": "₹1200",
+              "pay_now_text": "PAY NOW"
+            },
+            {
+              "id": "1",
+              "title": "PIGMYCODE1234",
+              "subtitle": "Due as on\n16th August 2024",
+              "amt": "₹1200",
+              "pay_now_text": ""
+            }
+          ]
+        }
+      ]
+    }
+  };
+  Future<SearchIntermittentDetailsDataModel> searchIntermittentService(
+      {String? cusID}) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['cus_id'] = cusID;
+        return _network
+            .httpGet(apiHitTimeout, APIURLs.searchIntermittentDetailsURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return SearchIntermittentDetailsDataModel.fromJson(searchRes);
+          },
+        );
+      },
+    );
+  }
+  /* Search Intermittent SCreen */
 }

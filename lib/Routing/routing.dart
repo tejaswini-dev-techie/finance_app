@@ -13,6 +13,7 @@ import 'package:hp_finance/Screens/PigmyHistory/pigmy_history_screen.dart';
 import 'package:hp_finance/Screens/Profile/profile_screen.dart';
 import 'package:hp_finance/Screens/ResetPassword/reset_password_screen.dart';
 import 'package:hp_finance/Screens/SearchCustomerDetails/search_customer_details_screen.dart';
+import 'package:hp_finance/Screens/SearchIntermitentScreen/search_intermitent_screen.dart';
 import 'package:hp_finance/Screens/TransactionDetails/transaction_details_screen.dart';
 import 'package:hp_finance/Screens/UpdatePaymentDetails/update_payment_details.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/verfify_customers.dart';
@@ -359,6 +360,7 @@ class RouteGenerator {
             return MaterialPageRoute(
               builder: (_) => UpdateCustomersPaymentDetailsScreen(
                 title: data['data']['title'] ?? "Payment",
+                customerID: data['data']['customerID'] ?? "0",
               ),
               settings: RouteSettings(
                 name: settings.name,
@@ -395,6 +397,30 @@ class RouteGenerator {
             );
           }
         }
+      /* Capture Photo */
+
+      /* Search Intermittent Screen */
+
+      case RoutingConstants.routeSearchIntermittentScreen:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+                builder: (_) => SearchIntermitentScreen(
+                      customerID: data['data']['customerID'] ?? "0",
+                    ),
+                settings: RouteSettings(name: settings.name));
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const SearchIntermitentScreen(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
+      /* Search Intermittent Screen */
 
       /* Error Route */
       default:

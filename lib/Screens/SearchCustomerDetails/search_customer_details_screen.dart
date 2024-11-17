@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
+import 'package:hp_finance/Utils/internet_util.dart';
+import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:sizer/sizer.dart';
 
 class SearchCustomerDetails extends StatefulWidget {
@@ -142,107 +143,130 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
               vertical: 24.sp,
             ),
             itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8.sp,
-                  horizontal: 10.sp,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.sp),
-                  color: ColorConstants.whiteColor,
-                  border: Border.all(
-                    color: ColorConstants.lightGreyColor,
+              return InkWell(
+                onTap: () {
+                  InternetUtil().checkInternetConnection().then((internet) {
+                    if (internet) {
+                      Map<String, dynamic> data = {};
+                      data = {
+                        "customerID": "0",
+                      };
+                      Navigator.pushNamed(
+                        context,
+                        RoutingConstants.routeSearchIntermittentScreen,
+                        arguments: {"data": data},
+                      );
+                    } else {
+                      ToastUtil().showSnackBar(
+                        context: context,
+                        message: internetAlert,
+                        isError: true,
+                      );
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.sp,
+                    horizontal: 10.sp,
                   ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 7,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          tileCards(
-                            type: 1,
-                            iconWidget: Icon(
-                              Icons.person,
-                              size: 13.sp,
-                              color: ColorConstants.darkBlueColor,
-                            ),
-                            title: "RAM",
-                          ),
-                          tileCards(
-                            iconWidget: Icon(
-                              Icons.phone,
-                              size: 13.sp,
-                              color: ColorConstants.darkBlueColor,
-                            ),
-                            title: "+91 7285668744",
-                          ),
-                          tileCards(
-                            iconWidget: Icon(
-                              Icons.contacts_rounded,
-                              size: 13.sp,
-                              color: ColorConstants.darkBlueColor,
-                            ),
-                            title: "LOANCODE1234",
-                          ),
-                          tileCards(
-                            iconWidget: Icon(
-                              Icons.location_on_rounded,
-                              size: 13.sp,
-                              color: ColorConstants.darkBlueColor,
-                            ),
-                            title:
-                                "Banashankri 2nd Stage, Bangalore, Karnataka",
-                          ),
-                        ],
-                      ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.sp),
+                    color: ColorConstants.whiteColor,
+                    border: Border.all(
+                      color: ColorConstants.lightGreyColor,
                     ),
-                    Flexible(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            (index == 1)
-                                ? '\u002D \u20B91500'
-                                : '\u002B \u20B94200',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w700,
-                              color: ColorConstants.darkBlueColor,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 7,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            tileCards(
+                              type: 1,
+                              iconWidget: Icon(
+                                Icons.person,
+                                size: 13.sp,
+                                color: ColorConstants.darkBlueColor,
+                              ),
+                              title: "RAM",
                             ),
-                          ),
-                          Text(
-                            (index == 1) ? "WITHDRAW" : "PAID",
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w700,
-                              color: (index == 1)
-                                  ? ColorConstants.mintRedColor
-                                  : ColorConstants.mintGreenColor,
+                            tileCards(
+                              iconWidget: Icon(
+                                Icons.phone,
+                                size: 13.sp,
+                                color: ColorConstants.darkBlueColor,
+                              ),
+                              title: "+91 7285668744",
                             ),
-                          ),
-                          Text(
-                            (index == 1) ? "CLOSED" : "ACTIVE",
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w700,
-                              color: (index == 1)
-                                  ? ColorConstants.mintRedColor
-                                  : ColorConstants.mintGreenColor,
+                            tileCards(
+                              iconWidget: Icon(
+                                Icons.contacts_rounded,
+                                size: 13.sp,
+                                color: ColorConstants.darkBlueColor,
+                              ),
+                              title: "LOANCODE1234",
                             ),
-                          ),
-                        ],
+                            tileCards(
+                              iconWidget: Icon(
+                                Icons.location_on_rounded,
+                                size: 13.sp,
+                                color: ColorConstants.darkBlueColor,
+                              ),
+                              title:
+                                  "Banashankri 2nd Stage, Bangalore, Karnataka",
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Flexible(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            // Text(
+                            //   (index == 1)
+                            //       ? '\u002D \u20B91500'
+                            //       : '\u002B \u20B94200',
+                            //   style: TextStyle(
+                            //     fontSize: 12.sp,
+                            //     fontWeight: FontWeight.w700,
+                            //     color: ColorConstants.darkBlueColor,
+                            //   ),
+                            // ),
+                            // Text(
+                            //   (index == 1) ? "WITHDRAW" : "PAID",
+                            //   textAlign: TextAlign.right,
+                            //   style: TextStyle(
+                            //     fontSize: 10.sp,
+                            //     fontWeight: FontWeight.w700,
+                            //     color: (index == 1)
+                            //         ? ColorConstants.mintRedColor
+                            //         : ColorConstants.mintGreenColor,
+                            //   ),
+                            // ),
+                            Text(
+                              (index == 1) ? "CLOSED" : "ACTIVE",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w700,
+                                color: (index == 1)
+                                    ? ColorConstants.mintRedColor
+                                    : ColorConstants.mintGreenColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

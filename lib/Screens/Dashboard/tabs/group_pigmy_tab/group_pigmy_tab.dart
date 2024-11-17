@@ -11,14 +11,14 @@ import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:sizer/sizer.dart';
 
-class PigmyTab extends StatefulWidget {
-  const PigmyTab({super.key});
+class GroupPigmyTab extends StatefulWidget {
+  const GroupPigmyTab({super.key});
 
   @override
-  State<PigmyTab> createState() => _PigmyTabState();
+  State<GroupPigmyTab> createState() => _GroupPigmyTabState();
 }
 
-class _PigmyTabState extends State<PigmyTab> {
+class _GroupPigmyTabState extends State<GroupPigmyTab> {
   final PigmyBloc pigmyBloc = PigmyBloc();
 
   @override

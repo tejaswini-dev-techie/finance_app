@@ -34,4 +34,6 @@ class RoutingConstants {
 
   /* Custom Camera */
   static const String routeCapturePhotoCamera = "/routeCapturePhotoCamera";
+
+  static const String routeSearchIntermittentScreen = "/routeSearchIntermittentScreen";
 }

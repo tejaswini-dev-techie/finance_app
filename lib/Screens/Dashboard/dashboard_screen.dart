@@ -8,6 +8,7 @@ import 'package:hp_finance/Constants/sharedpreference_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/group_loans_tab/group_loans_tab.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_tab/group_pigmy_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/home_tab/home_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/loans_tab/loans_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/pigmy_tab.dart';
@@ -38,8 +39,9 @@ class _DashboardState extends State<Dashboard> {
   String dashboardText = "HP FINANCE";
   String homeText = "HOME";
   String pigmyText = "PIGMY";
+  String groupPigmyText = "G-PIGMY";
   String loansText = "LOANS";
-  String groupLoansText = "GROUP LOANS";
+  String groupLoansText = "G-LOANS";
   /* JSON Text */
   @override
   void initState() {
@@ -112,6 +114,7 @@ class _DashboardState extends State<Dashboard> {
     // const HomeTab(),
     const AgentsTab(),
     const PigmyTab(),
+    const GroupPigmyTab(),
     const LoansTab(),
     const GroupLoansTab(),
   ];
@@ -177,6 +180,30 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   BottomNavigationBarItem(
                     icon: _selectedIndex == 2
+                        ? Icon(
+                            Icons.savings,
+                            size: 20.sp,
+                            color: ColorConstants.darkBlueColor,
+                          )
+                        // Image.asset(
+                        //     ImageConstants.pigmySelImage,
+                        //     width: 20.sp,
+                        //     height: 20.sp,
+                        //   )
+                        : Icon(
+                            Icons.savings_outlined,
+                            size: 20.sp,
+                            color: ColorConstants.darkBlueColor,
+                          ),
+                    // Image.asset(
+                    //     ImageConstants.pigmyUnselImage,
+                    //     width: 20.sp,
+                    //     height: 20.sp,
+                    //   ),
+                    label: groupPigmyText,
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _selectedIndex == 3
                         ? Image.asset(
                             ImageConstants.loansSelImage,
                             width: 20.sp,
@@ -190,7 +217,7 @@ class _DashboardState extends State<Dashboard> {
                     label: loansText,
                   ),
                   BottomNavigationBarItem(
-                    icon: _selectedIndex == 3
+                    icon: _selectedIndex == 4
                         ? Image.asset(
                             ImageConstants.grouploansSelImage,
                             width: 20.sp,
@@ -210,6 +237,8 @@ class _DashboardState extends State<Dashboard> {
                 unselectedItemColor: ColorConstants.darkShadeBlueColor,
                 onTap: onItemTapped,
                 elevation: 5,
+                selectedFontSize: 10.sp,
+                unselectedFontSize: 10.sp,
               ),
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(70.sp),
