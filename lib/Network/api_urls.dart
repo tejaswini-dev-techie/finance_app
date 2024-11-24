@@ -9,6 +9,7 @@ class APIURLs {
   /* Dashoard */
   static const dashboardURL = "$baseURL/dashboard/customer";
   static const pigmyURL = "$baseURL/pigmy/pigmy-list";
+  static const groupPigmyURL = "$baseURL/pigmy/pigmy-list";
   static const loanURL = "$baseURL/loan/loan-list";
   static const groupLoanURL = "$baseURL/loan/group-loan/list";
   static const agentsDashboardURL = "$baseURL/agent/get-dashbaord-details";
@@ -53,5 +54,8 @@ class APIURLs {
   static const updatePaymentPrefetchDetailsURL = "$baseURL/";
   static const updatePaymentDetailsURL = "$baseURL/";
 
-  static const searchIntermittentDetailsURL = "$baseURL/";
+  static const searchIntermittentDetailsURL =
+      "$baseURL/customer/get-customer-details-by-id";
+  static const searchCustomerDetailsURL =
+      "$baseURL/customer/search-customer-detail";
 }

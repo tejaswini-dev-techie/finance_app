@@ -49,9 +49,9 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
     setState(() {});
   }
 
-  Future getSearchInfoDetails() async {
+  Future getSearchInfoDetails(String cusID) async {
     await NetworkService()
-        .searchIntermittentService()
+        .searchIntermittentService(cusID: cusID)
         .then((SearchIntermittentDetailsDataModel? respObj) {
       if (respObj != null && respObj.data != null) {
         searchDet = respObj.data;
@@ -136,7 +136,8 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
             ),
           ),
           body: FutureBuilder(
-            future: getSearchInfoDetails(), // the API call function
+            future: getSearchInfoDetails(
+                widget.customerID ?? ""), // the API call function
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // Show a loading indicator while the data is loading
@@ -149,7 +150,8 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                 // Show an error message if the request failed
                 return noInternetWidget(
                   context: context,
-                  retryAction: () => getSearchInfoDetails(),
+                  retryAction: () =>
+                      getSearchInfoDetails(widget.customerID ?? ""),
                   state: 2,
                 );
               } else if (snapshot.hasData) {
@@ -359,7 +361,8 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
               } else {
                 return noInternetWidget(
                   context: context,
-                  retryAction: () => getSearchInfoDetails(),
+                  retryAction: () =>
+                      getSearchInfoDetails(widget.customerID ?? ""),
                   state: 1,
                 );
               }

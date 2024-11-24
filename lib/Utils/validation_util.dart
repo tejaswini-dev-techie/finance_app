@@ -251,7 +251,9 @@ class ValidationUtil {
                           ? 'Please upload valid Property Image'
                           : (type == 6)
                               ? "Please upload valid Bank Pass book Image"
-                              : 'Please upload valid Image';
+                              : (type == 7)
+                                  ? "Please upload valid Signature Image"
+                                  : 'Please upload valid Image';
     }
     return null;
   }

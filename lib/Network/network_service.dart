@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:hp_finance/Constants/sharedpreference_constants.dart';
 import 'package:hp_finance/DataModel/Dashboard/agents_dashboard_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/group_loans_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/loans_data_model.dart';
@@ -10,6 +9,7 @@ import 'package:hp_finance/DataModel/LearnAboutPigmySavings/learn_about_pigmy_sa
 import 'package:hp_finance/DataModel/PaymentDetails/update_payment_details_data_model.dart';
 import 'package:hp_finance/DataModel/Profile/profile_data_model.dart';
 import 'package:hp_finance/DataModel/SearchCustomersDetails/group_mem_details_data_model.dart';
+import 'package:hp_finance/DataModel/SearchCustomersDetails/search_customer_details_data_model.dart';
 import 'package:hp_finance/DataModel/SearchCustomersDetails/search_intermittent_data_model.dart';
 import 'package:hp_finance/DataModel/TransactionHistory/pigmy_transaction_history_data_model.dart';
 import 'package:hp_finance/DataModel/TransactionHistory/transaction_history_data_model.dart';
@@ -17,8 +17,6 @@ import 'package:hp_finance/DataModel/WithdrawPigmy/withdraw_pigmy_details_data_m
 import 'package:hp_finance/Network/api_urls.dart';
 import 'package:hp_finance/Network/network.dart';
 import 'package:hp_finance/Utils/get_device_info.dart';
-import 'package:hp_finance/Utils/sharedpreferences_util.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 // import 'package:http/retry.dart';
 
@@ -283,6 +281,22 @@ class NetworkService {
     );
   }
   /* PIGMY */
+
+  /* Group Pigmy */
+  Future<PigmyDataModel> groupPigmyDetailsService() {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        return _network
+            .httpGet(apiHitTimeout, APIURLs.groupPigmyURL, body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return PigmyDataModel.fromJson(pigmyDetRes);
+          },
+        );
+      },
+    );
+  }
+  /* Group Pigmy */
 
   /* LOANS */
   // var loanRes = {
@@ -603,6 +617,7 @@ class NetworkService {
     required String? bankIFSCCode,
     required String? bankBranchName,
     required String? passbookImage,
+    required String? signatureImage,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -631,6 +646,7 @@ class NetworkService {
         paramsKeyVal['bankIFSCCode'] = bankIFSCCode;
         paramsKeyVal['bankBranchName'] = bankBranchName;
         paramsKeyVal['passbookImage'] = passbookImage;
+        paramsKeyVal['signatureImage'] = signatureImage;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -1240,17 +1256,60 @@ class NetworkService {
       {String? cusID}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
-        paramsKeyVal['cus_id'] = cusID;
+        paramsKeyVal['id'] = cusID;
         return _network
-            .httpGet(apiHitTimeout, APIURLs.searchIntermittentDetailsURL,
-                body: paramsKeyVal)
+            .httpGetQuery(apiHitTimeout, APIURLs.searchIntermittentDetailsURL,
+                queryParams: paramsKeyVal)
             .then(
           (dynamic res) {
-            return SearchIntermittentDetailsDataModel.fromJson(searchRes);
+            return SearchIntermittentDetailsDataModel.fromJson(res);
           },
         );
       },
     );
   }
   /* Search Intermittent SCreen */
+
+  /* Search Customer Details */
+
+  var searchCusrEs = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "search_members_list": [
+        {
+          "member_id": "1",
+          "profile_img": "",
+          "mem_name": "RAM",
+          "loan_code": "LOANID1234",
+          "location": "Bangalore, Karnataka",
+          "ph_num": "+91 7259889622",
+          "acc_status": "ACTIVE",
+          "acc_status_type": "1" //1-ACTIVE|2-CLOSED
+        }
+      ]
+    }
+  };
+  Future<SearchCustomerDetailsDataModel> searchCusDetailsService(
+      {int? page, String? searchKey}) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['page'] = "$page";
+        paramsKeyVal['search_key'] = searchKey;
+        return _network
+            .httpGetQuery(
+          apiHitTimeout,
+          APIURLs.searchCustomerDetailsURL,
+          queryParams: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return SearchCustomerDetailsDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Search Customer Details */
 }

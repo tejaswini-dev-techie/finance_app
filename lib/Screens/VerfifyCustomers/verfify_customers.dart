@@ -159,6 +159,12 @@ class _VerifyCustomersDetailsScreenState
   String? passBookImagePath = "";
   /* Pass Book */
 
+  /* Signature */
+  ValueNotifier<bool> refreshSignImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosSignList = [];
+  String? signatureImagePath = "";
+  /* Signature */
+
   @override
   void initState() {
     super.initState();
@@ -1662,6 +1668,88 @@ class _VerifyCustomersDetailsScreenState
                               /* Add Pass Book Doc Image */
 
                               SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Signature Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshSignImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: signatureImagePath ?? "",
+                                      placeholderText: "Add Signature Image",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosSignList = [];
+                                                compressedPhotosSignList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosSignList,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "signatureImagePath: 1 ${compressedPhotosSignList[0].path}");
+                                                signatureImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosSignList[0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "signatureImagePath: 2$signatureImagePath");
+                                                refreshPassBookImage.value =
+                                                    !refreshPassBookImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosSignList = [];
+                                                compressedPhotosSignList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosSignList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "signatureImagePath: 1 ${compressedPhotosSignList[0].path}");
+                                                signatureImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosSignList[0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "signatureImagePath: 2$signatureImagePath");
+                                                refreshSignImage.value =
+                                                    !refreshSignImage.value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Signature Image */
+
+                              SizedBox(
                                 height: 32.sp,
                               ),
                             ],
@@ -1726,6 +1814,8 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateImage(propertyDocImagePath, 5);
     String? passbookImageError =
         ValidationUtil.validateImage(passBookImagePath, 6);
+    String? signatureImageError =
+        ValidationUtil.validateImage(signatureImagePath, 7);
 
     final form = _formKey.currentState;
 
@@ -1743,7 +1833,9 @@ class _VerifyCustomersDetailsScreenState
           propertyDocImagePath != null &&
           propertyDocImagePath!.isNotEmpty &&
           passBookImagePath != null &&
-          passBookImagePath!.isNotEmpty) {
+          passBookImagePath!.isNotEmpty &&
+          signatureImagePath != null &&
+          signatureImagePath!.isNotEmpty) {
         // All validations passed, navigate to the next screen
         var result = await NetworkService().updateKYCDetails(
           userName: _nameController.text,
@@ -1771,6 +1863,7 @@ class _VerifyCustomersDetailsScreenState
           bankIFSCCode: _bankIFSCcodeController.text,
           accNumber: _accNumController.text,
           passbookImage: passBookImagePath,
+          signatureImage: signatureImagePath,
         );
 
         if (result != null && result['status'] == true) {

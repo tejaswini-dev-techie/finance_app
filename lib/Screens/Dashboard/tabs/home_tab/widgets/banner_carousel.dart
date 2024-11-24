@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide CarouselController;
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/DataModel/Dashboard/user_dashboard_data_model.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
@@ -23,6 +23,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
   double bannerIndicatorsTotalHeight = 12;
 
   int currentIndex = 0;
+
+  CarouselSliderController buttonCarouselController =
+      CarouselSliderController();
 
   @override
   void initState() {
@@ -99,7 +102,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
                 ),
               );
             }).toList(),
-            carouselController: CarouselController(),
+            carouselController: buttonCarouselController,
             options: CarouselOptions(
               pauseAutoPlayOnTouch: false,
               animateToClosest: false,

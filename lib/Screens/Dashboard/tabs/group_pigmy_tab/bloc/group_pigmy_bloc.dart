@@ -28,7 +28,7 @@ class GroupPigmyBloc extends Bloc<GroupPigmyEvent, GroupPigmyState> {
 
       Future<Data?> getUserDetails() async {
         await NetworkService()
-            .pigmyDetailsService()
+            .groupPigmyDetailsService()
             .then((PigmyDataModel? respObj) {
           if (respObj != null && respObj.data != null) {
             pigmyData = respObj.data;

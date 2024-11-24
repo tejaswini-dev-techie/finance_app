@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_tab/bloc/group_pigmy_bloc.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_tab/widgets/group_pigmy_screen.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/bloc/pigmy_bloc.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/widgets/no_pigmy_started.dart';
-import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/widgets/pigmy_screen.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/widgets/pigmy_shimmer.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
@@ -19,18 +20,18 @@ class GroupPigmyTab extends StatefulWidget {
 }
 
 class _GroupPigmyTabState extends State<GroupPigmyTab> {
-  final PigmyBloc pigmyBloc = PigmyBloc();
+  final GroupPigmyBloc groupPigmyBloc = GroupPigmyBloc();
 
   @override
   void initState() {
     super.initState();
-    pigmyBloc.add(GetPigmyDetails());
+    groupPigmyBloc.add(GetGroupPigmyDetails());
   }
 
   @override
   void dispose() {
     super.dispose();
-    pigmyBloc.close();
+    groupPigmyBloc.close();
   }
 
   void onStartNowAction() {
@@ -44,7 +45,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: pigmyBloc.internetAlert ?? "",
+            message: groupPigmyBloc.internetAlert ?? "",
             isError: true,
           );
         }
@@ -63,7 +64,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: pigmyBloc.internetAlert ??
+            message: groupPigmyBloc.internetAlert ??
                 "Please check your internet connection",
             isError: true,
           );
@@ -83,7 +84,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: pigmyBloc.internetAlert ??
+            message: groupPigmyBloc.internetAlert ??
                 "Please check your internet connection",
             isError: true,
           );
@@ -108,7 +109,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: pigmyBloc.internetAlert ??
+            message: groupPigmyBloc.internetAlert ??
                 "Please check your internet connection",
             isError: true,
           );
@@ -128,7 +129,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
         } else {
           ToastUtil().showSnackBar(
             context: context,
-            message: pigmyBloc.internetAlert ??
+            message: groupPigmyBloc.internetAlert ??
                 "Please check your internet connection",
             isError: true,
           );
@@ -139,34 +140,38 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PigmyBloc, PigmyState>(
-      bloc: pigmyBloc,
+    return BlocBuilder<GroupPigmyBloc, GroupPigmyState>(
+      bloc: groupPigmyBloc,
       builder: (context, state) {
         if (state is PigmyLoading) {
           return const PigmyShimmer();
         } else if (state is PigmyLoaded) {
-          return (pigmyBloc.pigmyData != null &&
-                  pigmyBloc.pigmyData?.pigmyMenusList != null &&
-                  pigmyBloc.pigmyData!.pigmyMenusList!.isNotEmpty)
+          return (groupPigmyBloc.pigmyData != null &&
+                  groupPigmyBloc.pigmyData?.pigmyMenusList != null &&
+                  groupPigmyBloc.pigmyData!.pigmyMenusList!.isNotEmpty)
               ? SingleChildScrollView(
-                  child: PigmyScreen(
-                    pigmyBloc: pigmyBloc,
-                    titleText: pigmyBloc.pigmyData?.pigmyStatusNudgeTitle ??
-                        'Pigmy Withdrawal Request Rejected',
-                    subTitleText: pigmyBloc
+                  child: GroupPigmyScreen(
+                    groupPigmyBloc: groupPigmyBloc,
+                    titleText:
+                        groupPigmyBloc.pigmyData?.pigmyStatusNudgeTitle ??
+                            'Pigmy Withdrawal Request Rejected',
+                    subTitleText: groupPigmyBloc
                             .pigmyData?.pigmyStatusNudgeSubtitle ??
                         'Unfortunately, your Pigmy withdrawal request has been rejected. Please review the details and contact our support team for further assistance or to address any issues.',
-                    btnText: pigmyBloc.pigmyData?.pigmyStatusNudgeBtn ?? "",
-                    internetAlert: pigmyBloc.internetAlert,
+                    btnText:
+                        groupPigmyBloc.pigmyData?.pigmyStatusNudgeBtn ?? "",
+                    internetAlert: groupPigmyBloc.internetAlert,
                     onContactAction: () => onContactAction(
                         btnText:
-                            pigmyBloc.pigmyData?.pigmyStatusNudgeBtn ?? ""),
+                            groupPigmyBloc.pigmyData?.pigmyStatusNudgeBtn ??
+                                ""),
                     learnAboutPigmySavingsWidget: Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.sp),
                       child: Column(
                         children: [
-                          (pigmyBloc.pigmyData?.learnPigmyBtnText != null &&
-                                  pigmyBloc
+                          (groupPigmyBloc.pigmyData?.learnPigmyBtnText !=
+                                      null &&
+                                  groupPigmyBloc
                                       .pigmyData!.learnPigmyBtnText!.isNotEmpty)
                               ? InkWell(
                                   onTap: () => onClickHereAction(),
@@ -178,7 +183,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          pigmyBloc.pigmyData
+                                          groupPigmyBloc.pigmyData
                                                   ?.learnPigmyBtnText ??
                                               "",
                                           textAlign: TextAlign.left,
@@ -198,16 +203,18 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
-                          (pigmyBloc.pigmyData?.learnPigmyBtnText != null &&
-                                  pigmyBloc
+                          (groupPigmyBloc.pigmyData?.learnPigmyBtnText !=
+                                      null &&
+                                  groupPigmyBloc
                                       .pigmyData!.learnPigmyBtnText!.isNotEmpty)
                               ? SizedBox(
                                   height: 5.sp,
                                 )
                               : const SizedBox.shrink(),
-                          (pigmyBloc.pigmyData?.withdrawPigmyBtnText != null &&
-                                  pigmyBloc.pigmyData!.withdrawPigmyBtnText!
-                                      .isNotEmpty)
+                          (groupPigmyBloc.pigmyData?.withdrawPigmyBtnText !=
+                                      null &&
+                                  groupPigmyBloc.pigmyData!
+                                      .withdrawPigmyBtnText!.isNotEmpty)
                               ? InkWell(
                                   onTap: () => onWithdrawPigmySavingsAction(),
                                   child: Row(
@@ -218,7 +225,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          pigmyBloc.pigmyData
+                                          groupPigmyBloc.pigmyData
                                                   ?.withdrawPigmyBtnText ??
                                               "",
                                           textAlign: TextAlign.left,
@@ -238,17 +245,18 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
-                          (pigmyBloc.pigmyData?.withdrawPigmyBtnText != null &&
-                                  pigmyBloc.pigmyData!.withdrawPigmyBtnText!
-                                      .isNotEmpty)
+                          (groupPigmyBloc.pigmyData?.withdrawPigmyBtnText !=
+                                      null &&
+                                  groupPigmyBloc.pigmyData!
+                                      .withdrawPigmyBtnText!.isNotEmpty)
                               ? SizedBox(
                                   height: 5.sp,
                                 )
                               : const SizedBox.shrink(),
-                          (pigmyBloc.pigmyData
+                          (groupPigmyBloc.pigmyData
                                           ?.pigmyTransactionHistoryBtnText !=
                                       null &&
-                                  pigmyBloc
+                                  groupPigmyBloc
                                       .pigmyData!
                                       .pigmyTransactionHistoryBtnText!
                                       .isNotEmpty)
@@ -262,7 +270,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          pigmyBloc.pigmyData
+                                          groupPigmyBloc.pigmyData
                                                   ?.pigmyTransactionHistoryBtnText ??
                                               "",
                                           textAlign: TextAlign.left,
@@ -291,12 +299,13 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
               /* Pigmy Not Started */
               SingleChildScrollView(
                   child: PigmyNotStarted(
-                    internetAlert: pigmyBloc.internetAlert,
-                    startNowText: pigmyBloc.pigmyData?.btnText ?? "",
-                    noPigmyTitleText: pigmyBloc.pigmyData?.noPigmyTitle ?? "",
+                    internetAlert: groupPigmyBloc.internetAlert,
+                    startNowText: groupPigmyBloc.pigmyData?.btnText ?? "",
+                    noPigmyTitleText:
+                        groupPigmyBloc.pigmyData?.noPigmyTitle ?? "",
                     noPigmySubTitleText:
-                        pigmyBloc.pigmyData?.noPigmySubtitle ?? "",
-                    footertext: pigmyBloc.pigmyData?.footerText ?? "",
+                        groupPigmyBloc.pigmyData?.noPigmySubtitle ?? "",
+                    footertext: groupPigmyBloc.pigmyData?.footerText ?? "",
                     onStartNowAction: () => onStartNowAction(),
                     onClickHereAction: () => onClickHereAction(),
                   ),
@@ -305,13 +314,13 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
         } else if (state is PigmyNoInternet) {
           return noInternetWidget(
             context: context,
-            retryAction: () => pigmyBloc.add(GetPigmyDetails()),
+            retryAction: () => groupPigmyBloc.add(GetGroupPigmyDetails()),
             state: 1,
           );
         } else {
           return noInternetWidget(
             context: context,
-            retryAction: () => pigmyBloc.add(GetPigmyDetails()),
+            retryAction: () => groupPigmyBloc.add(GetGroupPigmyDetails()),
             state: 2,
           );
         }

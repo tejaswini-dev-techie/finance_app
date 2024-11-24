@@ -15,6 +15,7 @@ class TextInputField extends StatelessWidget {
   final FocusNode? focusnodes;
   final Widget? prefixWidget;
   final bool? readOnlyValue;
+  final Function? onChangeFunc;
 
   const TextInputField({
     super.key,
@@ -29,6 +30,7 @@ class TextInputField extends StatelessWidget {
     this.focusnodes,
     this.prefixWidget,
     this.readOnlyValue = false,
+    this.onChangeFunc,
   });
 
   @override
@@ -111,6 +113,11 @@ class TextInputField extends StatelessWidget {
       textCapitalization: textcapitalization ?? TextCapitalization.words,
       validator: (value) {
         return validationFunc(value);
+      },
+      onChanged: (value) {
+        if (onChangeFunc != null) {
+          onChangeFunc!(value);
+        }
       },
       style: TextStyle(
         color: ColorConstants.blackColor,
