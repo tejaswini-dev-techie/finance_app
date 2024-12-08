@@ -5,6 +5,7 @@ import 'package:hp_finance/Screens/CreatePigmySavingsAccount/create_pigmy_saving
 import 'package:hp_finance/Screens/CustomCamera/capture_photo_camera.dart';
 import 'package:hp_finance/Screens/Dashboard/dashboard_screen.dart';
 import 'package:hp_finance/Screens/Enquiry/enquiry_screen.dart';
+import 'package:hp_finance/Screens/GroupCreation/group_creation_screen.dart';
 import 'package:hp_finance/Screens/GroupMembersDetails/group_members_details_screen.dart';
 import 'package:hp_finance/Screens/IntroScreen/intro_screen.dart';
 import 'package:hp_finance/Screens/LearnAboutPigmySavings/learn_about_pigmy_savings_screen.dart';
@@ -400,7 +401,6 @@ class RouteGenerator {
       /* Capture Photo */
 
       /* Search Intermittent Screen */
-
       case RoutingConstants.routeSearchIntermittentScreen:
         {
           if (args != "" && args != null) {
@@ -421,6 +421,26 @@ class RouteGenerator {
           }
         }
       /* Search Intermittent Screen */
+
+      /* Group Pigmy Screen */
+      case RoutingConstants.routeGroupCreationScreen:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+                builder: (_) => const GroupCreationScreen(),
+                settings: RouteSettings(name: settings.name));
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const GroupCreationScreen(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
+      /* Group pigmy Screen */
 
       /* Error Route */
       default:

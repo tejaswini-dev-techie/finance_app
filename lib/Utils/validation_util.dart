@@ -356,4 +356,26 @@ class ValidationUtil {
     return null;
   }
   /* Nominee Acc Holder Name Validation */
+
+  /* Fields Validation */
+  static String? validateFieldsValue(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is mandatory';
+    } else if (value.length < 3) {
+      return 'Field must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+      return 'Field should not contain numbers or special characters';
+    }
+    return null;
+  }
+  /* Fields Validation */
+
+  /* Tenure Validation */
+  static String? validateTenure(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter the tenure';
+    }
+    return null;
+  }
+  /* Tenure Validation */
 }

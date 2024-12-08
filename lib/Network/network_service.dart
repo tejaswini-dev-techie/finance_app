@@ -290,7 +290,7 @@ class NetworkService {
             .httpGet(apiHitTimeout, APIURLs.groupPigmyURL, body: paramsKeyVal)
             .then(
           (dynamic res) {
-            return PigmyDataModel.fromJson(pigmyDetRes);
+            return PigmyDataModel.fromJson(res);
           },
         );
       },
@@ -1312,4 +1312,35 @@ class NetworkService {
     );
   }
   /* Search Customer Details */
+
+  /* Update Group Creation Details */
+  Future<dynamic> updateGroupCreationDetails({
+    required String? groupName,
+    required String? groupLeaderName,
+    required String? mobNum,
+    required String? loanAmt,
+    required String? loanTenure,
+    required String? frequency,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['groupName'] = groupName;
+        paramsKeyVal['groupLeaderName'] = groupLeaderName;
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['loanAmt'] = loanAmt;
+        paramsKeyVal['loanTenure'] = loanTenure;
+        paramsKeyVal['frequency'] = frequency;
+
+        return _network
+            .httpPut(apiHitTimeout, APIURLs.updateGroupCreationURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Update Group Creation Details */
 }

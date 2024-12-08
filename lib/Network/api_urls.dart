@@ -58,4 +58,6 @@ class APIURLs {
       "$baseURL/customer/get-customer-details-by-id";
   static const searchCustomerDetailsURL =
       "$baseURL/customer/search-customer-detail";
+
+  static const updateGroupCreationURL = "$baseURL/";
 }

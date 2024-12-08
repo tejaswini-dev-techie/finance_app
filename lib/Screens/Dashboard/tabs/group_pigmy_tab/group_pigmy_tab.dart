@@ -138,14 +138,34 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
     );
   }
 
+  void onGropCreationAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeGroupCreationScreen,
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: groupPigmyBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
+          );
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GroupPigmyBloc, GroupPigmyState>(
       bloc: groupPigmyBloc,
       builder: (context, state) {
-        if (state is PigmyLoading) {
+        if (state is GroupPigmyLoading) {
           return const PigmyShimmer();
-        } else if (state is PigmyLoaded) {
+        } else if (state is GroupPigmyLoaded) {
           return (groupPigmyBloc.pigmyData != null &&
                   groupPigmyBloc.pigmyData?.pigmyMenusList != null &&
                   groupPigmyBloc.pigmyData!.pigmyMenusList!.isNotEmpty)
@@ -290,6 +310,35 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
+                          SizedBox(
+                            height: 5.sp,
+                          ),
+                          InkWell(
+                            onTap: () => onGropCreationAction(),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              // mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "GROUP CREATION",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: ColorConstants.darkBlueColor,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: ColorConstants.darkBlueColor,
+                                  size: 12.sp,
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -311,7 +360,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                   ),
                 );
           /* Pigmy Not Started */
-        } else if (state is PigmyNoInternet) {
+        } else if (state is GroupPigmyNoInternet) {
           return noInternetWidget(
             context: context,
             retryAction: () => groupPigmyBloc.add(GetGroupPigmyDetails()),
