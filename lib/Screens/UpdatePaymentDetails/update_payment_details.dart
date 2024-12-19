@@ -16,8 +16,13 @@ import 'package:sizer/sizer.dart';
 class UpdateCustomersPaymentDetailsScreen extends StatefulWidget {
   final String? title;
   final String? customerID;
-  const UpdateCustomersPaymentDetailsScreen(
-      {super.key, this.title, this.customerID});
+  final String? type;
+  const UpdateCustomersPaymentDetailsScreen({
+    super.key,
+    this.title,
+    this.customerID,
+    this.type,
+  });
 
   @override
   State<UpdateCustomersPaymentDetailsScreen> createState() =>
@@ -63,7 +68,8 @@ class _UpdateCustomersPaymentDetailsScreenState
     {"id": "0", "title": 'Select Payment Type'},
     {"id": "1", "title": 'PIGMY'},
     {"id": "2", "title": 'LOAN'},
-    {"id": "3", "title": 'GROUP LOAN'}
+    {"id": "3", "title": 'GROUP LOAN'},
+    {"id": "4", "title": 'GROUP PIGMY'}
   ];
 
   String? selectedPaymentModeIDValue;
@@ -88,6 +94,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     super.initState();
     updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
       cusID: widget.customerID,
+      type: widget.type,
     ));
     _nameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
@@ -1067,6 +1074,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                     retryAction: () =>
                         updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
                       cusID: widget.customerID,
+                      type: widget.type,
                     )),
                     state: 1,
                   );
@@ -1076,6 +1084,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                     retryAction: () =>
                         updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
                       cusID: widget.customerID,
+                      type: widget.type,
                     )),
                     state: 2,
                   );

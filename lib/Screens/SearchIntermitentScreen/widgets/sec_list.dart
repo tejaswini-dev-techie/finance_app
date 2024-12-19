@@ -126,7 +126,12 @@ class _SectionListState extends State<SectionList> {
                                     widget.listDetails![index].payNowText!
                                         .isNotEmpty)
                                 ? InkWell(
-                                    onTap: () => widget.onPayAction(),
+                                    onTap: () => widget.onPayAction(
+                                        type:
+                                            widget.listDetails![index].title ??
+                                                "",
+                                        cusID: widget.listDetails![index].id ??
+                                            ""),
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 6.sp,

@@ -213,7 +213,7 @@
             "amt_due_text": "Amount Due",
             "amt_due_placeholder_text": "500",
             "payment_type_text": "Payment Type",
-            "payment_type_placeholder_text": "PIGMY/LOAN/GROUP LOAN",
+            "payment_type_placeholder_text": "PIGMY/LOAN/GROUP LOAN/GROUP PIGMY",
             "payment_mode_text": "Payment Mode",
             "payment_mode_placeholder_text": "CASH/GPAY/PHONE PE/PAYTM",
             "payment_status_text": "Payment Status",

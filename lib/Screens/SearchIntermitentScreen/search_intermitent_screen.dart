@@ -218,7 +218,7 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                         ),
                         Text(
                           searchDet?.name ?? "",
-                          textAlign: TextAlign.start,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: ColorConstants.blackColor,
@@ -332,7 +332,7 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                                     listMenuDetails: searchDet!
                                             .listDetails![index].listDetMenu ??
                                         [],
-                                    onPayAction: () => onPayAction(),
+                                    onPayAction: onPayAction,
                                     title: searchDet!
                                             .listDetails![index].listDetTitle ??
                                         "",
@@ -373,13 +373,14 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
     );
   }
 
-  void onPayAction() {
+  void onPayAction({required String? type, required String? cusID}) {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
           Map<String, dynamic> data = {};
           data = {
-            "customerID": widget.customerID,
+            "customerID": cusID,
+            "type": type,
           };
           Navigator.pushNamed(
             context,

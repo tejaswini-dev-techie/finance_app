@@ -35,6 +35,14 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
   String? frequencyPlaceholderText = "30 Days";
   String? saveText = "Save";
 
+  List<String> frequencyOptions = [
+    "Select your PIGMY Frequency",
+    "Daily",
+    "Weekly",
+    "Monthly"
+  ];
+  ValueNotifier<String?> selectedValue = ValueNotifier<String>("Monthly");
+
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
   ValueNotifier<bool> isDisabled = ValueNotifier<bool>(true);
 
@@ -47,7 +55,7 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
       TextEditingController();
   final TextEditingController _loanAmountController = TextEditingController();
   final TextEditingController _loanTenureController = TextEditingController();
-  final TextEditingController _frequencyController = TextEditingController();
+  // final TextEditingController _frequencyController = TextEditingController();
 
   /* Focus Node */
   final FocusNode _groupNameFocusNode = FocusNode();
@@ -66,7 +74,7 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
     _groupLeaderPhNumController.addListener(_validateFields);
     _loanAmountController.addListener(_validateFields);
     _loanTenureController.addListener(_validateFields);
-    _frequencyController.addListener(_validateFields);
+    // _frequencyController.addListener(_validateFields);
   }
 
   @override
@@ -79,7 +87,7 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
     _groupLeaderPhNumController.dispose();
     _loanAmountController.dispose();
     _loanTenureController.dispose();
-    _frequencyController.dispose();
+    // _frequencyController.dispose();
 
     _groupNameFocusNode.dispose();
     _groupLeaderNameFocusNode.dispose();
@@ -93,7 +101,7 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
     _groupLeaderPhNumController.removeListener(_validateFields);
     _loanAmountController.removeListener(_validateFields);
     _loanTenureController.removeListener(_validateFields);
-    _frequencyController.removeListener(_validateFields);
+    // _frequencyController.removeListener(_validateFields);
   }
 
   getAppContentDet() async {
@@ -404,6 +412,38 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
                       ),
 
                       /* Frequency Input Field */
+                      // Text(
+                      //   frequencyText ?? "",
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(
+                      //     fontSize: 10.sp,
+                      //     color: ColorConstants.lightBlackColor,
+                      //     fontWeight: FontWeight.w500,
+                      //   ),
+                      // ),
+                      // TextInputField(
+                      //   focusnodes: _frequencyFocusNode,
+                      //   suffixWidget: const Icon(
+                      //     Icons.person_pin_circle_rounded,
+                      //     color: ColorConstants.darkBlueColor,
+                      //   ),
+                      //   placeholderText: frequencyPlaceholderText ?? "",
+                      //   textEditingController: _frequencyController,
+                      //   inputFormattersList: <TextInputFormatter>[
+                      //     FilteringTextInputFormatter.deny(
+                      //       RegExp(r"\s\s"),
+                      //     ),
+                      //     FilteringTextInputFormatter.deny(
+                      //       RegExp(
+                      //           r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                      //     ),
+                      //   ],
+                      //   validationFunc: (value) {
+                      //     return ValidationUtil.validateFrequency(value);
+                      //   },
+                      // ),
+
+                      /* Frequency Input Field */
                       Text(
                         frequencyText ?? "",
                         textAlign: TextAlign.center,
@@ -413,25 +453,104 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      TextInputField(
-                        focusnodes: _frequencyFocusNode,
-                        suffixWidget: const Icon(
-                          Icons.person_pin_circle_rounded,
-                          color: ColorConstants.darkBlueColor,
-                        ),
-                        placeholderText: frequencyPlaceholderText ?? "",
-                        textEditingController: _frequencyController,
-                        inputFormattersList: <TextInputFormatter>[
-                          FilteringTextInputFormatter.deny(
-                            RegExp(r"\s\s"),
-                          ),
-                          FilteringTextInputFormatter.deny(
-                            RegExp(
-                                r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                          ),
-                        ],
-                        validationFunc: (value) {
-                          return ValidationUtil.validateFrequency(value);
+                      ValueListenableBuilder(
+                        valueListenable: selectedValue,
+                        builder: (context, String? vals, _) {
+                          String? errorText = ValidationUtil.validateFrequency(
+                              selectedValue.value);
+                          bool isError = ValidationUtil.validateFrequency(
+                                  selectedValue.value) !=
+                              null;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: (isError)
+                                        ? ColorConstants.redColor
+                                        : ColorConstants
+                                            .lightShadeBlueColor, // Replace with your border color
+                                    width:
+                                        1.sp, // Adjust the width of the border
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(8.sp)), // Rounded corners
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.0.sp,
+                                  vertical: 4.sp,
+                                ),
+                                child: DropdownButton<String>(
+                                  focusNode: _frequencyFocusNode,
+                                  value: selectedValue.value,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.sp)),
+                                  underline: const SizedBox.shrink(),
+                                  isExpanded: true,
+                                  icon: const Icon(
+                                    Icons.timer,
+                                    color: ColorConstants.darkBlueColor,
+                                  ),
+                                  onTap: () {},
+                                  style: TextStyle(
+                                    color: ColorConstants.blackColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                  hint: Text(
+                                    frequencyPlaceholderText ?? "",
+                                    style: TextStyle(
+                                      color: ColorConstants.blackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 10.sp,
+                                    ),
+                                  ),
+                                  items: frequencyOptions.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: ColorConstants.lightBlackColor,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    selectedValue.value = newValue;
+                                    if (_formKey.currentState?.validate() ??
+                                        false) {
+                                      if (selectedValue.value !=
+                                          "Select your PIGMY Frequency") {
+                                        isDisabled.value = false;
+                                      } else {
+                                        isDisabled.value = true;
+                                      }
+                                    }
+                                  },
+                                ),
+                              ),
+                              if (isError) // Conditionally show error message
+                                Padding(
+                                  padding: EdgeInsets.only(top: 4.sp),
+                                  child: Text(
+                                    errorText ?? "",
+                                    style: TextStyle(
+                                      color: ColorConstants.redColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 10.sp,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
                         },
                       ),
                       /* Frequency Input Field */
@@ -462,49 +581,51 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
         ValidationUtil.validateLoanAmount(_loanAmountController.text);
     String? loanTenureErr =
         ValidationUtil.validateTenure(_loanTenureController.text);
-    String? loanFreqErr =
-        ValidationUtil.validateFrequency(_frequencyController.text);
+    String? frequencyError =
+        ValidationUtil.validateFrequency(selectedValue.value);
 
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
-      isDisabled.value = false;
-      // All validations passed, navigate to the next screen
-      var result = await NetworkService().updateGroupCreationDetails(
-        groupName: _groupNameController.text,
-        groupLeaderName: _groupLeaderNameController.text,
-        mobNum: _groupLeaderPhNumController.text,
-        loanAmt: _loanAmountController.text,
-        loanTenure: _loanTenureController.text,
-        frequency: _frequencyController.text,
-      );
+      if (selectedValue.value != "Select your PIGMY Frequency") {
+        isDisabled.value = false;
+        // All validations passed, navigate to the next screen
+        var result = await NetworkService().updateGroupCreationDetails(
+          groupName: _groupNameController.text,
+          groupLeaderName: _groupLeaderNameController.text,
+          mobNum: _groupLeaderPhNumController.text,
+          loanAmt: _loanAmountController.text,
+          loanTenure: _loanTenureController.text,
+          frequency: selectedValue.value,
+        );
 
-      if (result != null && result['status'] == true) {
-        if (!mounted) return;
-        if (result['message'] != null && result['message'].isNotEmpty) {
+        if (result != null && result['status'] == true) {
+          if (!mounted) return;
+          if (result['message'] != null && result['message'].isNotEmpty) {
+            ToastUtil().showSnackBar(
+              context: context,
+              message: result['message'],
+              isError: false,
+            );
+          }
+          // All validations passed, navigate to the next screen
+          Map<String, dynamic> data = {};
+          data = {
+            "tab_index": 0,
+          };
+          Navigator.pushReplacementNamed(
+            context,
+            RoutingConstants.routeDashboardScreen,
+            arguments: {"data": data},
+          );
+        } else {
+          if (!mounted) return;
           ToastUtil().showSnackBar(
             context: context,
-            message: result['message'],
-            isError: false,
+            message: result['message'] ?? "Something went wrong",
+            isError: true,
           );
         }
-        // All validations passed, navigate to the next screen
-        Map<String, dynamic> data = {};
-        data = {
-          "tab_index": 0,
-        };
-        Navigator.pushReplacementNamed(
-          context,
-          RoutingConstants.routeDashboardScreen,
-          arguments: {"data": data},
-        );
-      } else {
-        if (!mounted) return;
-        ToastUtil().showSnackBar(
-          context: context,
-          message: result['message'] ?? "Something went wrong",
-          isError: true,
-        );
       }
     } else {
       // Check for individual errors and focus accordingly
@@ -518,8 +639,12 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
         _showErrorAndFocus(_loanAmtFocusNode, loanAmtErr);
       } else if (loanTenureErr != null) {
         _showErrorAndFocus(_loanTenureFocusNode, loanTenureErr);
-      } else if (loanFreqErr != null) {
-        _showErrorAndFocus(_frequencyFocusNode, loanFreqErr);
+      } else if (selectedValue.value == "Select your PIGMY Frequency") {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: frequencyError,
+          isError: true,
+        );
       }
     }
   }

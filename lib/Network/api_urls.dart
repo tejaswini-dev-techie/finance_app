@@ -51,7 +51,8 @@ class APIURLs {
   static const logoutURL = "$baseURL/auth/logout";
 
   /* Update Payment Details */
-  static const updatePaymentPrefetchDetailsURL = "$baseURL/";
+  static const updatePaymentPrefetchDetailsURL =
+      "$baseURL/collection/get-collection-details-agent";
   static const updatePaymentDetailsURL = "$baseURL/";
 
   static const searchIntermittentDetailsURL =
@@ -59,5 +60,5 @@ class APIURLs {
   static const searchCustomerDetailsURL =
       "$baseURL/customer/search-customer-detail";
 
-  static const updateGroupCreationURL = "$baseURL/";
+  static const updateGroupCreationURL = "$baseURL/group/create-group-agent";
 }

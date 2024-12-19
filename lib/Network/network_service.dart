@@ -1105,18 +1105,19 @@ class NetworkService {
     }
   };
   Future<UpdatePaymentDetailsDataModel> updatePaymentPrefetchDetailsService(
-      {required String? id}) {
+      {required String? id, required String? type}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['id'] = "$id";
-        // return _network
-        //     .httpGet(apiHitTimeout, APIURLs.updatePaymentPrefetchDetailsURL,
-        //         body: paramsKeyVal)
-        //     .then(
-        //   (dynamic res) {
-        return UpdatePaymentDetailsDataModel.fromJson(payRes);
-        //   },
-        // );
+        paramsKeyVal['type'] = "$type";
+        return _network
+            .httpGetQuery(apiHitTimeout, APIURLs.updatePaymentPrefetchDetailsURL,
+                queryParams: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return UpdatePaymentDetailsDataModel.fromJson(res);
+          },
+        );
       },
     );
   }
@@ -1332,7 +1333,7 @@ class NetworkService {
         paramsKeyVal['frequency'] = frequency;
 
         return _network
-            .httpPut(apiHitTimeout, APIURLs.updateGroupCreationURL,
+            .httpPost(apiHitTimeout, APIURLs.updateGroupCreationURL,
                 body: paramsKeyVal)
             .then(
           (dynamic res) {

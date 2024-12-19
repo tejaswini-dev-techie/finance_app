@@ -362,6 +362,7 @@ class RouteGenerator {
               builder: (_) => UpdateCustomersPaymentDetailsScreen(
                 title: data['data']['title'] ?? "Payment",
                 customerID: data['data']['customerID'] ?? "0",
+                type: data['data']['type'] ?? "",
               ),
               settings: RouteSettings(
                 name: settings.name,

@@ -157,7 +157,7 @@ class ListDet {
     title = json['title'];
     subtitle = json['subtitle'];
     amt = json['amt'];
-    payNowText = json['pay_now_text'];
+    payNowText = json['pay_now_tex'];
   }
 
   Map<String, dynamic> toJson() {
@@ -166,7 +166,7 @@ class ListDet {
     data['title'] = title;
     data['subtitle'] = subtitle;
     data['amt'] = amt;
-    data['pay_now_text'] = payNowText;
+    data['pay_now_tex'] = payNowText;
     return data;
   }
 }
