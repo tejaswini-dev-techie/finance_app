@@ -1,4 +1,17 @@
 class ValidationUtil {
+  /* Group Name Validation */
+  static String? validateGroupName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    } else if (value.length < 3) {
+      return 'Name must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%]').hasMatch(value)) {
+      return 'Group Name should not contain special characters';
+    }
+    return null;
+  }
+  /* Group Name Validation */
+
   /* Name Validation */
   static String? validateName(String? value) {
     if (value == null || value.isEmpty) {

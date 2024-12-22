@@ -55,9 +55,11 @@ class APIURLs {
       "$baseURL/collection/get-collection-details-agent";
   static const updatePaymentDetailsURL =
       "$baseURL/collection/update-collection";
-  static const updateGroupPaymentPrefetchDetailsURL = "$baseURL/";
+  static const updateGroupPaymentPrefetchDetailsURL =
+      "$baseURL/collection/get-group-collection-details";
   static const updateGroupEditPayURL = "$baseURL/";
-  static const updateGroupPaymentDetailsURL = "$baseURL/";
+  static const updateGroupPaymentDetailsURL =
+      "$baseURL/collection/update-group-collection";
   static const saveDetailGrpPayURL = "$baseURL/";
 
   static const searchIntermittentDetailsURL =

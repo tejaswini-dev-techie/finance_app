@@ -16,7 +16,8 @@ import 'package:sizer/sizer.dart';
 
 class SearchIntermitentScreen extends StatefulWidget {
   final String? customerID;
-  const SearchIntermitentScreen({super.key, this.customerID});
+  final String? type;
+  const SearchIntermitentScreen({super.key, this.customerID, this.type = "1"});
 
   @override
   State<SearchIntermitentScreen> createState() =>
@@ -51,7 +52,7 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
 
   Future getSearchInfoDetails(String cusID) async {
     await NetworkService()
-        .searchIntermittentService(cusID: cusID)
+        .searchIntermittentService(cusID: cusID, type: widget.type)
         .then((SearchIntermittentDetailsDataModel? respObj) {
       if (respObj != null && respObj.data != null) {
         searchDet = respObj.data;
@@ -363,7 +364,7 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                   context: context,
                   retryAction: () =>
                       getSearchInfoDetails(widget.customerID ?? ""),
-                  state: 1,
+                  state: 2,
                 );
               }
             },
@@ -382,11 +383,19 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
             "customerID": cusID,
             "type": type,
           };
-          Navigator.pushNamed(
-            context,
-            RoutingConstants.routeUpdateGroupPaymentDetailsScreen,
-            arguments: {"data": data},
-          );
+          if (widget.type == "1") {
+            Navigator.pushNamed(
+              context,
+              RoutingConstants.routeAgentUpdatePaymentDetailsScreen,
+              arguments: {"data": data},
+            );
+          } else {
+            Navigator.pushNamed(
+              context,
+              RoutingConstants.routeUpdateGroupPaymentDetailsScreen,
+              arguments: {"data": data},
+            );
+          }
         } else {
           ToastUtil().showSnackBar(
             context: context,

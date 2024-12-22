@@ -483,6 +483,14 @@ class _UpdateGroupPaymentDetailsScreenState
                                     ),
                                     TextInputField(
                                       // key: _formFieldKeys[0],
+                                      inputFormattersList: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r"[a-zA-Z0-9]+|\s")),
+                                        FilteringTextInputFormatter.deny(
+                                            RegExp(r"\s\s")),
+                                        FilteringTextInputFormatter.deny(RegExp(
+                                            r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])')),
+                                      ],
                                       focusnodes: _nameFocusNode,
                                       suffixWidget: const Icon(
                                         Icons.person_pin_circle_rounded,
@@ -493,7 +501,7 @@ class _UpdateGroupPaymentDetailsScreenState
                                               .namePlaceHolderText,
                                       textEditingController: _nameController,
                                       validationFunc: (value) {
-                                        return ValidationUtil.validateName(
+                                        return ValidationUtil.validateGroupName(
                                             value);
                                       },
                                     ),
@@ -1845,7 +1853,7 @@ class _UpdateGroupPaymentDetailsScreenState
 
   Future<void> onSubmitAction() async {
     // Validation checks
-    String? nameError = ValidationUtil.validateName(_nameController.text);
+    String? nameError = ValidationUtil.validateGroupName(_nameController.text);
     String? mobileError =
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? loanCodeError =
@@ -1892,7 +1900,7 @@ class _UpdateGroupPaymentDetailsScreenState
         paymentMode: selectedPaymentModeIDValue,
         paymentStatus: selectedPaymentStatusIDValue,
         amountType: _amountToBePaidController.text,
-        cusDetails: grpCusDetaList ?? [],
+        cusDetails: grpCusDetaList,
       );
 
       if (result != null && result['status'] == true) {

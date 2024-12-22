@@ -414,6 +414,8 @@ class RouteGenerator {
             return MaterialPageRoute(
                 builder: (_) => SearchIntermitentScreen(
                       customerID: data['data']['customerID'] ?? "0",
+                      type: data['data']['type'] ??
+                          "1", // 1 - Customers Serach | 2 - Group Search
                     ),
                 settings: RouteSettings(name: settings.name));
           } else {

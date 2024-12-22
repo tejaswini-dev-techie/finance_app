@@ -1149,43 +1149,44 @@ class NetworkService {
   /* Update Payment Details Prefetch */
 
   /* Update Group Payment Details */
-  var payRes = {
-    "status": true,
-    "logout": false,
-    "data": {
-      "id": "2",
-      "name": "Tejaswini D",
-      "mob_num": "7259889622",
-      "code_id": "1234",
-      "agent": "RAM",
-      "amt_to_be_paid": "1200",
-      "date": "16/10/2024",
-      "due": "100",
-      "customers_list": [
-        {
-          "cus_id": "1",
-          "cus_name": "Ram",
-          "cus_amt": "123.7",
-          "is_editable": true,
-          "is_selected": true
-        },
-        {
-          "cus_id": "2",
-          "cus_name": "Seetha",
-          "cus_amt": "143.7",
-          "is_editable": false,
-          "is_selected": true
-        },
-        {
-          "cus_id": "2",
-          "cus_name": "Seetha",
-          "cus_amt": "143.7",
-          "is_editable": false,
-          "is_selected": true
-        }
-      ]
-    }
-  };
+  // var payRes = {
+  //   "status": true,
+  //   "logout": false,
+  //   "data": {
+  //     "id": "2",
+  //     "name": "Tejaswini D",
+  //     "mob_num": "7259889622",
+  //     "code_id": "1234",
+  //     "agent": "RAM",
+  //     "amt_to_be_paid": "1200",
+  //     "date": "16/10/2024",
+  //     "due": "100",
+  //     "customers_list": [
+  //       {
+  //         "cus_id": "1",
+  //         "cus_name": "Ram",
+  //         "cus_amt": "123.7",
+  //         "is_editable": true,
+  //         "is_selected": true
+  //       },
+  //       {
+  //         "cus_id": "2",
+  //         "cus_name": "Seetha",
+  //         "cus_amt": "143.7",
+  //         "is_editable": false,
+  //         "is_selected": true
+  //       },
+  //       {
+  //         "cus_id": "2",
+  //         "cus_name": "Seetha",
+  //         "cus_amt": "143.7",
+  //         "is_editable": false,
+  //         "is_selected": true
+  //       }
+  //     ]
+  //   }
+  // };
+
   Future<UpdateGroupPaymentDetailsDataModel>
       updateGroupPaymentPrefetchDetailsService(
           {required String? id, required String? type}) {
@@ -1193,15 +1194,15 @@ class NetworkService {
       (paramsKeyVal) {
         paramsKeyVal['id'] = "$id";
         paramsKeyVal['type'] = "$type";
-        // return _network
-        //     .httpGetQuery(
-        //         apiHitTimeout, APIURLs.updateGroupPaymentPrefetchDetailsURL,
-        //         queryParams: paramsKeyVal)
-        //     .then(
-        //   (dynamic res) {
-        return UpdateGroupPaymentDetailsDataModel.fromJson(payRes);
-        //   },
-        // );
+        return _network
+            .httpGetQuery(
+                apiHitTimeout, APIURLs.updateGroupPaymentPrefetchDetailsURL,
+                queryParams: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return UpdateGroupPaymentDetailsDataModel.fromJson(res);
+          },
+        );
       },
     );
   }
@@ -1418,10 +1419,11 @@ class NetworkService {
   // };
 
   Future<SearchIntermittentDetailsDataModel> searchIntermittentService(
-      {String? cusID}) {
+      {String? cusID, required String? type}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['id'] = cusID;
+        paramsKeyVal['type'] = type; // 1 - Customers Serach | 2 - Group Search
         return _network
             .httpGetQuery(apiHitTimeout, APIURLs.searchIntermittentDetailsURL,
                 queryParams: paramsKeyVal)

@@ -4,7 +4,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
@@ -12,7 +11,6 @@ import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/widgets/add_doc_image_placeholder.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
-import 'package:hp_finance/Utils/helper_util.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/print_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
@@ -1929,6 +1927,12 @@ class _VerifyCustomersDetailsScreenState
           message: passbookImageError,
           isError: true,
         );
+      } else if (signatureImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: signatureImageError,
+          isError: true,
+        );
       }
     } else {
       // Check for individual errors and focus accordingly
@@ -2005,6 +2009,12 @@ class _VerifyCustomersDetailsScreenState
         ToastUtil().showSnackBar(
           context: context,
           message: passbookImageError,
+          isError: true,
+        );
+      } else if (signatureImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: signatureImageError,
           isError: true,
         );
       }

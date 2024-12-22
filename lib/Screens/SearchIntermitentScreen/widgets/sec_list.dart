@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/DataModel/SearchCustomersDetails/search_intermittent_data_model.dart';
-import 'package:hp_finance/Screens/Dashboard/tabs/group_loans_tab/widgets/group_loans_info_cards.dart';
 import 'package:hp_finance/Screens/SearchIntermitentScreen/widgets/menu_info_cards.dart';
 import 'package:sizer/sizer.dart';
 

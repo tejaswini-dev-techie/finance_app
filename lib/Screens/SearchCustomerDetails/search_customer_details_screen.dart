@@ -271,6 +271,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                                       data = {
                                         "customerID": searchCustomerBloc
                                             .searchCusDataList![index].memberId,
+                                        "type": widget.type,
                                       };
 
                                       Navigator.pushNamed(

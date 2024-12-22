@@ -50,8 +50,7 @@ class Data {
     findBtnText = json['find_btn_text'] ?? "Find Customers Details";
     verifyBtnText = json['verify_btn_text'] ?? "Verify Customers Dashboard";
     finGrpBtnTxt = json['find_grp_btn_text'] ?? "Find Group Details";
-    updatePaymentDetText =
-        json['update_payment_det_text'] ?? "Update Payment Details";
+    updatePaymentDetText = json['update_payment_det_text'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
