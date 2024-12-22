@@ -384,7 +384,7 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
           };
           Navigator.pushNamed(
             context,
-            RoutingConstants.routeAgentUpdatePaymentDetailsScreen,
+            RoutingConstants.routeUpdateGroupPaymentDetailsScreen,
             arguments: {"data": data},
           );
         } else {

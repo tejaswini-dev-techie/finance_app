@@ -36,9 +36,41 @@ class _AgentsTabState extends State<AgentsTab> {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "1",
+          };
+
           Navigator.pushNamed(
             context,
             RoutingConstants.routeSearchCustomerDetails,
+            arguments: {"data": data},
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
+          );
+        }
+      },
+    );
+  }
+
+  void onFindGroupDetailsAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "2",
+          };
+
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeSearchCustomerDetails,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(
@@ -152,6 +184,42 @@ class _AgentsTabState extends State<AgentsTab> {
                                       Flexible(
                                         child: Text(
                                           agentsTabBloc.userData?.findBtnText ??
+                                              "",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: ColorConstants.darkBlueColor,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: ColorConstants.darkBlueColor,
+                                        size: 12.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.finGrpBtnTxt != null &&
+                                agentsTabBloc
+                                    .userData!.finGrpBtnTxt!.isNotEmpty)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                child: InkWell(
+                                  onTap: () => onFindGroupDetailsAction(),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          agentsTabBloc
+                                                  .userData?.finGrpBtnTxt ??
                                               "",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(

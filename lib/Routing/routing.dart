@@ -16,6 +16,7 @@ import 'package:hp_finance/Screens/ResetPassword/reset_password_screen.dart';
 import 'package:hp_finance/Screens/SearchCustomerDetails/search_customer_details_screen.dart';
 import 'package:hp_finance/Screens/SearchIntermitentScreen/search_intermitent_screen.dart';
 import 'package:hp_finance/Screens/TransactionDetails/transaction_details_screen.dart';
+import 'package:hp_finance/Screens/UpdateGroupPaymentDetails/update_group_payment_details.dart';
 import 'package:hp_finance/Screens/UpdatePaymentDetails/update_payment_details.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/verfify_customers.dart';
 import 'package:hp_finance/Screens/WithdrawPigmySavings/withdraw_pigmy_savings_screen.dart';
@@ -288,7 +289,10 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const SearchCustomerDetails(),
+              builder: (_) => SearchCustomerDetails(
+                type: data['data']['type'] ??
+                    "1", // 1 - Customers Serach | 2 - Group Search
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),
@@ -442,6 +446,33 @@ class RouteGenerator {
           }
         }
       /* Group pigmy Screen */
+
+      /* Payment - Agent Collecting Amount from Group */
+      case RoutingConstants.routeUpdateGroupPaymentDetailsScreen:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+              builder: (_) => UpdateGroupPaymentDetailsScreen(
+                title: data['data']['title'] ?? "Group Payment",
+                customerID: data['data']['customerID'] ?? "0",
+                type: data['data']['type'] ?? "",
+              ),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const UpdateGroupPaymentDetailsScreen(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
+      /* Payment - Agent Collecting Amount from Group */
 
       /* Error Route */
       default:

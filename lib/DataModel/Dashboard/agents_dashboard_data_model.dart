@@ -28,14 +28,17 @@ class AgentsDashboardDataModel {
 class Data {
   List<AgentMenusList>? agentMenusList;
   String? findBtnText;
+  String? finGrpBtnTxt;
   String? verifyBtnText;
   String? updatePaymentDetText;
 
-  Data(
-      {this.agentMenusList,
-      this.findBtnText,
-      this.verifyBtnText,
-      this.updatePaymentDetText});
+  Data({
+    this.agentMenusList,
+    this.findBtnText,
+    this.verifyBtnText,
+    this.updatePaymentDetText,
+    this.finGrpBtnTxt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['agent_menus_list'] != null) {
@@ -46,6 +49,7 @@ class Data {
     }
     findBtnText = json['find_btn_text'] ?? "Find Customers Details";
     verifyBtnText = json['verify_btn_text'] ?? "Verify Customers Dashboard";
+    finGrpBtnTxt = json['find_grp_btn_text'] ?? "Find Group Details";
     updatePaymentDetText =
         json['update_payment_det_text'] ?? "Update Payment Details";
   }
@@ -59,6 +63,7 @@ class Data {
     data['find_btn_text'] = findBtnText;
     data['verify_btn_text'] = verifyBtnText;
     data['update_payment_det_text'] = updatePaymentDetText;
+    data['find_grp_btn_text'] = finGrpBtnTxt;
     return data;
   }
 }

@@ -31,16 +31,19 @@ class Data {
   String? amtToBePaid;
   String? date;
   String? due;
+  String? amtToBePaidBy;
 
-  Data(
-      {this.id,
-      this.name,
-      this.mobNum,
-      this.codeId,
-      this.agent,
-      this.amtToBePaid,
-      this.date,
-      this.due});
+  Data({
+    this.id,
+    this.name,
+    this.mobNum,
+    this.codeId,
+    this.agent,
+    this.amtToBePaid,
+    this.date,
+    this.due,
+    this.amtToBePaidBy,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -51,6 +54,7 @@ class Data {
     amtToBePaid = json['amt_to_be_paid'];
     date = json['date'];
     due = json['due'];
+    amtToBePaidBy = json['amount_type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +67,7 @@ class Data {
     data['amt_to_be_paid'] = amtToBePaid;
     data['date'] = date;
     data['due'] = due;
+    data['amount_type'] = amtToBePaidBy;
     return data;
   }
 }

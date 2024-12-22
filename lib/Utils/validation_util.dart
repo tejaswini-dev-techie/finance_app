@@ -95,7 +95,7 @@ class ValidationUtil {
   static String? validateDepositAmount(String? value) {
     if (value == null || value.isEmpty) {
       return 'Amount cannot be empty';
-    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+    } else if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(value)) {
       return 'Amount can only contain digits';
     }
     return null;
@@ -378,4 +378,13 @@ class ValidationUtil {
     return null;
   }
   /* Tenure Validation */
+
+  /* Amount To be Paid Validation */
+  static String? validateAmtToBePaid(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Field cannot be empty';
+    }
+    return null;
+  }
+  /* Amount To be Paid Validation */
 }

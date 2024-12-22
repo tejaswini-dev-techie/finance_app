@@ -5,7 +5,7 @@ import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
-import 'package:hp_finance/Screens/UpdatePaymentDetails/bloc/update_payment_details_bloc.dart';
+import 'package:hp_finance/Screens/UpdateGroupPaymentDetails/bloc/update_group_payment_details_bloc.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
@@ -13,11 +13,11 @@ import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
-class UpdateCustomersPaymentDetailsScreen extends StatefulWidget {
+class UpdateGroupPaymentDetailsScreen extends StatefulWidget {
   final String? title;
   final String? customerID;
   final String? type;
-  const UpdateCustomersPaymentDetailsScreen({
+  const UpdateGroupPaymentDetailsScreen({
     super.key,
     this.title,
     this.customerID,
@@ -25,14 +25,14 @@ class UpdateCustomersPaymentDetailsScreen extends StatefulWidget {
   });
 
   @override
-  State<UpdateCustomersPaymentDetailsScreen> createState() =>
-      _UpdateCustomersPaymentDetailsScreenState();
+  State<UpdateGroupPaymentDetailsScreen> createState() =>
+      _UpdateGroupPaymentDetailsScreenState();
 }
 
-class _UpdateCustomersPaymentDetailsScreenState
-    extends State<UpdateCustomersPaymentDetailsScreen> {
-  final UpdatePaymentDetailsBloc updatePaymentDetailsBloc =
-      UpdatePaymentDetailsBloc();
+class _UpdateGroupPaymentDetailsScreenState
+    extends State<UpdateGroupPaymentDetailsScreen> {
+  final UpdateGroupPaymentDetailsBloc updateGroupPaymentDetailsBloc =
+      UpdateGroupPaymentDetailsBloc();
 
   /* TextEditing Controller */
   final _formKey = GlobalKey<FormState>();
@@ -48,6 +48,7 @@ class _UpdateCustomersPaymentDetailsScreenState
   final TextEditingController _amountToBePaidController =
       TextEditingController();
   final TextEditingController _dateCollectionInput = TextEditingController();
+  final TextEditingController _userAmountInput = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -62,6 +63,7 @@ class _UpdateCustomersPaymentDetailsScreenState
   final FocusNode _paymentModeFocusNode = FocusNode();
   final FocusNode _paymentStatusFocusNode = FocusNode();
   final FocusNode _amtToBePaidFocusNode = FocusNode();
+  final FocusNode _userAmountFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -73,6 +75,9 @@ class _UpdateCustomersPaymentDetailsScreenState
       ValueNotifier<bool>(false);
   ValueNotifier<bool> refreshPaymentStatusInputFields =
       ValueNotifier<bool>(false);
+
+  ValueNotifier<bool> refreshSelectAllFields = ValueNotifier<bool>(false);
+  ValueNotifier<bool> refreshSelectedFields = ValueNotifier<bool>(false);
 
   // String? selectedPaymentTypeIDValue;
   // List<Map<String, dynamic>> paymentTypeOptions = [
@@ -100,10 +105,12 @@ class _UpdateCustomersPaymentDetailsScreenState
     {"id": "3", "title": 'FAILED'}
   ];
 
+  bool? isCheckedAll = false;
+
   @override
   void initState() {
     super.initState();
-    updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
+    updateGroupPaymentDetailsBloc.add(GetPaymentDetailsEvent(
       cusID: widget.customerID,
       type: widget.type,
     ));
@@ -116,6 +123,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     _dateInput.addListener(_validateFields);
     _amountToBePaidController.addListener(_validateFields);
     _dateCollectionInput.addListener(_validateFields);
+    _userAmountInput.addListener(_validateFields);
   }
 
   @override
@@ -131,6 +139,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     _dateInput.dispose();
     _amountToBePaidController.dispose();
     _dateCollectionInput.dispose();
+    _userAmountInput.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -143,6 +152,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     _paymentStatusFocusNode.dispose();
     _dateInputFocusNode.dispose();
     _amtToBePaidFocusNode.dispose();
+    _userAmountFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -153,9 +163,117 @@ class _UpdateCustomersPaymentDetailsScreenState
     _dateInput.removeListener(_validateFields);
     _amountToBePaidController.removeListener(_validateFields);
     _dateCollectionInput.removeListener(_validateFields);
+    _userAmountInput.removeListener(_validateFields);
 
     _scrollController.dispose();
-    updatePaymentDetailsBloc.close();
+    updateGroupPaymentDetailsBloc.close();
+  }
+
+  void showEditSheet({
+    required String? cusID,
+    required String? cusName,
+    required String? cusAmount,
+  }) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      clipBehavior: Clip.none,
+      context: context,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.sp),
+        ),
+      ),
+      builder: (BuildContext context) {
+        _userAmountInput.text = cusAmount ?? "";
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+            bottom: MediaQuery.of(context)
+                .viewInsets
+                .bottom, // Adjusts padding for the keyboard
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 16.sp,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /* Amount Paid Input Field */
+                Row(
+                  spacing: 12.sp,
+                  children: [
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.close,
+                        color: ColorConstants.blackColor,
+                        size: 16.sp,
+                      ),
+                    ),
+                    Text(
+                      "Edit Amount",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: ColorConstants.lightBlackColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                TextInputField(
+                  focusnodes: _userAmountFocusNode,
+                  suffixWidget: const Icon(
+                    Icons.attach_money_outlined,
+                    color: ColorConstants.darkBlueColor,
+                  ),
+                  placeholderText:
+                      updateGroupPaymentDetailsBloc.amtPaidPlaceholderText,
+                  textEditingController: _userAmountInput,
+                  inputFormattersList: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(
+                      RegExp(
+                          r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
+                    ),
+                    LengthLimitingTextInputFormatter(
+                        15), // Limits input length to 15 characters
+                    FilteringTextInputFormatter.deny(
+                      RegExp(r"\s\s"), // Denies consecutive spaces
+                    ),
+                    FilteringTextInputFormatter.deny(
+                      RegExp(
+                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
+                      ),
+                    ),
+                  ],
+                  keyboardtype: TextInputType.number,
+                  validationFunc: (value) {
+                    return ValidationUtil.validateDepositAmount(value);
+                  },
+                ),
+                /* Amount Paid Input Field */
+
+                buttonWidgetHelperUtil(
+                  isDisabled: false,
+                  buttonText: updateGroupPaymentDetailsBloc.updateText,
+                  onButtonTap: () => onSaveAction(cusID: cusID),
+                  context: context,
+                  internetAlert: updateGroupPaymentDetailsBloc.internetAlert,
+                  borderradius: 8.sp,
+                  toastError: () => onSaveAction(cusID: cusID),
+                ),
+                SizedBox(
+                  height: 32.sp,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _validateFields() {
@@ -169,7 +287,10 @@ class _UpdateCustomersPaymentDetailsScreenState
   }
 
   backAction() {
-    Navigator.pop(context);
+    Navigator.pushReplacementNamed(
+      context,
+      RoutingConstants.routeDashboardScreen,
+    );
   }
 
   @override
@@ -223,7 +344,8 @@ class _UpdateCustomersPaymentDetailsScreenState
                     Expanded(
                       child: Text(
                         widget.title ??
-                            updatePaymentDetailsBloc.updatePaymentDetailsText,
+                            updateGroupPaymentDetailsBloc
+                                .updatePaymentDetailsText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12.sp,
@@ -265,10 +387,11 @@ class _UpdateCustomersPaymentDetailsScreenState
                       builder: (context, bool values, _) {
                         return buttonWidgetHelperUtil(
                           isDisabled: false,
-                          buttonText: updatePaymentDetailsBloc.updateText,
+                          buttonText: updateGroupPaymentDetailsBloc.updateText,
                           onButtonTap: () => onSubmitAction(),
                           context: context,
-                          internetAlert: updatePaymentDetailsBloc.internetAlert,
+                          internetAlert:
+                              updateGroupPaymentDetailsBloc.internetAlert,
                           borderradius: 8.sp,
                           toastError: () => onSubmitAction(),
                         );
@@ -278,42 +401,56 @@ class _UpdateCustomersPaymentDetailsScreenState
                 ),
               ), /* Withdraw Now CTA */
             ),
-            body: BlocBuilder<UpdatePaymentDetailsBloc,
-                UpdatePaymentDetailsState>(
-              bloc: updatePaymentDetailsBloc,
+            body: BlocBuilder<UpdateGroupPaymentDetailsBloc,
+                UpdateGroupPaymentDetailsState>(
+              bloc: updateGroupPaymentDetailsBloc,
               builder: (context, state) {
-                if (state is UpdatePaymentDetailsLoading) {
+                if (state is UpdateGroupPaymentDetailsLoading) {
                   return const Center(
                     child: CircularProgressIndicator(
                       color: ColorConstants.darkBlueColor,
                     ),
                   );
-                } else if (state is UpdatePaymentDetailsLoaded) {
+                } else if (state is UpdateGroupPaymentDetailsLoaded) {
                   _nameController.text =
-                      updatePaymentDetailsBloc.userData?.name ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.name ?? "";
                   _phNumController.text =
-                      updatePaymentDetailsBloc.userData?.mobNum ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.mobNum ?? "";
                   _loanCodeController.text =
-                      updatePaymentDetailsBloc.userData?.codeId ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.codeId ?? "";
                   _agentCodeController.text =
-                      updatePaymentDetailsBloc.userData?.agent ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.agent ?? "";
                   _amtPaidCodeController.text =
-                      updatePaymentDetailsBloc.userData?.amtToBePaid ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.amtToBePaid ?? "";
                   _amtDueCodeController.text =
-                      updatePaymentDetailsBloc.userData?.due ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.due ?? "";
                   _dateInput.text =
-                      updatePaymentDetailsBloc.userData?.date ?? "";
+                      updateGroupPaymentDetailsBloc.userData?.date ?? "";
                   _dateCollectionInput.text =
                       DateFormat('dd/MM/yyyy').format(DateTime.now());
 
-                  if (updatePaymentDetailsBloc.userData?.amtToBePaidBy ==
+                  if (updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy ==
                           null ||
-                      updatePaymentDetailsBloc
+                      updateGroupPaymentDetailsBloc
                           .userData!.amtToBePaidBy!.isEmpty) {
                     _amountToBePaidController.text = "NONE";
                   } else {
                     _amountToBePaidController.text =
-                        updatePaymentDetailsBloc.userData?.amtToBePaidBy ?? "";
+                        updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy ??
+                            "";
+                  }
+
+                  if (updateGroupPaymentDetailsBloc.userData?.customersList !=
+                          null &&
+                      updateGroupPaymentDetailsBloc
+                          .userData!.customersList!.isNotEmpty) {
+                    isCheckedAll = updateGroupPaymentDetailsBloc
+                        .userData!.customersList!
+                        .every((customer) => customer.isSelected ?? false);
+
+                    refreshSelectAllFields.value =
+                        !refreshSelectAllFields.value;
+                    refreshSelectedFields.value = !refreshSelectedFields.value;
                   }
 
                   return SingleChildScrollView(
@@ -336,7 +473,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                                   children: [
                                     /* Name Input Field*/
                                     Text(
-                                      updatePaymentDetailsBloc.nameText,
+                                      updateGroupPaymentDetailsBloc.nameText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -351,8 +488,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.person_pin_circle_rounded,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .namePlaceHolderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .namePlaceHolderText,
                                       textEditingController: _nameController,
                                       validationFunc: (value) {
                                         return ValidationUtil.validateName(
@@ -367,7 +505,7 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Mobile Number Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.phNumText,
+                                      updateGroupPaymentDetailsBloc.phNumText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -381,8 +519,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.phone_locked,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .phNumPlaceholderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .phNumPlaceholderText,
                                       textEditingController: _phNumController,
                                       inputFormattersList: <TextInputFormatter>[
                                         FilteringTextInputFormatter.digitsOnly,
@@ -412,7 +551,8 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Loan Code Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.loanCodeText,
+                                      updateGroupPaymentDetailsBloc
+                                          .loanCodeText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -426,8 +566,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.contacts_rounded,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .loanCodePlaceholderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .loanCodePlaceholderText,
                                       textEditingController:
                                           _loanCodeController,
                                       inputFormattersList: <TextInputFormatter>[
@@ -453,7 +594,8 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Agent Code Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.agentCodeText,
+                                      updateGroupPaymentDetailsBloc
+                                          .agentCodeText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -467,8 +609,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.contacts_rounded,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .agentCodePlaceholderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .agentCodePlaceholderText,
                                       textEditingController:
                                           _agentCodeController,
                                       inputFormattersList: <TextInputFormatter>[
@@ -494,7 +637,7 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Amount Paid Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.amtPaidText,
+                                      updateGroupPaymentDetailsBloc.amtPaidText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -508,8 +651,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.attach_money_outlined,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .amtPaidPlaceholderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .amtPaidPlaceholderText,
                                       textEditingController:
                                           _amtPaidCodeController,
                                       // inputFormattersList: <TextInputFormatter>[
@@ -558,7 +702,7 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Amount Due Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.amtDueText,
+                                      updateGroupPaymentDetailsBloc.amtDueText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -572,8 +716,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.attach_money_outlined,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .amtDuePlaceholderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .amtDuePlaceholderText,
                                       textEditingController:
                                           _amtDueCodeController,
                                       // inputFormattersList: <TextInputFormatter>[
@@ -622,7 +767,8 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Amount Paid Date Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.paymentDateText,
+                                      updateGroupPaymentDetailsBloc
+                                          .paymentDateText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -697,7 +843,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                                             color: ColorConstants.redColor,
                                           ),
                                         ),
-                                        hintText: updatePaymentDetailsBloc
+                                        hintText: updateGroupPaymentDetailsBloc
                                             .paymentDatePlaceholderText,
                                         hintStyle: TextStyle(
                                           color: ColorConstants.blackColor,
@@ -1009,7 +1155,8 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Payment Mode Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.paymentModeText,
+                                      updateGroupPaymentDetailsBloc
+                                          .paymentModeText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -1026,7 +1173,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                                             value: selectedPaymentModeIDValue,
                                             focusNode: _paymentModeFocusNode,
                                             hint: Text(
-                                              updatePaymentDetailsBloc
+                                              updateGroupPaymentDetailsBloc
                                                   .paymentModePlaceholderText,
                                               style: TextStyle(
                                                 color:
@@ -1149,7 +1296,7 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Payment Status Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc
+                                      updateGroupPaymentDetailsBloc
                                           .paymentStatusText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -1167,7 +1314,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                                             value: selectedPaymentStatusIDValue,
                                             focusNode: _paymentStatusFocusNode,
                                             hint: Text(
-                                              updatePaymentDetailsBloc
+                                              updateGroupPaymentDetailsBloc
                                                   .paymentStatusPlaceholderText,
                                               style: TextStyle(
                                                 color:
@@ -1290,7 +1437,8 @@ class _UpdateCustomersPaymentDetailsScreenState
 
                                     /* Amount To be Paid Input Field */
                                     Text(
-                                      updatePaymentDetailsBloc.amtTobePaidText,
+                                      updateGroupPaymentDetailsBloc
+                                          .amtTobePaidText,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 10.sp,
@@ -1304,8 +1452,9 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         Icons.attach_money_outlined,
                                         color: ColorConstants.darkBlueColor,
                                       ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .amtTobePaidPlaceholderText,
+                                      placeholderText:
+                                          updateGroupPaymentDetailsBloc
+                                              .amtTobePaidPlaceholderText,
                                       textEditingController:
                                           _amountToBePaidController,
                                       inputFormattersList: <TextInputFormatter>[
@@ -1326,6 +1475,298 @@ class _UpdateCustomersPaymentDetailsScreenState
                                     /* Amount To be Paid Input Field */
 
                                     SizedBox(
+                                      height: 16.sp,
+                                    ),
+
+                                    (updateGroupPaymentDetailsBloc
+                                                    .userData?.customersList !=
+                                                null &&
+                                            updateGroupPaymentDetailsBloc
+                                                .userData!
+                                                .customersList!
+                                                .isNotEmpty)
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    updateGroupPaymentDetailsBloc
+                                                        .customerDetailsText,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 14.sp,
+                                                      color: ColorConstants
+                                                          .darkBlueColor,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      updateGroupPaymentDetailsBloc
+                                                          .add(
+                                                        GetPaymentDetailsEvent(
+                                                          cusID:
+                                                              widget.customerID,
+                                                          type: widget.type,
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      "Save",
+                                                      style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        color: ColorConstants
+                                                            .greenColor,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 4.sp,
+                                              ),
+                                              ValueListenableBuilder(
+                                                valueListenable:
+                                                    refreshSelectAllFields,
+                                                builder: (context, vals, _) {
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      isCheckedAll =
+                                                          !isCheckedAll!;
+
+                                                      for (int i = 0;
+                                                          i <
+                                                              updateGroupPaymentDetailsBloc
+                                                                  .userData!
+                                                                  .customersList!
+                                                                  .length;
+                                                          i++) {
+                                                        if (isCheckedAll ==
+                                                            true) {
+                                                          updateGroupPaymentDetailsBloc
+                                                              .userData!
+                                                              .customersList![i]
+                                                              .isSelected = true;
+                                                        }
+                                                      }
+                                                      refreshSelectAllFields
+                                                              .value =
+                                                          !refreshSelectAllFields
+                                                              .value;
+
+                                                      refreshSelectedFields
+                                                              .value =
+                                                          !refreshSelectedFields
+                                                              .value;
+                                                    },
+                                                    child: Row(
+                                                      spacing: 12.sp,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        (isCheckedAll == true)
+                                                            ? Icon(
+                                                                Icons.check_box,
+                                                                color: ColorConstants
+                                                                    .darkBlueColor,
+                                                                size: 20.sp,
+                                                              )
+                                                            : Icon(
+                                                                Icons
+                                                                    .check_box_outline_blank,
+                                                                color: ColorConstants
+                                                                    .lightBlackColor,
+                                                                size: 20.sp,
+                                                              ),
+                                                        Text(
+                                                          updateGroupPaymentDetailsBloc
+                                                              .selectAllText,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color: ColorConstants
+                                                                .lightBlackColor,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Customers List */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshSelectedFields,
+                                                  builder: (context, vals, _) {
+                                                    return ListView.separated(
+                                                      itemCount:
+                                                          updateGroupPaymentDetailsBloc
+                                                              .userData!
+                                                              .customersList!
+                                                              .length,
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      shrinkWrap: true,
+                                                      padding: EdgeInsets.zero,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Row(
+                                                          spacing: 12.sp,
+                                                          children: [
+                                                            InkWell(
+                                                              onTap: () {
+                                                                updateGroupPaymentDetailsBloc
+                                                                        .userData!
+                                                                        .customersList![
+                                                                            index]
+                                                                        .isSelected =
+                                                                    !updateGroupPaymentDetailsBloc
+                                                                        .userData!
+                                                                        .customersList![
+                                                                            index]
+                                                                        .isSelected!;
+
+                                                                isCheckedAll = updateGroupPaymentDetailsBloc
+                                                                    .userData!
+                                                                    .customersList!
+                                                                    .every((customer) =>
+                                                                        customer
+                                                                            .isSelected ??
+                                                                        false);
+
+                                                                refreshSelectedFields
+                                                                        .value =
+                                                                    !refreshSelectedFields
+                                                                        .value;
+                                                                refreshSelectAllFields
+                                                                        .value =
+                                                                    !refreshSelectAllFields
+                                                                        .value;
+                                                              },
+                                                              child: (updateGroupPaymentDetailsBloc
+                                                                          .userData!
+                                                                          .customersList![
+                                                                              index]
+                                                                          .isSelected ==
+                                                                      true)
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .check_box,
+                                                                      color: ColorConstants
+                                                                          .darkBlueColor,
+                                                                      size:
+                                                                          20.sp,
+                                                                    )
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .check_box_outline_blank,
+                                                                      color: ColorConstants
+                                                                          .lightBlackColor,
+                                                                      size:
+                                                                          20.sp,
+                                                                    ),
+                                                            ),
+                                                            Text(
+                                                              updateGroupPaymentDetailsBloc
+                                                                      .userData!
+                                                                      .customersList![
+                                                                          index]
+                                                                      .cusName ??
+                                                                  "",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                fontSize: 12.sp,
+                                                                color: ColorConstants
+                                                                    .lightBlackColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                            const Spacer(),
+                                                            Text(
+                                                              updateGroupPaymentDetailsBloc
+                                                                      .userData!
+                                                                      .customersList![
+                                                                          index]
+                                                                      .cusAmt ??
+                                                                  "",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                fontSize: 12.sp,
+                                                                color: ColorConstants
+                                                                    .lightBlackColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                            (updateGroupPaymentDetailsBloc
+                                                                        .userData!
+                                                                        .customersList![
+                                                                            index]
+                                                                        .isEditable ==
+                                                                    true)
+                                                                ? InkWell(
+                                                                    onTap: () {
+                                                                      showEditSheet(
+                                                                        cusAmount:
+                                                                            updateGroupPaymentDetailsBloc.userData!.customersList![index].cusAmt ??
+                                                                                "",
+                                                                        cusID: updateGroupPaymentDetailsBloc.userData!.customersList![index].cusId ??
+                                                                            "",
+                                                                        cusName:
+                                                                            updateGroupPaymentDetailsBloc.userData!.customersList![index].cusName ??
+                                                                                "",
+                                                                      );
+                                                                    },
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .edit,
+                                                                      color: ColorConstants
+                                                                          .darkBlueColor,
+                                                                      size:
+                                                                          18.sp,
+                                                                    ),
+                                                                  )
+                                                                : const SizedBox
+                                                                    .shrink(),
+                                                          ],
+                                                        );
+                                                      },
+                                                      separatorBuilder:
+                                                          (context, index) {
+                                                        return SizedBox(
+                                                          height: 12.sp,
+                                                        );
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Customers List */
+                                            ],
+                                          )
+                                        : const SizedBox.shrink(),
+
+                                    SizedBox(
                                       height: 32.sp,
                                     ),
                                   ],
@@ -1337,11 +1778,11 @@ class _UpdateCustomersPaymentDetailsScreenState
                       ],
                     ),
                   );
-                } else if (state is UpdatePaymentDetailsNoInternet) {
+                } else if (state is UpdateGroupPaymentDetailsNoInternet) {
                   return noInternetWidget(
                     context: context,
-                    retryAction: () =>
-                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
+                    retryAction: () => updateGroupPaymentDetailsBloc
+                        .add(GetPaymentDetailsEvent(
                       cusID: widget.customerID,
                       type: widget.type,
                     )),
@@ -1350,8 +1791,8 @@ class _UpdateCustomersPaymentDetailsScreenState
                 } else {
                   return noInternetWidget(
                     context: context,
-                    retryAction: () =>
-                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
+                    retryAction: () => updateGroupPaymentDetailsBloc
+                        .add(GetPaymentDetailsEvent(
                       cusID: widget.customerID,
                       type: widget.type,
                     )),
@@ -1364,6 +1805,42 @@ class _UpdateCustomersPaymentDetailsScreenState
         ),
       ),
     );
+  }
+
+  Future<void> onSaveAction({
+    required String? cusID,
+  }) async {
+    Navigator.pop(context);
+    // All validations passed, navigate to the next screen
+    var result = await NetworkService().updateGroupEditAmountPayService(
+      id: widget.customerID,
+      type: widget.type,
+      cusAmount: _userAmountInput.text,
+      cusID: cusID,
+    );
+
+    if (result != null && result['status'] == true) {
+      if (!mounted) return;
+      if (result['message'] != null && result['message'].isNotEmpty) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: result['message'],
+          isError: false,
+        );
+      }
+      // All validations passed, navigate to the next screen
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        updateGroupPaymentDetailsBloc.add(GetPaymentDetailsEvent(
+            cusID: widget.customerID, type: widget.type));
+      });
+    } else {
+      if (!mounted) return;
+      ToastUtil().showSnackBar(
+        context: context,
+        message: result['message'] ?? "Something went wrong",
+        isError: true,
+      );
+    }
   }
 
   Future<void> onSubmitAction() async {
@@ -1387,8 +1864,21 @@ class _UpdateCustomersPaymentDetailsScreenState
     if (form?.validate() ?? false) {
       isDisabled.value = false;
 
+      List grpCusDetaList = [];
+
+      for (int i = 0;
+          i < updateGroupPaymentDetailsBloc.userData!.customersList!.length;
+          i++) {
+        if (updateGroupPaymentDetailsBloc
+                .userData!.customersList![i].isSelected ==
+            true) {
+          grpCusDetaList
+              .add(updateGroupPaymentDetailsBloc.userData!.customersList![i]);
+        }
+      }
+
       // All validations passed, navigate to the next screen
-      var result = await NetworkService().updatePaymentDetails(
+      var result = await NetworkService().updateGrpPaymentDetails(
         id: widget.customerID,
         type: widget.type,
         userName: _nameController.text,
@@ -1402,6 +1892,7 @@ class _UpdateCustomersPaymentDetailsScreenState
         paymentMode: selectedPaymentModeIDValue,
         paymentStatus: selectedPaymentStatusIDValue,
         amountType: _amountToBePaidController.text,
+        cusDetails: grpCusDetaList ?? [],
       );
 
       if (result != null && result['status'] == true) {

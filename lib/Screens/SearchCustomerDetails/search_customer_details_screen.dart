@@ -15,7 +15,9 @@ import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
 import 'package:sizer/sizer.dart';
 
 class SearchCustomerDetails extends StatefulWidget {
-  const SearchCustomerDetails({super.key});
+  final String? type; // 1 - Customers Serach | 2 - Group Search
+
+  const SearchCustomerDetails({super.key, this.type = "1"});
 
   @override
   State<SearchCustomerDetails> createState() => _SearchCustomerDetailsState();
@@ -42,6 +44,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
       page: 1,
       showLoading: true,
       searchKey: _searchController.text,
+      type: widget.type,
     ));
   }
 
@@ -133,6 +136,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                                   page: 1,
                                   showLoading: true,
                                   searchKey: _searchController.text.trim(),
+                                  type: widget.type,
                                 ),
                               );
                             },
@@ -153,6 +157,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                                 page: 1,
                                 showLoading: true,
                                 searchKey: _searchController.text,
+                                type: widget.type,
                               ),
                             );
                           },
@@ -202,6 +207,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                                       searchCustomerBloc.searchCusDataList ??
                                           [],
                                   searchKey: _searchController.text,
+                                  type: widget.type,
                                 ),
                               );
                             }
@@ -230,6 +236,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                                       page: 1,
                                       showLoading: true,
                                       searchKey: _searchController.text,
+                                      type: widget.type,
                                     ),
                                   );
                                   _refreshController.refreshCompleted();
@@ -464,6 +471,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                     page: 1,
                     showLoading: true,
                     searchKey: _searchController.text,
+                    type: widget.type,
                   )),
                   state: 1,
                 );
@@ -474,6 +482,7 @@ class _SearchCustomerDetailsState extends State<SearchCustomerDetails> {
                     page: 1,
                     showLoading: true,
                     searchKey: _searchController.text,
+                    type: widget.type,
                   )),
                   state: 2,
                 );

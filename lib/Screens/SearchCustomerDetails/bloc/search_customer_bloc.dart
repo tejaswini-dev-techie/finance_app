@@ -45,6 +45,7 @@ class SearchCustomerBloc
             .searchCusDetailsService(
           page: event.page,
           searchKey: event.searchKey,
+          type: event.type,
         )
             .then((SearchCustomerDetailsDataModel? responseObj) {
           if (responseObj != null && responseObj.status == true) {

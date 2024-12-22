@@ -16,7 +16,7 @@ class UpdatePaymentDetailsBloc
     });
   }
 
-/* JSON Text */
+  /* JSON Text */
   String? internetAlert = "";
   /* JSON Text */
 
@@ -43,6 +43,8 @@ class UpdatePaymentDetailsBloc
   String paymentModePlaceholderText = "";
   String paymentStatusText = "";
   String paymentStatusPlaceholderText = "";
+  String amtTobePaidText = "Amount to be Paid By";
+  String amtTobePaidPlaceholderText = "EMI/EMI+INTEREST/INTEREST";
 
   Data? userData;
 

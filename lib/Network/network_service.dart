@@ -6,6 +6,7 @@ import 'package:hp_finance/DataModel/Dashboard/loans_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/pigmy_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/user_dashboard_data_model.dart';
 import 'package:hp_finance/DataModel/LearnAboutPigmySavings/learn_about_pigmy_savings_data_model.dart';
+import 'package:hp_finance/DataModel/PaymentDetails/update_group_payment_details_data_model.dart';
 import 'package:hp_finance/DataModel/PaymentDetails/update_payment_details_data_model.dart';
 import 'package:hp_finance/DataModel/Profile/profile_data_model.dart';
 import 'package:hp_finance/DataModel/SearchCustomersDetails/group_mem_details_data_model.dart';
@@ -980,30 +981,30 @@ class NetworkService {
   /* Transaction History */
 
   /* Agents Dashboard */
-  var agentsRes = {
-    "status": true,
-    "logout": false,
-    "message": "Loaded Successfully",
-    "data": {
-      "agent_menus_list": [
-        {
-          "menu_id": "1",
-          "menu_title": "PIGMY ID",
-          "menu_img": "",
-          "menu_subtile": "1234"
-        },
-        {
-          "menu_id": "2",
-          "menu_title": "Savings Balance",
-          "menu_img": "",
-          "menu_subtile": "₹1200"
-        }
-      ],
-      "find_btn_text": "Find Customer Details",
-      "verify_btn_text": "Verify Customer Details",
-      "update_payment_det_text": "UpdatePaymentdetails"
-    }
-  };
+  // var agentsRes = {
+  //   "status": true,
+  //   "logout": false,
+  //   "message": "Loaded Successfully",
+  //   "data": {
+  //     "agent_menus_list": [
+  //       {
+  //         "menu_id": "1",
+  //         "menu_title": "PIGMY ID",
+  //         "menu_img": "",
+  //         "menu_subtile": "1234"
+  //       },
+  //       {
+  //         "menu_id": "2",
+  //         "menu_title": "Savings Balance",
+  //         "menu_img": "",
+  //         "menu_subtile": "₹1200"
+  //       }
+  //     ],
+  //     "find_btn_text": "Find Customer Details",
+  //     "verify_btn_text": "Verify Customer Details",
+  //     "update_payment_det_text": "UpdatePaymentdetails"
+  //   }
+  // };
   Future<AgentsDashboardDataModel> agentsDashboardService() {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -1090,20 +1091,43 @@ class NetworkService {
   /* Logout */
 
   /* Update Payment Details Prefetch */
-  var payRes = {
-    "status": true,
-    "logout": false,
-    "data": {
-      "id": "2",
-      "name": "Tejaswini D",
-      "mob_num": "7259889622",
-      "code_id": "1234",
-      "agent": "RAM",
-      "amt_to_be_paid": "1200",
-      "date": "16/10/2024",
-      "due": "100"
-    }
-  };
+  // var payRes = {
+  //   "status": true,
+  //   "logout": false,
+  //   "data": {
+  //     "id": "2",
+  //     "name": "Tejaswini D",
+  //     "mob_num": "7259889622",
+  //     "code_id": "1234",
+  //     "agent": "RAM",
+  //     "amt_to_be_paid": "1200",
+  //     "date": "16/10/2024",
+  //     "due": "100",
+  //     "customers_list": [
+  //       {
+  //         "cus_id": "1",
+  //         "cus_name": "Ram",
+  //         "cus_amt": "123.7",
+  //         "is_editable": true,
+  //         "is_selected": false
+  //       },
+  //       {
+  //         "cus_id": "2",
+  //         "cus_name": "Seetha",
+  //         "cus_amt": "143.7",
+  //         "is_editable": false,
+  //         "is_selected": false
+  //       },
+  //       {
+  //         "cus_id": "2",
+  //         "cus_name": "Seetha",
+  //         "cus_amt": "143.7",
+  //         "is_editable": false,
+  //         "is_selected": false
+  //       }
+  //     ]
+  //   }
+  // };
   Future<UpdatePaymentDetailsDataModel> updatePaymentPrefetchDetailsService(
       {required String? id, required String? type}) {
     return GetDeviceInfo().getDeviceInfo().then(
@@ -1111,7 +1135,8 @@ class NetworkService {
         paramsKeyVal['id'] = "$id";
         paramsKeyVal['type'] = "$type";
         return _network
-            .httpGetQuery(apiHitTimeout, APIURLs.updatePaymentPrefetchDetailsURL,
+            .httpGetQuery(
+                apiHitTimeout, APIURLs.updatePaymentPrefetchDetailsURL,
                 queryParams: paramsKeyVal)
             .then(
           (dynamic res) {
@@ -1123,12 +1148,98 @@ class NetworkService {
   }
   /* Update Payment Details Prefetch */
 
-  /* Update Payment Details */
-  var resultUpdatePayment = {
+  /* Update Group Payment Details */
+  var payRes = {
     "status": true,
     "logout": false,
-    "message": "Profile details updated successfully"
+    "data": {
+      "id": "2",
+      "name": "Tejaswini D",
+      "mob_num": "7259889622",
+      "code_id": "1234",
+      "agent": "RAM",
+      "amt_to_be_paid": "1200",
+      "date": "16/10/2024",
+      "due": "100",
+      "customers_list": [
+        {
+          "cus_id": "1",
+          "cus_name": "Ram",
+          "cus_amt": "123.7",
+          "is_editable": true,
+          "is_selected": true
+        },
+        {
+          "cus_id": "2",
+          "cus_name": "Seetha",
+          "cus_amt": "143.7",
+          "is_editable": false,
+          "is_selected": true
+        },
+        {
+          "cus_id": "2",
+          "cus_name": "Seetha",
+          "cus_amt": "143.7",
+          "is_editable": false,
+          "is_selected": true
+        }
+      ]
+    }
   };
+  Future<UpdateGroupPaymentDetailsDataModel>
+      updateGroupPaymentPrefetchDetailsService(
+          {required String? id, required String? type}) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = "$id";
+        paramsKeyVal['type'] = "$type";
+        // return _network
+        //     .httpGetQuery(
+        //         apiHitTimeout, APIURLs.updateGroupPaymentPrefetchDetailsURL,
+        //         queryParams: paramsKeyVal)
+        //     .then(
+        //   (dynamic res) {
+        return UpdateGroupPaymentDetailsDataModel.fromJson(payRes);
+        //   },
+        // );
+      },
+    );
+  }
+  /* Update Group Payment Details */
+
+  /* Update Edit Amount */
+  Future<dynamic> updateGroupEditAmountPayService({
+    required String? id,
+    required String? type,
+    required String? cusID,
+    required String? cusAmount,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = "$id";
+        paramsKeyVal['type'] = "$type";
+        paramsKeyVal['customer_id'] = "$cusID";
+        paramsKeyVal['customer_amt'] = "$cusAmount";
+        return _network
+            .httpGetQuery(apiHitTimeout, APIURLs.updateGroupEditPayURL,
+                queryParams: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Update Edit Amount */
+
+  /* Update Payment Details */
+  // var resultUpdatePayment = {
+  //   "status": true,
+  //   "logout": false,
+  //   "message": "Profile details updated successfully"
+  // };
+
   Future<dynamic> updatePaymentDetails({
     required String? userName,
     required String? mobNum,
@@ -1137,12 +1248,17 @@ class NetworkService {
     required String? amtPaid,
     required String? amtDue,
     required String? date,
-    required String? paymentType,
+    required String? paymentCollectionDate,
     required String? paymentMode,
     required String? paymentStatus,
+    required String? amountType,
+    required String? id,
+    required String? type,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['id'] = "$id";
+        paramsKeyVal['type'] = "$type";
         paramsKeyVal['userName'] = userName;
         paramsKeyVal['mobNum'] = mobNum;
         paramsKeyVal['codeID'] = code;
@@ -1150,15 +1266,16 @@ class NetworkService {
         paramsKeyVal['amountPaid'] = amtPaid;
         paramsKeyVal['due'] = amtDue;
         paramsKeyVal['date'] = date;
-        paramsKeyVal['paymentType'] = paymentType;
+        paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
         paramsKeyVal['paymentStatus'] = paymentStatus;
+        paramsKeyVal['amountType'] = amountType;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updatePaymentDetailsURL,
                 body: paramsKeyVal)
             .then(
           (dynamic res) {
-            return resultUpdatePayment;
+            return res;
           },
         );
       },
@@ -1166,93 +1283,140 @@ class NetworkService {
   }
   /* Update Payment Details */
 
+  /* Update Group Payment Details */
+  Future<dynamic> updateGrpPaymentDetails({
+    required String? userName,
+    required String? mobNum,
+    required String? code,
+    required String? agent,
+    required String? amtPaid,
+    required String? amtDue,
+    required String? date,
+    required String? paymentCollectionDate,
+    required String? paymentMode,
+    required String? paymentStatus,
+    required String? amountType,
+    required String? id,
+    required String? type,
+    required List? cusDetails,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = "$id";
+        paramsKeyVal['type'] = "$type";
+        paramsKeyVal['userName'] = userName;
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['codeID'] = code;
+        paramsKeyVal['agent'] = agent;
+        paramsKeyVal['amountPaid'] = amtPaid;
+        paramsKeyVal['due'] = amtDue;
+        paramsKeyVal['date'] = date;
+        paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
+        paramsKeyVal['paymentMode'] = paymentMode;
+        paramsKeyVal['paymentStatus'] = paymentStatus;
+        paramsKeyVal['amountType'] = amountType;
+        paramsKeyVal['cusDetails'] = json.encode(cusDetails);
+        return _network
+            .httpPut(apiHitTimeout, APIURLs.updateGroupPaymentDetailsURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Update Group Payment Details */
+
   /* Search Intermittent Screen */
-  var searchRes = {
-    "status": true,
-    "logout": false,
-    "message": "Loaded Successfully",
-    "data": {
-      "profile_image": "",
-      "name": "RAM",
-      "ph_num": "+91 877665654554 | +91 8767545678",
-      "email_id": "abc@gmail.com",
-      "address":
-          "Bhuvaneshwari Nagar, T Dasarahalli, Bangalore, Karnataka, 560057",
-      "documents_text": "Documents",
-      "docs_list": [
-        {"id": "1", "title": "PAN", "image_path": ""},
-        {"id": "2", "title": "AADHAAR", "image_path": ""}
-      ],
-      "list_details": [
-        {
-          "list_det_title": "PIGMY",
-          "list_det": [
-            {
-              "id": "1",
-              "title": "PIGMYCODE1234",
-              "subtitle": "Due as on\n16th August 2024",
-              "amt": "₹1200",
-              "pay_now_text": "PAY NOW"
-            },
-            {
-              "id": "1",
-              "title": "PIGMYCODE1234",
-              "subtitle": "Paid as on\n16th August 2024",
-              "amt": "₹1200",
-              "pay_now_text": ""
-            },
-            {
-              "id": "1",
-              "title": "PIGMYCODE1234",
-              "subtitle": "Paid as on\n16th August 2024",
-              "amt": "₹1200",
-              "pay_now_text": ""
-            },
-            {
-              "id": "1",
-              "title": "PIGMYCODE1234",
-              "subtitle": "Paid as on\n16th August 2024",
-              "amt": "₹1200",
-              "pay_now_text": ""
-            }
-          ]
-        },
-        {
-          "list_det_title": "LOAN",
-          "list_det_menu": [
-            {
-              "menu_id": "1",
-              "menu_title": "PIGMY ID",
-              "menu_img": "",
-              "menu_subtile": "1234"
-            },
-            {
-              "menu_id": "2",
-              "menu_title": "Savings Balance",
-              "menu_img": "",
-              "menu_subtile": "\u20B91200"
-            }
-          ],
-          "list_det": [
-            {
-              "id": "1",
-              "title": "PIGMYCODE1234",
-              "subtitle": "Due as on\n16th August 2024",
-              "amt": "₹1200",
-              "pay_now_text": "PAY NOW"
-            },
-            {
-              "id": "1",
-              "title": "PIGMYCODE1234",
-              "subtitle": "Due as on\n16th August 2024",
-              "amt": "₹1200",
-              "pay_now_text": ""
-            }
-          ]
-        }
-      ]
-    }
-  };
+  // var searchRes = {
+  //   "status": true,
+  //   "logout": false,
+  //   "message": "Loaded Successfully",
+  //   "data": {
+  //     "profile_image": "",
+  //     "name": "RAM",
+  //     "ph_num": "+91 877665654554 | +91 8767545678",
+  //     "email_id": "abc@gmail.com",
+  //     "address":
+  //         "Bhuvaneshwari Nagar, T Dasarahalli, Bangalore, Karnataka, 560057",
+  //     "documents_text": "Documents",
+  //     "docs_list": [
+  //       {"id": "1", "title": "PAN", "image_path": ""},
+  //       {"id": "2", "title": "AADHAAR", "image_path": ""}
+  //     ],
+  //     "list_details": [
+  //       {
+  //         "list_det_title": "PIGMY",
+  //         "list_det": [
+  //           {
+  //             "id": "1",
+  //             "title": "PIGMYCODE1234",
+  //             "subtitle": "Due as on\n16th August 2024",
+  //             "amt": "₹1200",
+  //             "pay_now_text": "PAY NOW"
+  //           },
+  //           {
+  //             "id": "1",
+  //             "title": "PIGMYCODE1234",
+  //             "subtitle": "Paid as on\n16th August 2024",
+  //             "amt": "₹1200",
+  //             "pay_now_text": ""
+  //           },
+  //           {
+  //             "id": "1",
+  //             "title": "PIGMYCODE1234",
+  //             "subtitle": "Paid as on\n16th August 2024",
+  //             "amt": "₹1200",
+  //             "pay_now_text": ""
+  //           },
+  //           {
+  //             "id": "1",
+  //             "title": "PIGMYCODE1234",
+  //             "subtitle": "Paid as on\n16th August 2024",
+  //             "amt": "₹1200",
+  //             "pay_now_text": ""
+  //           }
+  //         ]
+  //       },
+  //       {
+  //         "list_det_title": "LOAN",
+  //         "list_det_menu": [
+  //           {
+  //             "menu_id": "1",
+  //             "menu_title": "PIGMY ID",
+  //             "menu_img": "",
+  //             "menu_subtile": "1234"
+  //           },
+  //           {
+  //             "menu_id": "2",
+  //             "menu_title": "Savings Balance",
+  //             "menu_img": "",
+  //             "menu_subtile": "\u20B91200"
+  //           }
+  //         ],
+  //         "list_det": [
+  //           {
+  //             "id": "1",
+  //             "title": "PIGMYCODE1234",
+  //             "subtitle": "Due as on\n16th August 2024",
+  //             "amt": "₹1200",
+  //             "pay_now_text": "PAY NOW"
+  //           },
+  //           {
+  //             "id": "1",
+  //             "title": "PIGMYCODE1234",
+  //             "subtitle": "Due as on\n16th August 2024",
+  //             "amt": "₹1200",
+  //             "pay_now_text": ""
+  //           }
+  //         ]
+  //       }
+  //     ]
+  //   }
+  // };
+
   Future<SearchIntermittentDetailsDataModel> searchIntermittentService(
       {String? cusID}) {
     return GetDeviceInfo().getDeviceInfo().then(
@@ -1273,31 +1437,36 @@ class NetworkService {
 
   /* Search Customer Details */
 
-  var searchCusrEs = {
-    "status": true,
-    "logout": false,
-    "message": "Loaded Successfully",
-    "data": {
-      "search_members_list": [
-        {
-          "member_id": "1",
-          "profile_img": "",
-          "mem_name": "RAM",
-          "loan_code": "LOANID1234",
-          "location": "Bangalore, Karnataka",
-          "ph_num": "+91 7259889622",
-          "acc_status": "ACTIVE",
-          "acc_status_type": "1" //1-ACTIVE|2-CLOSED
-        }
-      ]
-    }
-  };
-  Future<SearchCustomerDetailsDataModel> searchCusDetailsService(
-      {int? page, String? searchKey}) {
+  // var searchCusrEs = {
+  //   "status": true,
+  //   "logout": false,
+  //   "message": "Loaded Successfully",
+  //   "data": {
+  //     "search_members_list": [
+  //       {
+  //         "member_id": "1",
+  //         "profile_img": "",
+  //         "mem_name": "RAM",
+  //         "loan_code": "LOANID1234",
+  //         "location": "Bangalore, Karnataka",
+  //         "ph_num": "+91 7259889622",
+  //         "acc_status": "ACTIVE",
+  //         "acc_status_type": "1" //1-ACTIVE|2-CLOSED
+  //       }
+  //     ]
+  //   }
+  // };
+
+  Future<SearchCustomerDetailsDataModel> searchCusDetailsService({
+    int? page,
+    String? searchKey,
+    required String? type, // 1 - Customers Serach | 2 - Group Search
+  }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['page'] = "$page";
         paramsKeyVal['search_key'] = searchKey;
+        paramsKeyVal['type'] = type; // 1 - Customers Serach | 2 - Group Search
         return _network
             .httpGetQuery(
           apiHitTimeout,
