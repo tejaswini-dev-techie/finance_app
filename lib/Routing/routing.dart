@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
+import 'package:hp_finance/Constants/sharedpreference_constants.dart';
 import 'package:hp_finance/Screens/CreateAccountScreen/create_account_screen.dart';
 import 'package:hp_finance/Screens/CreatePigmySavingsAccount/create_pigmy_savings_acc_screen.dart';
 import 'package:hp_finance/Screens/CustomCamera/capture_photo_camera.dart';
+import 'package:hp_finance/Screens/CustomerProfileVerification/customer_profile_verification_screen.dart';
 import 'package:hp_finance/Screens/Dashboard/dashboard_screen.dart';
 import 'package:hp_finance/Screens/Enquiry/enquiry_screen.dart';
 import 'package:hp_finance/Screens/GroupCreation/group_creation_screen.dart';
@@ -20,10 +22,11 @@ import 'package:hp_finance/Screens/UpdateGroupPaymentDetails/update_group_paymen
 import 'package:hp_finance/Screens/UpdatePaymentDetails/update_payment_details.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/verfify_customers.dart';
 import 'package:hp_finance/Screens/WithdrawPigmySavings/withdraw_pigmy_savings_screen.dart';
+import 'package:hp_finance/Utils/sharedpreferences_util.dart';
 import 'package:sizer/sizer.dart';
 
 class RouteGenerator {
-  static Route<dynamic>? generateRoute(settings) {
+  static Route? generateRoute(settings) {
     final args = settings.arguments;
     switch (settings.name) {
       case RoutingConstants.routeDefault:
@@ -79,12 +82,30 @@ class RouteGenerator {
       /* Dashboard Screen */
       case RoutingConstants.routeDashboardScreen:
         {
+          // Fetch user_type from SharedPreferences
+          String? userType = "agent";
+          SharedPreferencesUtil.getSharedPref(
+                  SharedPreferenceConstants.prefUserType)
+              .then((value) {
+            if (value != null) {
+              userType = value;
+              print("user Type: $userType");
+            }
+          });
+
+          // Determine the tab index based on user_type
+          int? navigationType = (userType == "customer")
+              ? 2
+              : 1; // dashbaordType 1 - Agent Dashboard "agent" | 2 - Customer Dashboard "customer"
+
+          print("navigationType: $navigationType");
           if (args != "" && args != null) {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
               builder: (_) => Dashboard(
                 tabIndex: data['data']['tab_index'] ?? "",
+                dashbaordType: navigationType,
               ),
               settings: RouteSettings(
                 name: settings.name,
@@ -92,7 +113,9 @@ class RouteGenerator {
             );
           } else {
             return MaterialPageRoute(
-              builder: (_) => const Dashboard(),
+              builder: (_) => Dashboard(
+                dashbaordType: navigationType,
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),
@@ -174,7 +197,10 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const LearnAboutPigmySavingsScreen(),
+              builder: (_) => LearnAboutPigmySavingsScreen(
+                type: data['data']['type'] ??
+                    "1", // 1 - Learn About PIGMY SAVINGS | 2 - Learn About GROUP PIGMY SAVINGS
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),
@@ -339,7 +365,8 @@ class RouteGenerator {
             data = args;
             return MaterialPageRoute(
               builder: (_) => VerifyCustomersDetailsScreen(
-                title: data['data']['title'] ?? "KYC",
+                title: data['data']['title'] ?? "VERIFICATION",
+                id: data['data']['id'] ?? "",
               ),
               settings: RouteSettings(
                 name: settings.name,
@@ -355,6 +382,30 @@ class RouteGenerator {
           }
         }
       /* Verify Customer Details */
+
+      /*  Customer Profile Verification */
+      case RoutingConstants.routeCustomersProfileVerificationScreen:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+              builder: (_) => const CustomerProfileVerification(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const CustomerProfileVerification(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
+
+      /* Customer Profile Verification */
 
       /* Payment - Agent Collecting Amount from Customers Details */
       case RoutingConstants.routeAgentUpdatePaymentDetailsScreen:

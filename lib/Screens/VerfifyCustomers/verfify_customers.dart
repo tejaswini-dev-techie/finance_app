@@ -21,7 +21,12 @@ import 'package:sizer/sizer.dart';
 
 class VerifyCustomersDetailsScreen extends StatefulWidget {
   final String? title;
-  const VerifyCustomersDetailsScreen({super.key, this.title});
+  final String? id;
+  const VerifyCustomersDetailsScreen({
+    super.key,
+    this.title,
+    this.id,
+  });
 
   @override
   State<VerifyCustomersDetailsScreen> createState() =>
@@ -65,6 +70,7 @@ class _VerifyCustomersDetailsScreenState
   String accNumber = "";
   String bankBranch = "";
   String ifscCode = "";
+  String photoText = "";
 
   String addText = "CLICK HERE TO ADD";
 
@@ -120,6 +126,12 @@ class _VerifyCustomersDetailsScreenState
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
   ValueNotifier<bool> isDisabled = ValueNotifier<bool>(true);
+
+  /* Photo Image */
+  ValueNotifier<bool> refreshphotoImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosphotoList = [];
+  String? photoImagePath = "";
+  /* Photo Image */
 
   /* Aadhaar Image */
   ValueNotifier<bool> refreshAadhaarImage = ValueNotifier<bool>(true);
@@ -297,6 +309,43 @@ class _VerifyCustomersDetailsScreenState
     bankBranch = appContent['verify_customers']['bank_branch'] ?? "";
     ifscCode = appContent['verify_customers']['ifsc_code'] ?? "";
     accNumber = appContent['verify_customers']['acc_num'] ?? "";
+    photoText = appContent['verify_customers']['photo_text'] ?? "";
+
+    var response = await NetworkService().verifyCustomerProfilePrefetchDetails(
+      id: widget.id,
+    );
+
+    if (response != null && response['data'] != null) {
+      _nameController.text = response['data']['name'] ?? "";
+      _phNumController.text = response['data']['mob_num'] ?? "";
+      _altPhNumController.text = response['data']['alt_mob_num'] ?? "";
+      _emailController.text = response['data']['email_address'] ?? "";
+      _streetAddressController.text = response['data']['address'] ?? "";
+      _cityController.text = response['data']['city'] ?? "";
+      _stateController.text = response['data']['state'] ?? "";
+      _zipController.text = response['data']['pincode'] ?? "";
+      _countryController.text = response['data']['country'] ?? "";
+      _aadhaarController.text = response['data']['aadhaar_num'] ?? "";
+      _panController.text = response['data']['pan_num'] ?? "";
+      _rcHolderNameController.text = response['data']['rc_holder_name'] ?? "";
+      _propertyHolderNameController.text =
+          response['data']['property_holder_name'] ?? "";
+      _propertyDetailsController.text =
+          response['data']['property_details'] ?? "";
+      _chequeNumController.text = response['data']['cheque_num'] ?? "";
+      _bankNameController.text = response['data']['bank_name'] ?? "";
+      _accNumController.text = response['data']['acc_num'] ?? "";
+      _bankBranchController.text = response['data']['bank_branch'] ?? "";
+      _bankIFSCcodeController.text = response['data']['ifsc_code'] ?? "";
+      photoImagePath = response['data']['profile_img'] ?? "";
+      aadhaarImagePath = response['data']['aadhaar_img'] ?? "";
+      panImagePath = response['data']['pan_img'] ?? "";
+      chequeImagePath = response['data']['cheque_img'] ?? "";
+      rcHOLDERImagePath = response['data']['rc_img'] ?? "";
+      propertyDocImagePath = response['data']['property_img'] ?? "";
+      passBookImagePath = response['data']['pass_book_img'] ?? "";
+      signatureImagePath = response['data']['signature_img'] ?? "";
+    }
     setState(() {});
   }
 
@@ -1146,7 +1195,8 @@ class _VerifyCustomersDetailsScreenState
                                 textcapitalization:
                                     TextCapitalization.characters,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validateIFSC(value);
+                                  return null;
+                                  // ValidationUtil.validateIFSC(value);
                                 },
                               ),
                               /* Bank IFSC Code Input Field */
@@ -1179,6 +1229,83 @@ class _VerifyCustomersDetailsScreenState
                                 },
                               ),
                               /* Bank Branch Name Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Photo Doc Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshphotoImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      placeholderText: "Add Photo",
+                                      addText: addText,
+                                      imagePath: photoImagePath ?? "",
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosphotoList = [];
+                                                compressedPhotosphotoList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosphotoList,
+                                                );
+
+                                                photoImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosphotoList[0]
+                                                      .path,
+                                                );
+
+                                                refreshphotoImage.value =
+                                                    !refreshphotoImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosphotoList = [];
+                                                compressedPhotosphotoList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosphotoList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                photoImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosphotoList[0]
+                                                      .path,
+                                                );
+
+                                                refreshphotoImage.value =
+                                                    !refreshphotoImage.value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Photo Doc Image */
 
                               SizedBox(
                                 height: 16.sp,
@@ -1728,8 +1855,7 @@ class _VerifyCustomersDetailsScreenState
                                                   compressedPhotosSignList[0]
                                                       .path,
                                                 );
-                                                print(
-                                                    "signatureImagePath: 2$signatureImagePath");
+
                                                 refreshSignImage.value =
                                                     !refreshSignImage.value;
                                               },
@@ -1798,8 +1924,8 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateBankName(_bankNameController.text);
     String? accNumError =
         ValidationUtil.validateAccountNumber(_accNumController.text);
-    String? bankIFSCError =
-        ValidationUtil.validateIFSC(_bankIFSCcodeController.text);
+    // String? bankIFSCError =
+    //     ValidationUtil.validateIFSC(_bankIFSCcodeController.text);
     String? bankBranchError =
         ValidationUtil.validateBranchName(_bankBranchController.text);
 
@@ -1873,16 +1999,19 @@ class _VerifyCustomersDetailsScreenState
               isError: false,
             );
           }
-          // All validations passed, navigate to the next screen
-          Map<String, dynamic> data = {};
-          data = {
-            "tab_index": 1,
-          };
-          Navigator.pushReplacementNamed(
-            context,
-            RoutingConstants.routeDashboardScreen,
-            arguments: {"data": data},
-          );
+
+          Future.delayed(const Duration(seconds: 1)).then((value) {
+            // All validations passed, navigate to the next screen
+            Map<String, dynamic> data = {};
+            data = {
+              "tab_index": 1,
+            };
+            Navigator.pushReplacementNamed(
+              context,
+              RoutingConstants.routeDashboardScreen,
+              arguments: {"data": data},
+            );
+          });
         } else {
           if (!mounted) return;
           ToastUtil().showSnackBar(
@@ -1971,9 +2100,11 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_bankNameFocusNode, bankNameError);
       } else if (accNumError != null) {
         _showErrorAndFocus(_bankAccNumFocusNode, accNumError);
-      } else if (bankIFSCError != null) {
-        _showErrorAndFocus(_bankIFSCCodeFocusNode, bankIFSCError);
-      } else if (bankBranchError != null) {
+      }
+      // else if (bankIFSCError != null) {
+      //   _showErrorAndFocus(_bankIFSCCodeFocusNode, bankIFSCError);
+      // }
+      else if (bankBranchError != null) {
         _showErrorAndFocus(_bankBranchFocusNode, bankBranchError);
       } else if (aadhaarImageError != null) {
         ToastUtil().showSnackBar(

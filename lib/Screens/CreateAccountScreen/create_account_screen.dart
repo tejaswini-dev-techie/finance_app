@@ -157,27 +157,31 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   backAction() {
-    popupAlertDialog(
-      internetAlert: internetAlert,
-      context: context,
-      titleText: logoutSubTitle,
-      subTitleText: "",
-      imagePath: ImageConstants.exitImage,
-      secondaryButtonText: cancelText,
-      primaryButtonText: btnText,
-      onSecondaryButtonTap: () {
-        Navigator.pop(context);
-      },
-      onPrimaryButtonTap: () {
-        exit(0);
-        // (Platform.isIOS)
-        //     ?
-        //     // force exit in ios
-        //     FlutterExitApp.exitApp(iosForceExit: true)
-        //     :
-        //     // call this to exit app
-        //     FlutterExitApp.exitApp();
-      },
+    // popupAlertDialog(
+    //   internetAlert: internetAlert,
+    //   context: context,
+    //   titleText: logoutSubTitle,
+    //   subTitleText: "",
+    //   imagePath: ImageConstants.exitImage,
+    //   secondaryButtonText: cancelText,
+    //   primaryButtonText: btnText,
+    //   onSecondaryButtonTap: () {
+    //     Navigator.pop(context);
+    //   },
+    //   onPrimaryButtonTap: () {
+    //     exit(0);
+    //     // (Platform.isIOS)
+    //     //     ?
+    //     //     // force exit in ios
+    //     //     FlutterExitApp.exitApp(iosForceExit: true)
+    //     //     :
+    //     //     // call this to exit app
+    //     //     FlutterExitApp.exitApp();
+    //   },
+    // );
+    Navigator.pushReplacementNamed(
+      context,
+      RoutingConstants.routeLoginScreen,
     );
   }
 

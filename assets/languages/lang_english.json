@@ -169,12 +169,12 @@
         },
         "verify_customers": {
             "name_text": "Name as per Aadhaar",
-            "name_placeholder_text": "Enter your Name",
+            "name_placeholder_text": "Enter Name",
             "ph_text": "Mobile Number",
-            "ph_placeholder_text": "Enter your Mobile Number",
+            "ph_placeholder_text": "Enter Mobile Number",
             "alt_ph_text": "Alternate Mobile Number",
             "email_text": "Email Address",
-            "email_placeholder_text": "Enter your email address",
+            "email_placeholder_text": "Enter email address",
             "submit_text": "SUBMIT",
             "street_address_text": "Address as per Aadhaar",
             "city_text": "City",
@@ -194,7 +194,8 @@
             "bank_name": "Bank Name",
             "acc_num": "Account Number",
             "bank_branch": "Bank Branch",
-            "ifsc_code": "Bank IFSC Code"
+            "ifsc_code": "Bank IFSC Code",
+            "photo_text": "Photo"
         },
         "update_customers_payment_details": {
             "update_payment_details_text": "Payment",

@@ -41,4 +41,6 @@ class RoutingConstants {
       "/routeSearchIntermittentScreen";
 
   static const String routeGroupCreationScreen = "/routeGroupCreationScreen";
+  static const String routeCustomersProfileVerificationScreen =
+      "/routeCustomersProfileVerificationScreen";
 }

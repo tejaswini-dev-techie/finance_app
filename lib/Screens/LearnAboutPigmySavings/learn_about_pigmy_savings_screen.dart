@@ -11,7 +11,12 @@ import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:sizer/sizer.dart';
 
 class LearnAboutPigmySavingsScreen extends StatefulWidget {
-  const LearnAboutPigmySavingsScreen({super.key});
+  final String?
+      type; // 1 - Learn About PIGMY SAVINGS | 2 - Learn About GROUP PIGMY SAVINGS
+  const LearnAboutPigmySavingsScreen({
+    super.key,
+    this.type,
+  });
 
   @override
   State<LearnAboutPigmySavingsScreen> createState() =>
@@ -52,7 +57,9 @@ class _LearnAboutPigmySavingsScreenState
 
   Future<Data?> getPigmyDetails() async {
     await NetworkService()
-        .learnAboutPigmySavingsService()
+        .learnAboutPigmySavingsService(
+      type: widget.type,
+    )
         .then((LearnAboutPigmySavings? respObj) {
       if (respObj != null && respObj.data != null) {
         pigmyData = respObj.data;

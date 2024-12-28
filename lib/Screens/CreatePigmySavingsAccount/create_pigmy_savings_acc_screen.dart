@@ -1264,7 +1264,8 @@ class _CreatePigmySavingsAccountScreenState
                                 textcapitalization:
                                     TextCapitalization.characters,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validateIFSC(value);
+                                  return null;
+                                  // ValidationUtil.validateIFSC(value);
                                 },
                               ),
                               /* Nominee Bank IFSC Code Input Field */
@@ -1355,8 +1356,8 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateBankName(_nomineeBankNameController.text);
     String? nomineeAccNumError = ValidationUtil.validateAccountNumber(
         _nomineeAccountNumberController.text);
-    String? ifscCodeError =
-        ValidationUtil.validateIFSC(_nomineeIFSCController.text);
+    // String? ifscCodeError =
+    //     ValidationUtil.validateIFSC(_nomineeIFSCController.text);
     String? bankBranchError =
         ValidationUtil.validateBranchName(_nomineeBranchController.text);
 
@@ -1464,9 +1465,11 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_nomineeBankNameFocusNode, nomineeBankNameError);
       } else if (nomineeAccNumError != null) {
         _showErrorAndFocus(_nomineeAccountNumberFocusNode, nomineeAccNumError);
-      } else if (ifscCodeError != null) {
-        _showErrorAndFocus(_nomineeIFSCFocusNode, ifscCodeError);
-      } else if (bankBranchError != null) {
+      }
+      // else if (ifscCodeError != null) {
+      //   _showErrorAndFocus(_nomineeIFSCFocusNode, ifscCodeError);
+      // }
+      else if (bankBranchError != null) {
         _showErrorAndFocus(_nomineeBranchFocusNode, bankBranchError);
       }
     }

@@ -357,6 +357,44 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                       ),
                                       /* SIGN UP Nudge */
+
+                                      SizedBox(
+                                        height: 8.sp,
+                                      ),
+
+                                      /* Forgot Password */
+                                      InkWell(
+                                        onTap: () {
+                                          InternetUtil()
+                                              .checkInternetConnection()
+                                              .then((internet) {
+                                            if (internet) {
+                                              Navigator.pushReplacementNamed(
+                                                context,
+                                                RoutingConstants
+                                                    .routeResetPasswordScreen,
+                                              );
+                                            } else {
+                                              ToastUtil().showSnackBar(
+                                                context: context,
+                                                message: internetAlert,
+                                                isError: true,
+                                              );
+                                            }
+                                          });
+                                        },
+                                        child: Text(
+                                          "Forgot Password",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                      /* Forgot Password */
                                     ],
                                   ),
                                 ),

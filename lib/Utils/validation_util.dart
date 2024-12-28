@@ -319,16 +319,16 @@ class ValidationUtil {
 /* Bank Branch Name Validation */
 
 /* IFSC Code Validation */
-  static String? validateIFSC(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter the IFSC code';
-    } else if (!RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(value)) {
-      return 'Invalid IFSC code format';
-    } else if (value.length != 11) {
-      return 'IFSC code must be 11 characters long';
-    }
-    return null;
-  }
+  // static String? validateIFSC(String? value) {
+  //   if (value == null || value.isEmpty) {
+  //     return 'Please enter the IFSC code';
+  //   } else if (!RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(value)) {
+  //     return 'Invalid IFSC code format';
+  //   } else if (value.length != 11) {
+  //     return 'IFSC code must be 11 characters long';
+  //   }
+  //   return null;
+  // }
 /* IFSC Code Validation */
 
 /* Nominee Name Validation */

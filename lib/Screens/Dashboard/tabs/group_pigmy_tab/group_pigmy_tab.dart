@@ -57,9 +57,14 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "2",
+          };
           Navigator.pushNamed(
             context,
             RoutingConstants.routeLearnAboutPigmySavingsScreen,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(

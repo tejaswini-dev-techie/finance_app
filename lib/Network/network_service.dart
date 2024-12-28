@@ -4,7 +4,9 @@ import 'package:hp_finance/DataModel/Dashboard/agents_dashboard_data_model.dart'
 import 'package:hp_finance/DataModel/Dashboard/group_loans_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/loans_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/pigmy_data_model.dart';
+import 'package:hp_finance/DataModel/Dashboard/report_details_data_model.dart';
 import 'package:hp_finance/DataModel/Dashboard/user_dashboard_data_model.dart';
+import 'package:hp_finance/DataModel/Dashboard/verify_info_data_model.dart';
 import 'package:hp_finance/DataModel/LearnAboutPigmySavings/learn_about_pigmy_savings_data_model.dart';
 import 'package:hp_finance/DataModel/PaymentDetails/update_group_payment_details_data_model.dart';
 import 'package:hp_finance/DataModel/PaymentDetails/update_payment_details_data_model.dart';
@@ -466,9 +468,14 @@ class NetworkService {
       ]
     }
   };
-  Future<LearnAboutPigmySavings> learnAboutPigmySavingsService() {
+  Future<LearnAboutPigmySavings> learnAboutPigmySavingsService({
+    required String?
+        type, // 1 - Learn About PIGMY SAVINGS | 2 - Learn About GROUP PIGMY SAVINGS
+  }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['type'] =
+            type; // 1 - Learn About PIGMY SAVINGS | 2 - Learn About GROUP PIGMY SAVINGS
         return _network
             .httpGet(apiHitTimeout, APIURLs.learnAboutPigmyURL,
                 body: paramsKeyVal)
@@ -1009,7 +1016,7 @@ class NetworkService {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         return _network
-            .httpGet(apiHitTimeout, APIURLs.verifyCustomerDashboardURL,
+            .httpGet(apiHitTimeout, APIURLs.agentsDashboardURL,
                 body: paramsKeyVal)
             .then(
           (dynamic res) {
@@ -1515,4 +1522,161 @@ class NetworkService {
     );
   }
   /* Update Group Creation Details */
+
+  /* Report History */
+  var reportDetRes = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "title": "Today's PIGMY Collections",
+      "report_list": [
+        {
+          "id": "1",
+          "type": "PIGMY",
+          "header_text": "PIGMYCODE1234",
+          "mem_name": "MAHALAKSHMI",
+          "ph_num": "+91 7345678900",
+          "payment_date": "16th August 2024 6:45 PM",
+          "footer_text": "Bangalore, Karnataka",
+          "amt_text": "₹1200",
+          "pay_status": "PAID",
+          "pay_status_type": "1"
+        },
+        {
+          "id": "2",
+          "type": "PIGMY",
+          "header_text": "PIGMYCODE1234",
+          "mem_name": "SITA",
+          "ph_num": "+91 7678990866",
+          "payment_date": "16th August 2024 6:45 PM",
+          "footer_text": "Bangalore, Karnataka",
+          "amt_text": "₹1200",
+          "pay_status": "DUE",
+          "pay_status_type": "2"
+        }
+      ]
+    }
+  };
+  Future<ReportDetailsDataModel> reportHistoryDetailsService({
+    required int? page,
+    required String? type, // 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['type'] =
+            type; // 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+        paramsKeyVal['page'] = "$page";
+        return _network
+            .httpGetQuery(
+          apiHitTimeout,
+          APIURLs.reportDetURL,
+          queryParams: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return ReportDetailsDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Report History */
+
+  /* Verify CUstomer Info */
+  var verifyRes = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "title": "Verify Information",
+      "info_list": [
+        {
+          "id": "1",
+          "type": "VERIFY",
+          "mem_name": "MAHALAKSHMI",
+          "ph_num": "+91 7567899876",
+          "footer_text": "Bangalore, Karnataka",
+          "status": "PENDING",
+          "status_type": "1" // 1-VERIFIED | 2-PENDING
+        }
+      ]
+    }
+  };
+  Future<VerifyInformationDetailsDataModel> verifyCustomerDetailsListService({
+    required int? page,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['page'] = "$page";
+        return _network
+            .httpGetQuery(
+          apiHitTimeout,
+          APIURLs.verifyCustomerInfoURL,
+          queryParams: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return VerifyInformationDetailsDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Verify Customer Info */
+
+  /* Verify Customer Profile */
+  var verifyprofileResults = {
+    "status": true,
+    "logout": false,
+    "message": "Loaded Successfully",
+    "data": {
+      "id": "123456",
+      "name": "Tejaswini D",
+      "mob_num": "7259889622",
+      "alt_mob_num": "6366317316",
+      "email_address": "tejaswinidev24@gmail.com",
+      "address": "Bhuvaneshwari Nagar",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "560057",
+      "aadhaar_num": "9813 3308 4678",
+      "pan_num": "GHJKI567E",
+      "rc_holder_name": "",
+      "property_holder_name": "",
+      "property_details": "",
+      "cheque_num": "XXXXXXXX",
+      "bank_name": "SBI",
+      "acc_num": "467890987654",
+      "ifsc_code": "SBIN0000813",
+      "bank_branch": "Dasarahalli",
+      "profile_img": "",
+      "aadhaar_img": "",
+      "pan_img": "",
+      "cheque_img": "",
+      "rc_img": "",
+      "property_img": "",
+      "pass_book_img": "",
+      "signature_img": ""
+    }
+  };
+  Future<dynamic> verifyCustomerProfilePrefetchDetails({
+    required String? id,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = id;
+        return _network
+            .httpGetQuery(apiHitTimeout, APIURLs.verifyCustomerDetPrefetchURL,
+                queryParams: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Verify Customer Profile */
 }

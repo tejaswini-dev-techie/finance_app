@@ -7,10 +7,14 @@ import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Constants/sharedpreference_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/group_loans_reports_tab/group_loans_reports_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/group_loans_tab/group_loans_tab.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_reports_tab/group_pigmy_reports_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_tab/group_pigmy_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/home_tab/home_tab.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/loans_reports_tab/loans_reports_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/loans_tab/loans_tab.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_reports_tab/pigmy_reports_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/pigmy_tab.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
 import 'package:hp_finance/Utils/sharedpreferences_util.dart';
@@ -20,10 +24,12 @@ import 'package:sizer/sizer.dart';
 
 class Dashboard extends StatefulWidget {
   final int? tabIndex;
+  int? dashbaordType; // 1 - Agent Dashboard | 2 - Customer Dashboard
 
-  const Dashboard({
+  Dashboard({
     super.key,
     this.tabIndex = 0,
+    this.dashbaordType, // 1 - Agent Dashboard | 2 - Customer Dashboard
   });
 
   @override
@@ -100,6 +106,37 @@ class _DashboardState extends State<Dashboard> {
   }
 
   getAppContentDet() async {
+    String? userType = "agent";
+    await SharedPreferencesUtil.getSharedPref(
+            SharedPreferenceConstants.prefUserType)
+        .then((value) {
+      if (value != null) {
+        userType = value;
+        print("user Type: $userType");
+      }
+    });
+    // Determine the tab index based on user_type
+    int? navigationType = (userType == "customer")
+        ? 2
+        : 1; // dashbaordType 1 - Agent Dashboard "agent" | 2 - Customer Dashboard "customer"
+    widget.dashbaordType = navigationType;
+
+    widgetOptions = (widget.dashbaordType == 1)
+        ? <Widget>[
+            const AgentsTab(),
+            const PigmyReportsTab(),
+            const GroupPigmyReports(),
+            const LoansReportsTab(),
+            const GroupLoansReportsTab(),
+          ]
+        : <Widget>[
+            const HomeTab(),
+            const PigmyTab(),
+            const GroupPigmyTab(),
+            const LoansTab(),
+            const GroupLoansTab(),
+          ];
+
     var appContent = await AppLanguageUtil().getAppContentDetails();
     internetAlert = appContent['action_items']['internet_alert'] ?? "";
     logoutSubTitle = appContent['logout']['exit_subtitle_text'] ?? "";
@@ -110,14 +147,7 @@ class _DashboardState extends State<Dashboard> {
 
   int _selectedIndex = 0;
   final ValueNotifier<bool> updateTabIndex = ValueNotifier<bool>(false);
-  static List<Widget> widgetOptions = <Widget>[
-    // const HomeTab(),
-    const AgentsTab(),
-    const PigmyTab(),
-    const GroupPigmyTab(),
-    const LoansTab(),
-    const GroupLoansTab(),
-  ];
+  static List<Widget>? widgetOptions;
 
   void onItemTapped(int index) {
     _selectedIndex = index;
@@ -294,7 +324,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-              body: widgetOptions.elementAt(_selectedIndex),
+              body: widgetOptions!.elementAt(_selectedIndex),
             );
           },
         ),

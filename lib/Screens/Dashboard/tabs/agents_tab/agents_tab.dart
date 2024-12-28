@@ -90,7 +90,7 @@ class _AgentsTabState extends State<AgentsTab> {
         if (internet) {
           Navigator.pushNamed(
             context,
-            RoutingConstants.routeVerifyCustomersDetailsScreen,
+            RoutingConstants.routeCustomersProfileVerificationScreen,
           );
         } else {
           ToastUtil().showSnackBar(
@@ -311,6 +311,42 @@ class _AgentsTabState extends State<AgentsTab> {
                                 ),
                               )
                             : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.grpCreationText != null &&
+                                agentsTabBloc
+                                    .userData!.grpCreationText!.isNotEmpty)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                child: InkWell(
+                                  onTap: () => onGropCreationAction(),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          agentsTabBloc
+                                                  .userData!.grpCreationText ??
+                                              "GROUP CREATION",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: ColorConstants.darkBlueColor,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: ColorConstants.darkBlueColor,
+                                        size: 12.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink()
                       ],
                     ),
                   ),
@@ -327,6 +363,26 @@ class _AgentsTabState extends State<AgentsTab> {
             context: context,
             retryAction: () => agentsTabBloc.add(GetAgentsDetailsEvent()),
             state: 2,
+          );
+        }
+      },
+    );
+  }
+
+  void onGropCreationAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeGroupCreationScreen,
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
           );
         }
       },

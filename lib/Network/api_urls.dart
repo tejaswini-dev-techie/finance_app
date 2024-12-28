@@ -1,7 +1,6 @@
 class APIURLs {
   static const networkCheckURL = 'https://www.google.com/';
   static const baseURL = "http://3.111.52.128:5000/api";
-  // "http://13.127.196.89:5000/api";
 
   static const loginURL = "$baseURL/auth/user-login";
   static const createUserURL = "$baseURL/auth/customer-sign-up";
@@ -45,8 +44,8 @@ class APIURLs {
 
   static const transactionDetURL = "$baseURL/loan/loan-transaction";
 
-  static const verifyCustomerDashboardURL =
-      "$baseURL/agent/verify-customer-dashboard";
+  // static const verifyCustomerDashboardURL =
+  //     "$baseURL/agent/verify-customer-dashboard";
   static const groupMemberDetailsURL = "$baseURL/agent/get-group-member-detail";
   static const logoutURL = "$baseURL/auth/logout";
 
@@ -68,4 +67,11 @@ class APIURLs {
       "$baseURL/customer/search-customer-detail";
 
   static const updateGroupCreationURL = "$baseURL/group/create-group-agent";
+
+  /* Report Details */
+  static const reportDetURL = "$baseURL/collection/get-today-collection-list";
+  static const verifyCustomerInfoURL =
+      "$baseURL/customer/get-verify-customer-list";
+  static const verifyCustomerDetPrefetchURL = "$baseURL/customer/get-verify-details";
+  /* Report Details */
 }
