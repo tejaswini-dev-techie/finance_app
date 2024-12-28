@@ -365,8 +365,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                 );
               }
               // All validations passed, navigate to the next screen
-              Navigator.pushReplacementNamed(
-                  context, RoutingConstants.routeDashboardScreen);
+              Future.delayed(const Duration(seconds: 1)).then((value) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  RoutingConstants.routeLoginScreen,
+                );
+              });
             } else {
               if (!mounted) return;
               ToastUtil().showSnackBar(

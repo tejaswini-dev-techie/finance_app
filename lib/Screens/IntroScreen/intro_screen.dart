@@ -39,7 +39,9 @@ class _IntroScreenState extends State<IntroScreen> {
   sessionNavigation() async {
     String loginData = await SharedPreferencesUtil.getSharedPref(
             SharedPreferenceConstants.prefisAlreadyLogin) ??
-        "1";
+        "0";
+
+    print("loginData: $loginData");
 
     if (loginData == "1") {
       if (!mounted) return;
@@ -47,13 +49,14 @@ class _IntroScreenState extends State<IntroScreen> {
         context,
         RoutingConstants.routeDashboardScreen,
       );
-    } else {
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(
-        context,
-        RoutingConstants.routeLoginScreen,
-      );
     }
+    // else {
+    //   if (!mounted) return;
+    //   Navigator.pushReplacementNamed(
+    //     context,
+    //     RoutingConstants.routeLoginScreen,
+    //   );
+    // }
   }
 
   getAppContentDet() async {

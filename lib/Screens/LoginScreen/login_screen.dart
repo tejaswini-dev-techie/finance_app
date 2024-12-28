@@ -369,7 +369,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               .checkInternetConnection()
                                               .then((internet) {
                                             if (internet) {
-                                              Navigator.pushReplacementNamed(
+                                              Navigator.pushNamed(
                                                 context,
                                                 RoutingConstants
                                                     .routeResetPasswordScreen,
