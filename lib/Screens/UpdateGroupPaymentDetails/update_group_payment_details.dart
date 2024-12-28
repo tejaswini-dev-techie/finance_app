@@ -1819,7 +1819,7 @@ class _UpdateGroupPaymentDetailsScreenState
     required String? cusID,
   }) async {
     Navigator.pop(context);
-    // All validations passed, navigate to the next screen
+
     var result = await NetworkService().updateGroupEditAmountPayService(
       id: widget.customerID,
       type: widget.type,
@@ -1885,7 +1885,6 @@ class _UpdateGroupPaymentDetailsScreenState
         }
       }
 
-      // All validations passed, navigate to the next screen
       var result = await NetworkService().updateGrpPaymentDetails(
         id: widget.customerID,
         type: widget.type,

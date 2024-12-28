@@ -366,6 +366,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               }
               // All validations passed, navigate to the next screen
               Future.delayed(const Duration(seconds: 1)).then((value) {
+                if (!mounted) return;
                 Navigator.pushReplacementNamed(
                   context,
                   RoutingConstants.routeLoginScreen,

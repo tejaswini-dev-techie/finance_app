@@ -589,7 +589,7 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
     if (form?.validate() ?? false) {
       if (selectedValue.value != "Select your PIGMY Frequency") {
         isDisabled.value = false;
-        // All validations passed, navigate to the next screen
+
         var result = await NetworkService().updateGroupCreationDetails(
           groupName: _groupNameController.text,
           groupLeaderName: _groupLeaderNameController.text,
@@ -609,15 +609,18 @@ class _GroupCreationScreenState extends State<GroupCreationScreen> {
             );
           }
           // All validations passed, navigate to the next screen
-          Map<String, dynamic> data = {};
-          data = {
-            "tab_index": 0,
-          };
-          Navigator.pushReplacementNamed(
-            context,
-            RoutingConstants.routeDashboardScreen,
-            arguments: {"data": data},
-          );
+          Future.delayed(const Duration(seconds: 1)).then((value) {
+            Map<String, dynamic> data = {};
+            data = {
+              "tab_index": 0,
+            };
+            if (!mounted) return;
+            Navigator.pushReplacementNamed(
+              context,
+              RoutingConstants.routeDashboardScreen,
+              arguments: {"data": data},
+            );
+          });
         } else {
           if (!mounted) return;
           ToastUtil().showSnackBar(

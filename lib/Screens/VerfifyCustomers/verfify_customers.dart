@@ -1960,7 +1960,7 @@ class _VerifyCustomersDetailsScreenState
           passBookImagePath!.isNotEmpty &&
           signatureImagePath != null &&
           signatureImagePath!.isNotEmpty) {
-        // All validations passed, navigate to the next screen
+        
         var result = await NetworkService().updateKYCDetails(
           userName: _nameController.text,
           mobNum: _phNumController.text,

@@ -1387,7 +1387,6 @@ class _UpdateCustomersPaymentDetailsScreenState
     if (form?.validate() ?? false) {
       isDisabled.value = false;
 
-      // All validations passed, navigate to the next screen
       var result = await NetworkService().updatePaymentDetails(
         id: widget.customerID,
         type: widget.type,
