@@ -27,6 +27,7 @@ The HP Finance App is a revolutionary platform designed to simplify the manageme
 
 ## Technologies Used
 - Frontend: Flutter
+
   <img width="815" alt="Screenshot 2024-12-31 at 3 58 33 PM" src="https://github.com/user-attachments/assets/0f006f52-a271-4c69-90fb-04c1a9423d33" />
 
 - Backend: Node.js
