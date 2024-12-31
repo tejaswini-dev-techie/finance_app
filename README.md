@@ -23,13 +23,14 @@ The HP Finance App is a revolutionary platform designed to simplify the manageme
 - Access shared resources and tools for collective financial growth.
 
 ## Design Resources
-- [Resources](https://www.figma.com/design/6x6LArQbKQ7UOdncdAULzt/Figma-basics?node-id=741-99&node-type=canvas&t=ANXMzTl0NgHpKsJj-0)
+- [Figma](https://www.figma.com/design/6x6LArQbKQ7UOdncdAULzt/Figma-basics?node-id=741-99&node-type=canvas&t=ANXMzTl0NgHpKsJj-0)
 
 ## Technologies Used
-Frontend: Flutter
-Backend: Node.js
+- Frontend: Flutter
+- Backend: Node.js
 
 ## GitHub Commands
+```
 echo "# finance_app" >> README.md
 git init
 git add README.md
@@ -41,6 +42,7 @@ git push -u origin main
 git remote add origin https://github.com/tejaswini-dev-techie/finance_app.git
 git branch -M main
 git push -u origin main
+```
 
 ## Conclusion
 The HP Finance App is your trusted partner for managing savings and accessing loans. With its secure, efficient, and community-driven approach, the app transforms the way individuals and groups handle finances. Start your journey toward financial freedom today!
