@@ -25,6 +25,19 @@ class ValidationUtil {
   }
   /* Name Validation */
 
+  /* Reference Name Validation */
+  static String? validateReferenceName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Reference Name';
+    } else if (value.length < 3) {
+      return 'Reference Name must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+      return 'Reference Name should not contain numbers or special characters';
+    }
+    return null;
+  }
+  /* Reference Name Validation */
+
   /* Mobile Number Validation */
   static String? validateMobileNumber(String? value) {
     if (value == null || value.isEmpty) {
@@ -133,6 +146,19 @@ class ValidationUtil {
     return null;
   }
   /* Alternate Mobile Number Validation */
+
+  /* Mobile Number Validation */
+  static String? validateReferenceMobileNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    } else if (value.length != 10) {
+      return 'Mobile number must be exactly 10 digits';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Mobile number can only contain digits';
+    }
+    return null;
+  }
+  /* Mobile Number Validation */
 
   /* Frequency Validation */
   static String? validateFrequency(String? value) {

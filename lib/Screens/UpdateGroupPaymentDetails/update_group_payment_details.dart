@@ -1518,7 +1518,63 @@ class _UpdateGroupPaymentDetailsScreenState
                                                     ),
                                                   ),
                                                   InkWell(
-                                                    onTap: () {
+                                                    onTap: () async {
+                                                      List grpCusDetaList = [];
+
+                                                      for (int i = 0;
+                                                          i <
+                                                              updateGroupPaymentDetailsBloc
+                                                                  .userData!
+                                                                  .customersList!
+                                                                  .length;
+                                                          i++) {
+                                                        if (updateGroupPaymentDetailsBloc
+                                                                .userData!
+                                                                .customersList![
+                                                                    i]
+                                                                .isSelected ==
+                                                            true) {
+                                                          grpCusDetaList.add(
+                                                              updateGroupPaymentDetailsBloc
+                                                                  .userData!
+                                                                  .customersList![i]);
+                                                        }
+                                                      }
+                                                      await NetworkService()
+                                                          .updateSaveGrpPaymentDetails(
+                                                        id: widget.customerID,
+                                                        type: widget.type,
+                                                        userName:
+                                                            _nameController
+                                                                .text,
+                                                        mobNum: _phNumController
+                                                            .text,
+                                                        code:
+                                                            _loanCodeController
+                                                                .text,
+                                                        agent:
+                                                            _agentCodeController
+                                                                .text,
+                                                        amtPaid:
+                                                            _amtPaidCodeController
+                                                                .text,
+                                                        amtDue:
+                                                            _amtDueCodeController
+                                                                .text,
+                                                        date: _dateInput.text,
+                                                        paymentCollectionDate:
+                                                            _dateCollectionInput
+                                                                .text,
+                                                        paymentMode:
+                                                            selectedPaymentModeIDValue,
+                                                        paymentStatus:
+                                                            selectedPaymentStatusIDValue,
+                                                        amountType:
+                                                            _amountToBePaidController
+                                                                .text,
+                                                        cusDetails:
+                                                            grpCusDetaList,
+                                                      );
                                                       updateGroupPaymentDetailsBloc
                                                           .add(
                                                         GetPaymentDetailsEvent(

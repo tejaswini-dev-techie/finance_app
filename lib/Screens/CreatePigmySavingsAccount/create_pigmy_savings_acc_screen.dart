@@ -1493,7 +1493,8 @@ class _CreatePigmySavingsAccountScreenState
                                                         _referenceController,
                                                     validationFunc: (value) {
                                                       return ValidationUtil
-                                                          .validateName(value);
+                                                          .validateReferenceName(
+                                                              value);
                                                     },
                                                   ),
                                                   SizedBox(
@@ -1548,7 +1549,7 @@ class _CreatePigmySavingsAccountScreenState
                                                         TextInputType.number,
                                                     validationFunc: (value) {
                                                       return ValidationUtil
-                                                          .validateMobileNumber(
+                                                          .validateReferenceMobileNumber(
                                                         value,
                                                       );
                                                     },
@@ -1625,7 +1626,7 @@ class _CreatePigmySavingsAccountScreenState
     String? bankBranchError =
         ValidationUtil.validateBranchName(_nomineeBranchController.text);
     String? referenceError =
-        ValidationUtil.validateName(_referenceController.text);
+        ValidationUtil.validateReferenceName(_referenceController.text);
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {

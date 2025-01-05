@@ -59,30 +59,33 @@ class GroupLoansScreen extends StatelessWidget {
             height: 16.sp,
           ),
           (transactionHistoryText != null && transactionHistoryText!.isNotEmpty)
-              ? InkWell(
-                  onTap: () => onTransactionHistoryAction(),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    // mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          transactionHistoryText ?? "",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: ColorConstants.darkBlueColor,
-                            fontWeight: FontWeight.w700,
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    onTap: () => onTransactionHistoryAction(),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            transactionHistoryText ?? "",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: ColorConstants.darkBlueColor,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: ColorConstants.darkBlueColor,
-                        size: 12.sp,
-                      ),
-                    ],
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: ColorConstants.darkBlueColor,
+                          size: 12.sp,
+                        ),
+                      ],
+                    ),
                   ),
                 )
               : const SizedBox.shrink(),
@@ -92,30 +95,33 @@ class GroupLoansScreen extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
           (groupMembersText != null && groupMembersText!.isNotEmpty)
-              ? InkWell(
-                  onTap: () => onGroupMembersAction(),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    // mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          groupMembersText ?? "",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: ColorConstants.darkBlueColor,
-                            fontWeight: FontWeight.w700,
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    onTap: () => onGroupMembersAction(),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            groupMembersText ?? "",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: ColorConstants.darkBlueColor,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: ColorConstants.darkBlueColor,
-                        size: 12.sp,
-                      ),
-                    ],
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: ColorConstants.darkBlueColor,
+                          size: 12.sp,
+                        ),
+                      ],
+                    ),
                   ),
                 )
               : const SizedBox.shrink(),

@@ -173,33 +173,37 @@ class _PigmyTabState extends State<PigmyTab> {
                           (pigmyBloc.pigmyData?.learnPigmyBtnText != null &&
                                   pigmyBloc
                                       .pigmyData!.learnPigmyBtnText!.isNotEmpty)
-                              ? InkWell(
-                                  onTap: () => onClickHereAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          pigmyBloc.pigmyData
-                                                  ?.learnPigmyBtnText ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: InkWell(
+                                    onTap: () => onClickHereAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            pigmyBloc.pigmyData
+                                                    ?.learnPigmyBtnText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
                               : const SizedBox.shrink(),
@@ -213,33 +217,37 @@ class _PigmyTabState extends State<PigmyTab> {
                           (pigmyBloc.pigmyData?.withdrawPigmyBtnText != null &&
                                   pigmyBloc.pigmyData!.withdrawPigmyBtnText!
                                       .isNotEmpty)
-                              ? InkWell(
-                                  onTap: () => onWithdrawPigmySavingsAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          pigmyBloc.pigmyData
-                                                  ?.withdrawPigmyBtnText ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: InkWell(
+                                    onTap: () => onWithdrawPigmySavingsAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            pigmyBloc.pigmyData
+                                                    ?.withdrawPigmyBtnText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
                               : const SizedBox.shrink(),
@@ -257,33 +265,37 @@ class _PigmyTabState extends State<PigmyTab> {
                                       .pigmyData!
                                       .pigmyTransactionHistoryBtnText!
                                       .isNotEmpty)
-                              ? InkWell(
-                                  onTap: () => onPigmyHistoryAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          pigmyBloc.pigmyData
-                                                  ?.pigmyTransactionHistoryBtnText ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: InkWell(
+                                    onTap: () => onPigmyHistoryAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            pigmyBloc.pigmyData
+                                                    ?.pigmyTransactionHistoryBtnText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
                               : const SizedBox.shrink(),

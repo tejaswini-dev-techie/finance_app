@@ -27,7 +27,7 @@ class APIURLs {
   /* KYC */
   static const updateKYCDetailsURL = "$baseURL/customer/update-kyc";
   static const updateIndividualGroupDetailsURL =
-      "$baseURL/create-customer-agent";
+      "$baseURL/customer/create-customer-agent";
   static const updateAddressMobNumURL =
       "$baseURL/customer/update-address-phone";
   /* KYC */

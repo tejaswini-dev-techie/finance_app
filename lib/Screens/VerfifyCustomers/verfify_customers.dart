@@ -1443,8 +1443,8 @@ class _VerifyCustomersDetailsScreenState
                                           textEditingController:
                                               _referenceController,
                                           validationFunc: (value) {
-                                            return ValidationUtil.validateName(
-                                                value);
+                                            return ValidationUtil
+                                                .validateReferenceName(value);
                                           },
                                         ),
                                         SizedBox(
@@ -1491,7 +1491,7 @@ class _VerifyCustomersDetailsScreenState
                                           keyboardtype: TextInputType.number,
                                           validationFunc: (value) {
                                             return ValidationUtil
-                                                .validateMobileNumber(
+                                                .validateReferenceMobileNumber(
                                               value,
                                             );
                                           },
@@ -3059,7 +3059,7 @@ class _VerifyCustomersDetailsScreenState
                                                           _referenceController,
                                                       validationFunc: (value) {
                                                         return ValidationUtil
-                                                            .validateName(
+                                                            .validateReferenceName(
                                                                 value);
                                                       },
                                                     ),
@@ -3116,7 +3116,7 @@ class _VerifyCustomersDetailsScreenState
                                                           TextInputType.number,
                                                       validationFunc: (value) {
                                                         return ValidationUtil
-                                                            .validateMobileNumber(
+                                                            .validateReferenceMobileNumber(
                                                           value,
                                                         );
                                                       },
@@ -3273,7 +3273,7 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateImage(signatureImagePath, 7);
 
     String? referenceError =
-        ValidationUtil.validateName(_referenceController.text);
+        ValidationUtil.validateReferenceName(_referenceController.text);
     String? reasonError =
         ValidationUtil.validateWithdrawReason(_reasonController.text);
 

@@ -1286,6 +1286,60 @@ class NetworkService {
   }
   /* Update Edit Amount */
 
+  /* Update Save Action Group Payment Details */
+  // var resultUpdatePayment = {
+  //   "status": true,
+  //   "logout": false,
+  //   "message": "Profile details updated successfully"
+  // };
+
+  /* Update Save Action Group Payment Details */
+  Future<dynamic> updateSaveGrpPaymentDetails({
+    required String? userName,
+    required String? mobNum,
+    required String? code,
+    required String? agent,
+    required String? amtPaid,
+    required String? amtDue,
+    required String? date,
+    required String? paymentCollectionDate,
+    required String? paymentMode,
+    required String? paymentStatus,
+    required String? amountType,
+    required String? id,
+    required String? type,
+    required List? cusDetails,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = "$id";
+        paramsKeyVal['type'] = "$type";
+        paramsKeyVal['userName'] = userName;
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['codeID'] = code;
+        paramsKeyVal['agent'] = agent;
+        paramsKeyVal['amountPaid'] = amtPaid;
+        paramsKeyVal['due'] = amtDue;
+        paramsKeyVal['date'] = date;
+        paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
+        paramsKeyVal['paymentMode'] = paymentMode;
+        paramsKeyVal['paymentStatus'] = paymentStatus;
+        paramsKeyVal['amountType'] = amountType;
+        paramsKeyVal['cusDetails'] = json.encode(cusDetails);
+        return _network
+            .httpPut(apiHitTimeout, APIURLs.saveDetailGrpPayURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+
+  /* Update Save Action Group Payment Details */
+
   /* Update Payment Details */
   // var resultUpdatePayment = {
   //   "status": true,
@@ -1809,7 +1863,7 @@ class NetworkService {
         paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
         paramsKeyVal['permanent_address'] = permanentAddress;
         return _network
-            .httpPut(
+            .httpPost(
           apiHitTimeout,
           APIURLs.updateIndividualGroupDetailsURL,
           body: paramsKeyVal,
