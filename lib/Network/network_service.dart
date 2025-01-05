@@ -615,7 +615,7 @@ class NetworkService {
     required String? zipCode,
     required String? country,
     required String? panImage,
-    // required String? chequeImage,
+    required String? agentName,
     required String? panNumber,
     required String? aadhaarNumber,
     required String? rcImage,
@@ -692,6 +692,7 @@ class NetworkService {
         paramsKeyVal['buildingStreetImagePath'] = buildingStreetImagePath;
         paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
         paramsKeyVal['permanent_address'] = permanentAddress;
+        paramsKeyVal['agentName'] = agentName;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -1821,6 +1822,7 @@ class NetworkService {
     String? buildingStreetImagePath,
     String? buildingAreaImagePath,
     required String? permanentAddress,
+    required String? agentName,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -1862,6 +1864,7 @@ class NetworkService {
         paramsKeyVal['buildingStreetImagePath'] = buildingStreetImagePath;
         paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
         paramsKeyVal['permanent_address'] = permanentAddress;
+        paramsKeyVal['agentName'] = agentName;
         return _network
             .httpPost(
           apiHitTimeout,

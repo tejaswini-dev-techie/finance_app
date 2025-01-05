@@ -38,6 +38,32 @@ class ValidationUtil {
   }
   /* Reference Name Validation */
 
+  /* Agent Name Validation */
+  static String? validateAgentName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Agent Name';
+    } else if (value.length < 3) {
+      return 'Agent Name must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+      return 'Agent Name should not contain numbers or special characters';
+    }
+    return null;
+  }
+  /* Agent Name Validation */
+
+  /* Verified By Agent Name Validation */
+  static String? validateByAgentName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Verifed By Agent Name';
+    } else if (value.length < 3) {
+      return 'Verifed By Agent Name must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+      return 'Verifed By Agent Name should not contain numbers or special characters';
+    }
+    return null;
+  }
+  /* Verified By Agent Name Validation */
+
   /* Mobile Number Validation */
   static String? validateMobileNumber(String? value) {
     if (value == null || value.isEmpty) {

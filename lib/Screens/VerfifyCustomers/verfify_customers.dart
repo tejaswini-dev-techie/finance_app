@@ -107,6 +107,7 @@ class _VerifyCustomersDetailsScreenState
   final TextEditingController _bankBranchController = TextEditingController();
   final TextEditingController _bankIFSCcodeController = TextEditingController();
   final TextEditingController _referenceController = TextEditingController();
+  final TextEditingController _agentNameController = TextEditingController();
   final TextEditingController _referenceNumController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
   /* TextEditing Controller */
@@ -133,6 +134,7 @@ class _VerifyCustomersDetailsScreenState
   final FocusNode _bankIFSCCodeFocusNode = FocusNode();
   final FocusNode _bankAccNumFocusNode = FocusNode();
   final FocusNode _referenceFocusNode = FocusNode();
+  final FocusNode _agentNameFocusNode = FocusNode();
   final FocusNode _referenceNumFocusNode = FocusNode();
   final FocusNode _reasonFocusNode = FocusNode();
   /* Focus Node */
@@ -280,6 +282,7 @@ class _VerifyCustomersDetailsScreenState
     _referenceController.addListener(_validateFields);
     _referenceNumController.addListener(_validateFields);
     _reasonController.addListener(_validateFields);
+    _agentNameController.addListener(_validateFields);
   }
 
   @override
@@ -309,6 +312,7 @@ class _VerifyCustomersDetailsScreenState
     _referenceController.dispose();
     _referenceNumController.dispose();
     _reasonController.dispose();
+    _agentNameController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -333,6 +337,7 @@ class _VerifyCustomersDetailsScreenState
     _referenceFocusNode.dispose();
     _referenceFocusNode.dispose();
     _reasonFocusNode.dispose();
+    _agentNameFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -357,6 +362,7 @@ class _VerifyCustomersDetailsScreenState
     _referenceController.removeListener(_validateFields);
     _referenceNumController.removeListener(_validateFields);
     _reasonController.removeListener(_validateFields);
+    _agentNameController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -1497,6 +1503,76 @@ class _VerifyCustomersDetailsScreenState
                                           },
                                         ),
                                         /* Reference Mobile Number Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Agent Name */
+                                        Text(
+                                          "Lead - Agent Name",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _agentNameFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.person_pin_rounded,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: "Enter Agent Name",
+                                          textEditingController:
+                                              _agentNameController,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateAgentName(value);
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                              /* Reference Input Field */
+
+                              /* Reference Input Field*/
+                              (widget.type == "2")
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Agent Name */
+                                        Text(
+                                          "Lead - Agent Name",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _agentNameFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.person_pin_rounded,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: "Enter Agent Name",
+                                          textEditingController:
+                                              _agentNameController,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateAgentName(value);
+                                          },
+                                        ),
                                       ],
                                     )
                                   : const SizedBox.shrink(),
@@ -3033,7 +3109,7 @@ class _VerifyCustomersDetailsScreenState
                                                       height: 16.sp,
                                                     ),
                                                     Text(
-                                                      "Reference -  Group Leader Name",
+                                                      "Verified By - Agent Name",
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -3054,12 +3130,12 @@ class _VerifyCustomersDetailsScreenState
                                                             .darkBlueColor,
                                                       ),
                                                       placeholderText:
-                                                          "Enter Reference Name",
+                                                          "Enter Agent Name",
                                                       textEditingController:
                                                           _referenceController,
                                                       validationFunc: (value) {
                                                         return ValidationUtil
-                                                            .validateReferenceName(
+                                                            .validateByAgentName(
                                                                 value);
                                                       },
                                                     ),
@@ -3069,7 +3145,7 @@ class _VerifyCustomersDetailsScreenState
 
                                                     /* Reference Mobile Number Input Field */
                                                     Text(
-                                                      "Reference Contact Details",
+                                                      "Verified By: Contact Details",
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -3089,7 +3165,7 @@ class _VerifyCustomersDetailsScreenState
                                                             .darkBlueColor,
                                                       ),
                                                       placeholderText:
-                                                          "Enter Reference Mobile Number",
+                                                          "Enter Agent Mobile Number",
                                                       textEditingController:
                                                           _referenceNumController,
                                                       inputFormattersList: <TextInputFormatter>[
@@ -3274,6 +3350,11 @@ class _VerifyCustomersDetailsScreenState
 
     String? referenceError =
         ValidationUtil.validateReferenceName(_referenceController.text);
+    String? agentNameError =
+        ValidationUtil.validateAgentName(_agentNameController.text);
+
+    String? verifiedAgentError =
+        ValidationUtil.validateByAgentName(_referenceController.text);
     String? reasonError =
         ValidationUtil.validateWithdrawReason(_reasonController.text);
 
@@ -3337,6 +3418,7 @@ class _VerifyCustomersDetailsScreenState
             buildingStreetImagePath: buildingStreetImagePath,
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
+            agentName: _agentNameController.text,
           );
         } else if (widget.type == "2") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
@@ -3376,6 +3458,7 @@ class _VerifyCustomersDetailsScreenState
             buildingStreetImagePath: buildingStreetImagePath,
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
+            agentName: _agentNameController.text,
           );
         } else if (widget.type == "3") {
           result = await NetworkService().updateKYCDetails(
@@ -3421,6 +3504,7 @@ class _VerifyCustomersDetailsScreenState
             buildingStreetImagePath: buildingStreetImagePath,
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
+            agentName: _agentNameController.text,
           );
         } else {
           result = await NetworkService().updateKYCDetails(
@@ -3460,6 +3544,7 @@ class _VerifyCustomersDetailsScreenState
             buildingStreetImagePath: buildingStreetImagePath,
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
+            agentName: _agentNameController.text,
           );
         }
 
@@ -3579,8 +3664,12 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_bankAccNumFocusNode, accNumError);
       } else if ((widget.type == "1") && referenceError != null) {
         _showErrorAndFocus(_referenceFocusNode, referenceError);
-      } else if ((widget.type == "3") && referenceError != null) {
-        _showErrorAndFocus(_referenceFocusNode, referenceError);
+      } else if ((widget.type == "1") && agentNameError != null) {
+        _showErrorAndFocus(_agentNameFocusNode, agentNameError);
+      } else if ((widget.type == "2") && agentNameError != null) {
+        _showErrorAndFocus(_agentNameFocusNode, agentNameError);
+      } else if ((widget.type == "3") && verifiedAgentError != null) {
+        _showErrorAndFocus(_referenceFocusNode, verifiedAgentError);
       } else if ((widget.type == "3") &&
           (isRejected == true) &&
           reasonError != null) {
