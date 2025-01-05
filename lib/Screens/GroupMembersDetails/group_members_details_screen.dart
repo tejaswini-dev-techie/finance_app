@@ -14,7 +14,11 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 class GroupMembersDetailsScreen extends StatefulWidget {
-  const GroupMembersDetailsScreen({super.key});
+  final String? type; // type: 1 - G PIGMY | 2 - G Loans
+  const GroupMembersDetailsScreen({
+    super.key,
+    this.type = "1",
+  });
 
   @override
   State<GroupMembersDetailsScreen> createState() =>
@@ -36,6 +40,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
       GetGroupMemDetEvent(
         page: 1,
         showLoading: true,
+        type: widget.type,
       ),
     );
   }
@@ -138,6 +143,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
                               groupMembersDetailsBloc.saving = true;
                               groupMembersDetailsBloc.add(
                                 GetGroupMemDetEvent(
+                                  type: widget.type,
                                   page: groupMembersDetailsBloc.page,
                                   oldGrpMemList:
                                       groupMembersDetailsBloc.grpMemList ?? [],
@@ -168,6 +174,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
                                 if (internet) {
                                   groupMembersDetailsBloc.add(
                                     GetGroupMemDetEvent(
+                                      type: widget.type,
                                       page: 1,
                                       showLoading: true,
                                     ),
@@ -194,184 +201,228 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
                               vertical: 24.sp,
                             ),
                             itemBuilder: (context, index) {
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    flex: 7,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 4.sp),
-                                          child: Image.network(
+                              return InkWell(
+                                onTap: () {
+                                  InternetUtil()
+                                      .checkInternetConnection()
+                                      .then((internet) {
+                                    if (internet) {
+                                      if (groupMembersDetailsBloc
+                                                  .grpMemList![index]
+                                                  .memberID !=
+                                              null &&
+                                          groupMembersDetailsBloc
+                                              .grpMemList![index]
+                                              .memberID!
+                                              .isNotEmpty) {
+                                        Map<String, dynamic> data = {};
+                                        data = {
+                                          "type":
+                                              "2", // type 1 - My Profile | 2 - Others Profile
+                                          "customerID": groupMembersDetailsBloc
+                                                  .grpMemList![index]
+                                                  .memberID ??
+                                              "",
+                                        };
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          RoutingConstants.routeProfileScreen,
+                                          arguments: {"data": data},
+                                        );
+                                      }
+                                    } else {
+                                      ToastUtil().showSnackBar(
+                                          context: context,
+                                          message: groupMembersDetailsBloc
+                                              .internetAlert,
+                                          isError: true);
+                                    }
+                                  });
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      flex: 7,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 4.sp),
+                                            child: Image.network(
+                                              groupMembersDetailsBloc
+                                                      .grpMemList![index]
+                                                      .profileImg ??
+                                                  "",
+                                              scale: 5.0,
+                                              fit: BoxFit.fill,
+                                              height: 24.sp,
+                                              width: 24.sp,
+                                              filterQuality: Platform.isIOS
+                                                  ? FilterQuality.medium
+                                                  : FilterQuality.low,
+                                              loadingBuilder:
+                                                  (BuildContext? context,
+                                                      Widget? child,
+                                                      ImageChunkEvent?
+                                                          loadingProgress) {
+                                                if (loadingProgress == null) {
+                                                  return child!;
+                                                }
+                                                return Shimmer.fromColors(
+                                                  baseColor: Colors.grey[300]!,
+                                                  highlightColor:
+                                                      Colors.grey[400]!,
+                                                  enabled: true,
+                                                  child: Image.asset(
+                                                    ImageConstants.profileImage,
+                                                    width: 34.sp,
+                                                    height: 34.sp,
+                                                  ),
+                                                );
+                                              },
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Shimmer.fromColors(
+                                                  baseColor: Colors.grey[300]!,
+                                                  highlightColor:
+                                                      Colors.grey[400]!,
+                                                  enabled: true,
+                                                  child: Image.asset(
+                                                    ImageConstants.profileImage,
+                                                    width: 34.sp,
+                                                    height: 34.sp,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  groupMembersDetailsBloc
+                                                          .grpMemList![index]
+                                                          .headerText ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontSize: 8.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: ColorConstants
+                                                        .lightBlackColor,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  groupMembersDetailsBloc
+                                                          .grpMemList![index]
+                                                          .memName ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: ColorConstants
+                                                        .blackColor,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  groupMembersDetailsBloc
+                                                          .grpMemList![index]
+                                                          .joinedDate ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontSize: 10.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: ColorConstants
+                                                        .lightBlackColor,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  groupMembersDetailsBloc
+                                                          .grpMemList![index]
+                                                          .footerText ??
+                                                      "",
+                                                  style: TextStyle(
+                                                    fontSize: 10.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: ColorConstants
+                                                        .lightBlackColor,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
                                             groupMembersDetailsBloc
                                                     .grpMemList![index]
-                                                    .profileImg ??
+                                                    .amtText ??
                                                 "",
-                                            scale: 5.0,
-                                            fit: BoxFit.fill,
-                                            height: 24.sp,
-                                            width: 24.sp,
-                                            filterQuality: Platform.isIOS
-                                                ? FilterQuality.medium
-                                                : FilterQuality.low,
-                                            loadingBuilder:
-                                                (BuildContext? context,
-                                                    Widget? child,
-                                                    ImageChunkEvent?
-                                                        loadingProgress) {
-                                              if (loadingProgress == null) {
-                                                return child!;
-                                              }
-                                              return Shimmer.fromColors(
-                                                baseColor: Colors.grey[300]!,
-                                                highlightColor:
-                                                    Colors.grey[400]!,
-                                                enabled: true,
-                                                child: Image.asset(
-                                                  ImageConstants.profileImage,
-                                                  width: 34.sp,
-                                                  height: 34.sp,
-                                                ),
-                                              );
-                                            },
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Shimmer.fromColors(
-                                                baseColor: Colors.grey[300]!,
-                                                highlightColor:
-                                                    Colors.grey[400]!,
-                                                enabled: true,
-                                                child: Image.asset(
-                                                  ImageConstants.profileImage,
-                                                  width: 34.sp,
-                                                  height: 34.sp,
-                                                ),
-                                              );
-                                            },
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w700,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                groupMembersDetailsBloc
-                                                        .grpMemList![index]
-                                                        .headerText ??
-                                                    "",
-                                                style: TextStyle(
-                                                  fontSize: 8.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: ColorConstants
-                                                      .lightBlackColor,
-                                                ),
-                                              ),
-                                              Text(
-                                                groupMembersDetailsBloc
-                                                        .grpMemList![index]
-                                                        .memName ??
-                                                    "",
-                                                style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w700,
-                                                  color:
-                                                      ColorConstants.blackColor,
-                                                ),
-                                              ),
-                                              Text(
-                                                groupMembersDetailsBloc
-                                                        .grpMemList![index]
-                                                        .joinedDate ??
-                                                    "",
-                                                style: TextStyle(
-                                                  fontSize: 10.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: ColorConstants
-                                                      .lightBlackColor,
-                                                ),
-                                              ),
-                                              Text(
-                                                groupMembersDetailsBloc
-                                                        .grpMemList![index]
-                                                        .footerText ??
-                                                    "",
-                                                style: TextStyle(
-                                                  fontSize: 10.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: ColorConstants
-                                                      .lightBlackColor,
-                                                ),
-                                              ),
-                                            ],
+                                          Text(
+                                            groupMembersDetailsBloc
+                                                    .grpMemList![index]
+                                                    .payStatus ??
+                                                "",
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w700,
+                                              color: (groupMembersDetailsBloc
+                                                          .grpMemList![index]
+                                                          .payStatusType ==
+                                                      "2")
+                                                  ? ColorConstants.mintRedColor
+                                                  : ColorConstants
+                                                      .mintGreenColor,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            groupMembersDetailsBloc
+                                                    .grpMemList![index]
+                                                    .accStatus ??
+                                                "",
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w700,
+                                              color: (groupMembersDetailsBloc
+                                                          .grpMemList![index]
+                                                          .accStatusType ==
+                                                      "2")
+                                                  ? ColorConstants.mintRedColor
+                                                  : ColorConstants
+                                                      .mintGreenColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    flex: 3,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          groupMembersDetailsBloc
-                                                  .grpMemList![index].amtText ??
-                                              "",
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w700,
-                                            color: ColorConstants.darkBlueColor,
-                                          ),
-                                        ),
-                                        Text(
-                                          groupMembersDetailsBloc
-                                                  .grpMemList![index]
-                                                  .payStatus ??
-                                              "",
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                            fontSize: 10.sp,
-                                            fontWeight: FontWeight.w700,
-                                            color: (groupMembersDetailsBloc
-                                                        .grpMemList![index]
-                                                        .payStatusType ==
-                                                    "2")
-                                                ? ColorConstants.mintRedColor
-                                                : ColorConstants.mintGreenColor,
-                                          ),
-                                        ),
-                                        Text(
-                                          groupMembersDetailsBloc
-                                                  .grpMemList![index]
-                                                  .accStatus ??
-                                              "",
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                            fontSize: 10.sp,
-                                            fontWeight: FontWeight.w700,
-                                            color: (groupMembersDetailsBloc
-                                                        .grpMemList![index]
-                                                        .accStatusType ==
-                                                    "2")
-                                                ? ColorConstants.mintRedColor
-                                                : ColorConstants.mintGreenColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             },
                             separatorBuilder: (context, index) {
@@ -426,6 +477,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
                   context: context,
                   retryAction: () => groupMembersDetailsBloc.add(
                     GetGroupMemDetEvent(
+                      type: widget.type,
                       page: 1,
                       showLoading: true,
                     ),
@@ -437,6 +489,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
                   context: context,
                   retryAction: () => groupMembersDetailsBloc.add(
                     GetGroupMemDetEvent(
+                      type: widget.type,
                       page: 1,
                       showLoading: true,
                     ),

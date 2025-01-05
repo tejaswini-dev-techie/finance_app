@@ -41,6 +41,7 @@ class Data {
   String? upcomingText;
   List<UpcomingList>? upcomingList;
   String? footerText;
+  String? groupMemDet;
 
   Data({
     this.noPigmyTitle,
@@ -58,6 +59,7 @@ class Data {
     this.upcomingText,
     this.upcomingList,
     this.footerText,
+    this.groupMemDet,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -69,6 +71,7 @@ class Data {
     pigmyStatusNudgeTitle = json['pigmy_status_nudge_title'];
     pigmyStatusNudgeSubtitle = json['pigmy_status_nudge_subtitle'];
     pigmyStatusNudgeBtn = json['pigmy_status_nudge_btn'];
+    groupMemDet = json['group_mem_det'] ?? "Group Members Details";
     if (json['pigmy_menus_list'] != null) {
       pigmyMenusList = <PigmyMenusList>[];
       json['pigmy_menus_list'].forEach((v) {
@@ -106,6 +109,7 @@ class Data {
     data['withdraw_pigmy_btn_text'] = withdrawPigmyBtnText;
     data['pigmy_transaction_history_btn_text'] = pigmyTransactionHistoryBtnText;
     data['upcoming_text'] = upcomingText;
+    data['group_mem_det'] = groupMemDet;
     data['footer_text'] = footerText;
     if (upcomingList != null) {
       data['upcoming_list'] = upcomingList!.map((v) => v.toJson()).toList();

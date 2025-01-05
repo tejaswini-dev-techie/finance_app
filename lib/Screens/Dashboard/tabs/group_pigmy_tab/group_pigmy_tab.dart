@@ -358,7 +358,47 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                                 ],
                               ),
                             ),
-                          )
+                          ),
+                          SizedBox(
+                            height: 5.sp,
+                          ),
+                          (groupPigmyBloc.pigmyData?.groupMemDet != null &&
+                                  groupPigmyBloc
+                                      .pigmyData!.groupMemDet!.isNotEmpty)
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: InkWell(
+                                    onTap: () => onGroupMembersAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            groupPigmyBloc
+                                                    .pigmyData?.groupMemDet ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
                         ],
                       ),
                     ),
@@ -391,6 +431,31 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
             context: context,
             retryAction: () => groupPigmyBloc.add(GetGroupPigmyDetails()),
             state: 2,
+          );
+        }
+      },
+    );
+  }
+
+  void onGroupMembersAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "1", // type: 1 - G PIGMY | 2 - G Loans
+          };
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeGroupMembersDetailScreen,
+            arguments: {"data": data},
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: groupPigmyBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
           );
         }
       },

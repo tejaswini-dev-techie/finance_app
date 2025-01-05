@@ -45,6 +45,7 @@ class GroupMembersDetailsBloc
         await NetworkService()
             .groupMemDetailsService(
           page: event.page,
+          type: event.type, // type: 1 - G PIGMY | 2 - G Loans
         )
             .then((GroupMembersDetailsDataModel? responseObj) {
           if (responseObj != null && responseObj.status == true) {

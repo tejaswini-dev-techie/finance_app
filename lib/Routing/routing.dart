@@ -372,7 +372,10 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const GroupMembersDetailsScreen(),
+              builder: (_) => GroupMembersDetailsScreen(
+                type: data['data']['type'] ??
+                    "1", // type: 1 - G PIGMY | 2 - G Loans
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),

@@ -62,19 +62,22 @@ class GroupMembersList {
   String? payStatusType;
   String? accStatus;
   String? accStatusType;
+  String? memberID;
 
-  GroupMembersList(
-      {this.groupId,
-      this.headerText,
-      this.profileImg,
-      this.memName,
-      this.joinedDate,
-      this.footerText,
-      this.amtText,
-      this.payStatus,
-      this.payStatusType,
-      this.accStatus,
-      this.accStatusType});
+  GroupMembersList({
+    this.groupId,
+    this.headerText,
+    this.profileImg,
+    this.memName,
+    this.joinedDate,
+    this.footerText,
+    this.amtText,
+    this.payStatus,
+    this.payStatusType,
+    this.accStatus,
+    this.accStatusType,
+    this.memberID,
+  });
 
   GroupMembersList.fromJson(Map<String, dynamic> json) {
     groupId = json['group_id'];
@@ -88,6 +91,7 @@ class GroupMembersList {
     payStatusType = json['pay_status_type'];
     accStatus = json['acc_status'];
     accStatusType = json['acc_status_type'];
+    memberID = json['member_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -103,6 +107,7 @@ class GroupMembersList {
     data['pay_status_type'] = payStatusType;
     data['acc_status'] = accStatus;
     data['acc_status_type'] = accStatusType;
+    data['member_id'] = memberID;
     return data;
   }
 }

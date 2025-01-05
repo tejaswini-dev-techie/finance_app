@@ -90,9 +90,14 @@ class _GroupLoansTabState extends State<GroupLoansTab> {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "2", // type: 1 - G PIGMY | 2 - G Loans
+          };
           Navigator.pushNamed(
             context,
             RoutingConstants.routeGroupMembersDetailScreen,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(

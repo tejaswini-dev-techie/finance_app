@@ -1110,10 +1110,12 @@ class NetworkService {
       ]
     }
   };
-  Future<GroupMembersDetailsDataModel> groupMemDetailsService({int? page}) {
+  Future<GroupMembersDetailsDataModel> groupMemDetailsService(
+      {int? page, required String? type}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['page'] = "$page";
+        paramsKeyVal['type'] = type; // type: 1 - G PIGMY | 2 - G Loans
         return _network
             .httpGet(apiHitTimeout, APIURLs.groupMemberDetailsURL,
                 body: paramsKeyVal)
