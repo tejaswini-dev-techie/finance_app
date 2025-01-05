@@ -22,10 +22,14 @@ import 'package:sizer/sizer.dart';
 class VerifyCustomersDetailsScreen extends StatefulWidget {
   final String? title;
   final String? id;
+  final String?
+      type; // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+
   const VerifyCustomersDetailsScreen({
     super.key,
     this.title,
     this.id,
+    this.type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
   });
 
   @override
@@ -82,6 +86,8 @@ class _VerifyCustomersDetailsScreenState
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _altPhNumController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _permanentAddressController =
+      TextEditingController();
   final TextEditingController _streetAddressController =
       TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -100,6 +106,9 @@ class _VerifyCustomersDetailsScreenState
   final TextEditingController _accNumController = TextEditingController();
   final TextEditingController _bankBranchController = TextEditingController();
   final TextEditingController _bankIFSCcodeController = TextEditingController();
+  final TextEditingController _referenceController = TextEditingController();
+  final TextEditingController _referenceNumController = TextEditingController();
+  final TextEditingController _reasonController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -107,6 +116,7 @@ class _VerifyCustomersDetailsScreenState
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _altPhNumFocusNode = FocusNode();
+  final FocusNode _permanentAddressFocusNode = FocusNode();
   final FocusNode _streetAddressFocusNode = FocusNode();
   final FocusNode _cityFocusNode = FocusNode();
   final FocusNode _stateFocusNode = FocusNode();
@@ -122,6 +132,9 @@ class _VerifyCustomersDetailsScreenState
   final FocusNode _bankBranchFocusNode = FocusNode();
   final FocusNode _bankIFSCCodeFocusNode = FocusNode();
   final FocusNode _bankAccNumFocusNode = FocusNode();
+  final FocusNode _referenceFocusNode = FocusNode();
+  final FocusNode _referenceNumFocusNode = FocusNode();
+  final FocusNode _reasonFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -146,9 +159,9 @@ class _VerifyCustomersDetailsScreenState
   /* PAN Image */
 
   /* Cheque Image */
-  ValueNotifier<bool> refreshChequeImage = ValueNotifier<bool>(true);
-  List<File> compressedPhotosChequeList = [];
-  String? chequeImagePath = "";
+  // ValueNotifier<bool> refreshChequeImage = ValueNotifier<bool>(true);
+  // List<File> compressedPhotosChequeList = [];
+  // String? chequeImagePath = "";
   /* Cheque Image */
 
   /* RC HOLDER Image */
@@ -175,6 +188,71 @@ class _VerifyCustomersDetailsScreenState
   String? signatureImagePath = "";
   /* Signature */
 
+  /* Building */
+  ValueNotifier<bool> refreshBuilding1Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding1List = [];
+  String? building1ImagePath = "";
+  /* Building */
+
+  /* Building Alternate 1 View */
+  ValueNotifier<bool> refreshBuilding2Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding2List = [];
+  String? buildingImage2Path = "";
+  /* Building Alternate 1 View */
+
+  /* Building Alternate 2 View */
+  ValueNotifier<bool> refreshBuilding3Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding3List = [];
+  String? building3ImagePath = "";
+  /* Building Alternate 2 View */
+
+  /* Building Alternate 3 View */
+  ValueNotifier<bool> refreshBuilding4Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding4List = [];
+  String? building4ImagePath = "";
+  /* Building Alternate 3 View */
+
+  /* Building Alternate 4 View */
+  ValueNotifier<bool> refreshBuilding5Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding5List = [];
+  String? building5ImagePath = "";
+  /* Building Alternate 4 View */
+
+  /* Building Alternate 5 View */
+  ValueNotifier<bool> refreshBuilding6Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding6List = [];
+  String? building6ImagePath = "";
+  /* Building Alternate 5 View */
+
+  /* Building Alternate 6 View */
+  ValueNotifier<bool> refreshBuilding7Image = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuilding7List = [];
+  String? building7ImagePath = "";
+  /* Building Alternate 6 View */
+
+  /* Street */
+  ValueNotifier<bool> refreshBuildingStreetImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuildingStreetList = [];
+  String? buildingStreetImagePath = "";
+  /* Street */
+
+  /* Area View */
+  ValueNotifier<bool> refreshBuildingAreaImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosBuildingAreaList = [];
+  String? buildingAreaImagePath = "";
+  /* Area View */
+
+  /* Same as Permanent Address */
+  ValueNotifier<bool> refreshAddress = ValueNotifier<bool>(true);
+  bool? sameAsPermanentAddress = false;
+  /* Same as Permanent Address */
+
+  /* Verified/Rejected */
+  ValueNotifier<bool> refreshCheckbox = ValueNotifier<bool>(true);
+  bool? isVerified = false;
+  bool? isRejected = false;
+  /* Verified/Rejected */
+
   @override
   void initState() {
     super.initState();
@@ -183,6 +261,7 @@ class _VerifyCustomersDetailsScreenState
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _altPhNumController.addListener(_validateFields);
+    _permanentAddressController.addListener(_validateFields);
     _streetAddressController.addListener(_validateFields);
     _cityController.addListener(_validateFields);
     _stateController.addListener(_validateFields);
@@ -198,6 +277,9 @@ class _VerifyCustomersDetailsScreenState
     _accNumController.addListener(_validateFields);
     _bankBranchController.addListener(_validateFields);
     _bankIFSCcodeController.addListener(_validateFields);
+    _referenceController.addListener(_validateFields);
+    _referenceNumController.addListener(_validateFields);
+    _reasonController.addListener(_validateFields);
   }
 
   @override
@@ -208,6 +290,7 @@ class _VerifyCustomersDetailsScreenState
     _phNumController.dispose();
     _altPhNumController.dispose();
     _emailController.dispose();
+    _permanentAddressController.dispose();
     _streetAddressController.dispose();
     _cityController.dispose();
     _zipController.dispose();
@@ -223,11 +306,15 @@ class _VerifyCustomersDetailsScreenState
     _accNumController.dispose();
     _bankBranchController.dispose();
     _bankIFSCcodeController.dispose();
+    _referenceController.dispose();
+    _referenceNumController.dispose();
+    _reasonController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
     _altPhNumFocusNode.dispose();
+    _permanentAddressFocusNode.dispose();
     _streetAddressFocusNode.dispose();
     _cityFocusNode.dispose();
     _stateFocusNode.dispose();
@@ -243,11 +330,15 @@ class _VerifyCustomersDetailsScreenState
     _bankBranchFocusNode.dispose();
     _bankIFSCCodeFocusNode.dispose();
     _bankAccNumFocusNode.dispose();
+    _referenceFocusNode.dispose();
+    _referenceFocusNode.dispose();
+    _reasonFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
     _emailController.removeListener(_validateFields);
     _altPhNumController.removeListener(_validateFields);
+    _permanentAddressController.removeListener(_validateFields);
     _streetAddressController.removeListener(_validateFields);
     _cityController.removeListener(_validateFields);
     _stateController.removeListener(_validateFields);
@@ -263,6 +354,9 @@ class _VerifyCustomersDetailsScreenState
     _accNumController.removeListener(_validateFields);
     _bankBranchController.removeListener(_validateFields);
     _bankIFSCcodeController.removeListener(_validateFields);
+    _referenceController.removeListener(_validateFields);
+    _referenceNumController.removeListener(_validateFields);
+    _reasonController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -320,6 +414,8 @@ class _VerifyCustomersDetailsScreenState
       _phNumController.text = response['data']['mob_num'] ?? "";
       _altPhNumController.text = response['data']['alt_mob_num'] ?? "";
       _emailController.text = response['data']['email_address'] ?? "";
+      _permanentAddressController.text =
+          response['data']['permanent_address'] ?? "";
       _streetAddressController.text = response['data']['address'] ?? "";
       _cityController.text = response['data']['city'] ?? "";
       _stateController.text = response['data']['state'] ?? "";
@@ -340,7 +436,7 @@ class _VerifyCustomersDetailsScreenState
       photoImagePath = response['data']['profile_img'] ?? "";
       aadhaarImagePath = response['data']['aadhaar_img'] ?? "";
       panImagePath = response['data']['pan_img'] ?? "";
-      chequeImagePath = response['data']['cheque_img'] ?? "";
+      // chequeImagePath = response['data']['cheque_img'] ?? "";
       rcHOLDERImagePath = response['data']['rc_img'] ?? "";
       propertyDocImagePath = response['data']['property_img'] ?? "";
       passBookImagePath = response['data']['pass_book_img'] ?? "";
@@ -649,6 +745,93 @@ class _VerifyCustomersDetailsScreenState
                                 height: 16.sp,
                               ),
 
+                              /* Permanent Address Input Field*/
+                              Text(
+                                "Permanent Address",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _permanentAddressFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.location_on,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: "Address",
+                                textEditingController:
+                                    _permanentAddressController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateLocation(
+                                      value, 5);
+                                },
+                              ),
+                              /* Permanent Address Input Field */
+
+                              SizedBox(
+                                height: 8.sp,
+                              ),
+                              ValueListenableBuilder(
+                                  valueListenable: refreshAddress,
+                                  builder: (context, val, _) {
+                                    return InkWell(
+                                      onTap: () {
+                                        sameAsPermanentAddress =
+                                            !sameAsPermanentAddress!;
+                                        if (sameAsPermanentAddress == true) {
+                                          _streetAddressController.text =
+                                              _permanentAddressController.text;
+                                        } else {
+                                          _streetAddressController.clear();
+                                        }
+
+                                        refreshAddress.value =
+                                            !refreshAddress.value;
+                                      },
+                                      child: Row(
+                                        spacing: 2.sp,
+                                        children: [
+                                          (sameAsPermanentAddress == true)
+                                              ? Icon(
+                                                  Icons.check_box,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                  size: 20.sp,
+                                                )
+                                              : Icon(
+                                                  Icons.check_box_outline_blank,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  size: 20.sp,
+                                                ),
+                                          Text(
+                                            "Same as Permanent Address",
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                              SizedBox(
+                                height: 8.sp,
+                              ),
+
                               /* Street Address Input Field*/
                               Text(
                                 streetAddressText,
@@ -665,7 +848,7 @@ class _VerifyCustomersDetailsScreenState
                                   Icons.location_on,
                                   color: ColorConstants.darkBlueColor,
                                 ),
-                                placeholderText: streetAddressText,
+                                placeholderText: "Address",
                                 textEditingController: _streetAddressController,
                                 inputFormattersList: <TextInputFormatter>[
                                   FilteringTextInputFormatter.deny(
@@ -1230,6 +1413,95 @@ class _VerifyCustomersDetailsScreenState
                               ),
                               /* Bank Branch Name Input Field */
 
+                              /* Reference Input Field*/
+                              (widget.type == "1")
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+                                        Text(
+                                          "Reference -  Group Leader Name",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _referenceFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.person_pin_rounded,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText:
+                                              "Enter Reference Name",
+                                          textEditingController:
+                                              _referenceController,
+                                          validationFunc: (value) {
+                                            return ValidationUtil.validateName(
+                                                value);
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Reference Mobile Number Input Field */
+                                        Text(
+                                          "Reference Contact Details",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _referenceNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.phone_locked,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText:
+                                              "Enter Reference Mobile Number",
+                                          textEditingController:
+                                              _referenceNumController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[6-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateMobileNumber(
+                                              value,
+                                            );
+                                          },
+                                        ),
+                                        /* Reference Mobile Number Input Field */
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                              /* Reference Input Field */
+
                               SizedBox(
                                 height: 16.sp,
                               ),
@@ -1463,82 +1735,82 @@ class _VerifyCustomersDetailsScreenState
                                   }),
                               /* Add PAN Doc Image */
 
-                              SizedBox(
-                                height: 16.sp,
-                              ),
+                              // SizedBox(
+                              //   height: 16.sp,
+                              // ),
 
-                              /* Add Cheque Doc Image */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshChequeImage,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: chequeImagePath ?? "",
-                                      placeholderText: "Add Cheque Image",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosChequeList = [];
-                                                compressedPhotosChequeList =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosChequeList,
-                                                );
+                              // /* Add Cheque Doc Image */
+                              // ValueListenableBuilder(
+                              //     valueListenable: refreshChequeImage,
+                              //     builder: (context, bool val, _) {
+                              //       return AddDocImagePlaceholder(
+                              //         imagePath: chequeImagePath ?? "",
+                              //         placeholderText: "Add Cheque Image",
+                              //         addText: addText,
+                              //         onImageTap: () async {
+                              //           await InternetUtil()
+                              //               .checkInternetConnection()
+                              //               .then((internet) async {
+                              //             if (internet) {
+                              //               showDocsAlertDialog(
+                              //                 context: context,
+                              //                 onCaptureAction: () async {
+                              //                   compressedPhotosChequeList = [];
+                              //                   compressedPhotosChequeList =
+                              //                       await capturePhoto(
+                              //                     type: 2,
+                              //                     screenName: "KYC",
+                              //                     maxImagesCount: 1,
+                              //                     context: context,
+                              //                     compressedPhotosList:
+                              //                         compressedPhotosChequeList,
+                              //                   );
 
-                                                chequeImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosChequeList[0]
-                                                      .path,
-                                                );
+                              //                   chequeImagePath =
+                              //                       await NetworkService()
+                              //                           .imageUpload(
+                              //                     compressedPhotosChequeList[0]
+                              //                         .path,
+                              //                   );
 
-                                                refreshChequeImage.value =
-                                                    !refreshChequeImage.value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosChequeList = [];
-                                                compressedPhotosChequeList =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosChequeList,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
+                              //                   refreshChequeImage.value =
+                              //                       !refreshChequeImage.value;
+                              //                 },
+                              //                 onGalleryAction: () async {
+                              //                   compressedPhotosChequeList = [];
+                              //                   compressedPhotosChequeList =
+                              //                       await pickPhotos(
+                              //                     maxImagesCount: 1,
+                              //                     context: context,
+                              //                     compressedPhotosList:
+                              //                         compressedPhotosChequeList,
+                              //                     invalidFormatErrorText:
+                              //                         "Invalid",
+                              //                   );
 
-                                                chequeImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosChequeList[0]
-                                                      .path,
-                                                );
+                              //                   chequeImagePath =
+                              //                       await NetworkService()
+                              //                           .imageUpload(
+                              //                     compressedPhotosChequeList[0]
+                              //                         .path,
+                              //                   );
 
-                                                refreshChequeImage.value =
-                                                    !refreshChequeImage.value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Cheque Doc Image */
+                              //                   refreshChequeImage.value =
+                              //                       !refreshChequeImage.value;
+                              //                 },
+                              //               );
+                              //             } else {
+                              //               ToastUtil().showSnackBar(
+                              //                 context: context,
+                              //                 message: internetAlert,
+                              //                 isError: true,
+                              //               );
+                              //             }
+                              //           });
+                              //         },
+                              //       );
+                              //     }),
+                              // /* Add Cheque Doc Image */
 
                               SizedBox(
                                 height: 16.sp,
@@ -1833,8 +2105,8 @@ class _VerifyCustomersDetailsScreenState
                                                 );
                                                 print(
                                                     "signatureImagePath: 2$signatureImagePath");
-                                                refreshPassBookImage.value =
-                                                    !refreshPassBookImage.value;
+                                                refreshSignImage.value =
+                                                    !refreshSignImage.value;
                                               },
                                               onGalleryAction: () async {
                                                 compressedPhotosSignList = [];
@@ -1874,6 +2146,1063 @@ class _VerifyCustomersDetailsScreenState
                               /* Add Signature Image */
 
                               SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Building Image 1 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding1Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: building1ImagePath ?? "",
+                                      placeholderText: "Add Building Image 1",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding1List =
+                                                    [];
+                                                compressedPhotosBuilding1List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding1List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "building1ImagePath: 1 ${compressedPhotosBuilding1List[0].path}");
+                                                building1ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding1List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "building1ImagePath: 2$building1ImagePath");
+                                                refreshBuilding1Image.value =
+                                                    !refreshBuilding1Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding1List =
+                                                    [];
+                                                compressedPhotosBuilding1List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding1List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "building1ImagePath: 1 ${compressedPhotosBuilding1List[0].path}");
+                                                building1ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding1List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding1Image.value =
+                                                    !refreshBuilding1Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 1 */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Building Image 2 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding2Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: buildingImage2Path ?? "",
+                                      placeholderText: "Add Building Image 2",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding2List =
+                                                    [];
+                                                compressedPhotosBuilding2List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding2List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "buildingImage2Path: 1 ${compressedPhotosBuilding2List[0].path}");
+                                                buildingImage2Path =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding2List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "buildingImage2Path: 2$buildingImage2Path");
+                                                refreshBuilding2Image.value =
+                                                    !refreshBuilding2Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding2List =
+                                                    [];
+                                                compressedPhotosBuilding2List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding2List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "buildingImage2Path: 1 ${compressedPhotosBuilding2List[0].path}");
+                                                buildingImage2Path =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding2List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding2Image.value =
+                                                    !refreshBuilding2Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 2 */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Building Image 3 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding3Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: building3ImagePath ?? "",
+                                      placeholderText: "Add Building Image 3",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding3List =
+                                                    [];
+                                                compressedPhotosBuilding3List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding3List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "building3ImagePath: 1 ${compressedPhotosBuilding3List[0].path}");
+                                                building3ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding3List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "building3ImagePath: 2$building3ImagePath");
+                                                refreshBuilding3Image.value =
+                                                    !refreshBuilding3Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding3List =
+                                                    [];
+                                                compressedPhotosBuilding3List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding3List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "building3ImagePath: 1 ${compressedPhotosBuilding3List[0].path}");
+                                                building3ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding3List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding3Image.value =
+                                                    !refreshBuilding3Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 3 */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Building Image 4 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding4Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: building4ImagePath ?? "",
+                                      placeholderText: "Add Building Image 4",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding4List =
+                                                    [];
+                                                compressedPhotosBuilding4List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding4List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "building4ImagePath: 1 ${compressedPhotosBuilding4List[0].path}");
+                                                building4ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding4List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "building4ImagePath: 2 $building4ImagePath");
+                                                refreshBuilding4Image.value =
+                                                    !refreshBuilding4Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding4List =
+                                                    [];
+                                                compressedPhotosBuilding4List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding4List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "building4ImagePath: 1 ${compressedPhotosBuilding4List[0].path}");
+                                                building4ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding4List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding4Image.value =
+                                                    !refreshBuilding4Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 4 */
+
+                              /* Add Building Image 5 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding5Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: building5ImagePath ?? "",
+                                      placeholderText: "Add Building Image 5",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding5List =
+                                                    [];
+                                                compressedPhotosBuilding5List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding5List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "building5ImagePath: 1 ${compressedPhotosBuilding5List[0].path}");
+                                                building5ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding5List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "building5ImagePath: 2 $building5ImagePath");
+                                                refreshBuilding5Image.value =
+                                                    !refreshBuilding5Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding5List =
+                                                    [];
+                                                compressedPhotosBuilding5List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding5List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "building5ImagePath: 1 ${compressedPhotosBuilding5List[0].path}");
+                                                building5ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding5List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding5Image.value =
+                                                    !refreshBuilding5Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 5 */
+
+                              /* Add Building Image 6 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding6Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: building6ImagePath ?? "",
+                                      placeholderText: "Add Building Image 6",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding6List =
+                                                    [];
+                                                compressedPhotosBuilding6List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding6List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "building6ImagePath: 1 ${compressedPhotosBuilding6List[0].path}");
+                                                building6ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding6List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "building6ImagePath: 2 $building6ImagePath");
+                                                refreshBuilding6Image.value =
+                                                    !refreshBuilding6Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding6List =
+                                                    [];
+                                                compressedPhotosBuilding6List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding6List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "building6ImagePath: 1 ${compressedPhotosBuilding6List[0].path}");
+                                                building6ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding6List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding6Image.value =
+                                                    !refreshBuilding6Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 6 */
+
+                              /* Add Building Image 7 */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuilding7Image,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: building7ImagePath ?? "",
+                                      placeholderText: "Add Building Image 7",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuilding7List =
+                                                    [];
+                                                compressedPhotosBuilding7List =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding7List,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "building7ImagePath: 1 ${compressedPhotosBuilding7List[0].path}");
+                                                building7ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding7List[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "building7ImagePath: 2 $building7ImagePath");
+                                                refreshBuilding7Image.value =
+                                                    !refreshBuilding7Image
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuilding7List =
+                                                    [];
+                                                compressedPhotosBuilding7List =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuilding7List,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "building7ImagePath: 1 ${compressedPhotosBuilding7List[0].path}");
+                                                building7ImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuilding7List[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuilding7Image.value =
+                                                    !refreshBuilding7Image
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Image 7 */
+
+                              /* Add Building Street Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuildingStreetImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: buildingStreetImagePath ?? "",
+                                      placeholderText:
+                                          "Add Building Street Image",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuildingStreetList =
+                                                    [];
+                                                compressedPhotosBuildingStreetList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuildingStreetList,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "buildingStreetImagePath: 1 ${compressedPhotosBuildingStreetList[0].path}");
+                                                buildingStreetImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuildingStreetList[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "buildingStreetImagePath: 2 $buildingStreetImagePath");
+                                                refreshBuildingStreetImage
+                                                        .value =
+                                                    !refreshBuildingStreetImage
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuildingStreetList =
+                                                    [];
+                                                compressedPhotosBuildingStreetList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuildingStreetList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "buildingStreetImagePath: 1 ${compressedPhotosBuildingStreetList[0].path}");
+                                                buildingStreetImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuildingStreetList[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuildingStreetImage
+                                                        .value =
+                                                    !refreshBuildingStreetImage
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Street Image */
+
+                              /* Add Building Area Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshBuildingAreaImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: buildingAreaImagePath ?? "",
+                                      placeholderText:
+                                          "Add Building Area Image",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosBuildingAreaList =
+                                                    [];
+                                                compressedPhotosBuildingAreaList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuildingAreaList,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "buildingAreaImagePath: 1 ${compressedPhotosBuildingAreaList[0].path}");
+                                                buildingAreaImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuildingAreaList[
+                                                          0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "buildingAreaImagePath: 2 $buildingAreaImagePath");
+                                                refreshBuildingAreaImage.value =
+                                                    !refreshBuildingAreaImage
+                                                        .value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosBuildingAreaList =
+                                                    [];
+                                                compressedPhotosBuildingAreaList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosBuildingAreaList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "buildingAreaImagePath: 1 ${compressedPhotosBuildingAreaList[0].path}");
+                                                buildingAreaImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosBuildingAreaList[
+                                                          0]
+                                                      .path,
+                                                );
+
+                                                refreshBuildingAreaImage.value =
+                                                    !refreshBuildingAreaImage
+                                                        .value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Building Area Image */
+
+                              (widget.type == "3")
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+                                        ValueListenableBuilder(
+                                          valueListenable: refreshCheckbox,
+                                          builder: (context, val, _) {
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        isVerified =
+                                                            !isVerified!;
+                                                        if (isVerified ==
+                                                            true) {
+                                                          isRejected = false;
+                                                        }
+
+                                                        refreshCheckbox.value =
+                                                            !refreshCheckbox
+                                                                .value;
+                                                      },
+                                                      child: Row(
+                                                        spacing: 2.sp,
+                                                        children: [
+                                                          (isVerified == true)
+                                                              ? Icon(
+                                                                  Icons
+                                                                      .check_box,
+                                                                  color: ColorConstants
+                                                                      .darkBlueColor,
+                                                                  size: 20.sp,
+                                                                )
+                                                              : Icon(
+                                                                  Icons
+                                                                      .check_box_outline_blank,
+                                                                  color: ColorConstants
+                                                                      .lightBlackColor,
+                                                                  size: 20.sp,
+                                                                ),
+                                                          Text(
+                                                            "Verified",
+                                                            style: TextStyle(
+                                                              fontSize: 12.sp,
+                                                              color:
+                                                                  ColorConstants
+                                                                      .blackColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                        onTap: () {
+                                                          isRejected =
+                                                              !isRejected!;
+                                                          if (isRejected ==
+                                                              true) {
+                                                            isVerified = false;
+                                                          }
+
+                                                          refreshCheckbox
+                                                                  .value =
+                                                              !refreshCheckbox
+                                                                  .value;
+                                                        },
+                                                        child: Row(
+                                                          spacing: 2.sp,
+                                                          children: [
+                                                            (isRejected == true)
+                                                                ? Icon(
+                                                                    Icons
+                                                                        .check_box,
+                                                                    color: ColorConstants
+                                                                        .darkBlueColor,
+                                                                    size: 20.sp,
+                                                                  )
+                                                                : Icon(
+                                                                    Icons
+                                                                        .check_box_outline_blank,
+                                                                    color: ColorConstants
+                                                                        .lightBlackColor,
+                                                                    size: 20.sp,
+                                                                  ),
+                                                            Text(
+                                                              "Rejected",
+                                                              style: TextStyle(
+                                                                fontSize: 12.sp,
+                                                                color: ColorConstants
+                                                                    .blackColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )),
+                                                  ],
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 16.sp,
+                                                    ),
+                                                    Text(
+                                                      "Reference -  Group Leader Name",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 10.sp,
+                                                        color: ColorConstants
+                                                            .lightBlackColor,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    TextInputField(
+                                                      focusnodes:
+                                                          _referenceFocusNode,
+                                                      suffixWidget: const Icon(
+                                                        Icons
+                                                            .person_pin_rounded,
+                                                        color: ColorConstants
+                                                            .darkBlueColor,
+                                                      ),
+                                                      placeholderText:
+                                                          "Enter Reference Name",
+                                                      textEditingController:
+                                                          _referenceController,
+                                                      validationFunc: (value) {
+                                                        return ValidationUtil
+                                                            .validateName(
+                                                                value);
+                                                      },
+                                                    ),
+                                                    SizedBox(
+                                                      height: 16.sp,
+                                                    ),
+
+                                                    /* Reference Mobile Number Input Field */
+                                                    Text(
+                                                      "Reference Contact Details",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 10.sp,
+                                                        color: ColorConstants
+                                                            .lightBlackColor,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    TextInputField(
+                                                      focusnodes:
+                                                          _referenceNumFocusNode,
+                                                      suffixWidget: const Icon(
+                                                        Icons.phone_locked,
+                                                        color: ColorConstants
+                                                            .darkBlueColor,
+                                                      ),
+                                                      placeholderText:
+                                                          "Enter Reference Mobile Number",
+                                                      textEditingController:
+                                                          _referenceNumController,
+                                                      inputFormattersList: <TextInputFormatter>[
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                        LengthLimitingTextInputFormatter(
+                                                            10),
+                                                        FilteringTextInputFormatter
+                                                            .allow(
+                                                          RegExp(
+                                                              r'^[6-9][0-9]*$'),
+                                                        ),
+                                                        FilteringTextInputFormatter
+                                                            .deny(
+                                                          RegExp(r"\s\s"),
+                                                        ),
+                                                        FilteringTextInputFormatter
+                                                            .deny(
+                                                          RegExp(
+                                                              r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                        ),
+                                                      ],
+                                                      keyboardtype:
+                                                          TextInputType.number,
+                                                      validationFunc: (value) {
+                                                        return ValidationUtil
+                                                            .validateMobileNumber(
+                                                          value,
+                                                        );
+                                                      },
+                                                    ),
+                                                    /* Reference Mobile Number Input Field */
+
+                                                    /* Reason Input Field */
+                                                    (isRejected == true)
+                                                        ? Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 16.sp,
+                                                              ),
+                                                              Text(
+                                                                "Reason for Rejection",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      10.sp,
+                                                                  color: ColorConstants
+                                                                      .lightBlackColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                              TextInputField(
+                                                                focusnodes:
+                                                                    _reasonFocusNode,
+                                                                suffixWidget:
+                                                                    const Icon(
+                                                                  Icons.textsms,
+                                                                  color: ColorConstants
+                                                                      .darkBlueColor,
+                                                                ),
+                                                                placeholderText:
+                                                                    "Reason",
+                                                                textEditingController:
+                                                                    _reasonController,
+                                                                inputFormattersList: <TextInputFormatter>[
+                                                                  FilteringTextInputFormatter
+                                                                      .deny(
+                                                                    RegExp(
+                                                                        r"\s\s"),
+                                                                  ),
+                                                                  FilteringTextInputFormatter
+                                                                      .deny(
+                                                                    RegExp(
+                                                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                                  ),
+                                                                ],
+                                                                keyboardtype:
+                                                                    TextInputType
+                                                                        .text,
+                                                                validationFunc:
+                                                                    (value) {
+                                                                  return ValidationUtil
+                                                                      .validateWithdrawReason(
+                                                                    value,
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : const SizedBox
+                                                            .shrink(),
+
+                                                    /* Reason Input Field */
+                                                  ],
+                                                ),
+                                                /* Reference Input Field */
+                                              ],
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+
+                              SizedBox(
                                 height: 32.sp,
                               ),
                             ],
@@ -1900,6 +3229,8 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateEmailAddress(_emailController.text);
     String? altMobileError = ValidationUtil.validateAltMobileNumber(
         _altPhNumController.text, _phNumController.text);
+    String? permanentAddressError =
+        ValidationUtil.validateLocation(_permanentAddressController.text, 5);
     String? streetAddressError =
         ValidationUtil.validateLocation(_streetAddressController.text, 1);
     String? cityError =
@@ -1932,7 +3263,7 @@ class _VerifyCustomersDetailsScreenState
     String? aadhaarImageError =
         ValidationUtil.validateImage(aadhaarImagePath, 1);
     String? panImageError = ValidationUtil.validateImage(panImagePath, 2);
-    String? chequeImageError = ValidationUtil.validateImage(chequeImagePath, 3);
+    // String? chequeImageError = ValidationUtil.validateImage(chequeImagePath, 3);
     String? rcImageError = ValidationUtil.validateImage(rcHOLDERImagePath, 4);
     String? propertyImageError =
         ValidationUtil.validateImage(propertyDocImagePath, 5);
@@ -1940,6 +3271,11 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateImage(passBookImagePath, 6);
     String? signatureImageError =
         ValidationUtil.validateImage(signatureImagePath, 7);
+
+    String? referenceError =
+        ValidationUtil.validateName(_referenceController.text);
+    String? reasonError =
+        ValidationUtil.validateWithdrawReason(_reasonController.text);
 
     final form = _formKey.currentState;
 
@@ -1950,8 +3286,8 @@ class _VerifyCustomersDetailsScreenState
           aadhaarImagePath!.isNotEmpty &&
           panImagePath != null &&
           panImagePath!.isNotEmpty &&
-          chequeImagePath != null &&
-          chequeImagePath!.isNotEmpty &&
+          // chequeImagePath != null &&
+          // chequeImagePath!.isNotEmpty &&
           rcHOLDERImagePath != null &&
           rcHOLDERImagePath!.isNotEmpty &&
           propertyDocImagePath != null &&
@@ -1960,35 +3296,172 @@ class _VerifyCustomersDetailsScreenState
           passBookImagePath!.isNotEmpty &&
           signatureImagePath != null &&
           signatureImagePath!.isNotEmpty) {
-        
-        var result = await NetworkService().updateKYCDetails(
-          userName: _nameController.text,
-          mobNum: _phNumController.text,
-          altMobNum: _altPhNumController.text,
-          emailAddress: _emailController.text,
-          streetAddress: _streetAddressController.text,
-          city: _cityController.text,
-          state: _stateController.text,
-          zipCode: _zipController.text,
-          country: _countryController.text,
-          aadhaarImage: aadhaarImagePath ?? "",
-          panImage: panImagePath ?? "",
-          chequeImage: chequeImagePath ?? "",
-          panNumber: _panController.text,
-          aadhaarNumber: _aadhaarController.text,
-          rcHolderName: _rcHolderNameController.text,
-          rcImage: rcHOLDERImagePath ?? "",
-          houseImage: propertyDocImagePath,
-          propertyDetails: _propertyDetailsController.text,
-          propertyHolderName: _propertyHolderNameController.text,
-          chequeNumber: _chequeNumController.text,
-          bankName: _bankNameController.text,
-          bankBranchName: _bankBranchController.text,
-          bankIFSCCode: _bankIFSCcodeController.text,
-          accNumber: _accNumController.text,
-          passbookImage: passBookImagePath,
-          signatureImage: signatureImagePath,
-        );
+        var result;
+        if (widget.type == "1") {
+          result = await NetworkService().updateGroupIndividualCustomerDetails(
+            userName: _nameController.text,
+            mobNum: _phNumController.text,
+            altMobNum: _altPhNumController.text,
+            emailAddress: _emailController.text,
+            streetAddress: _streetAddressController.text,
+            city: _cityController.text,
+            state: _stateController.text,
+            zipCode: _zipController.text,
+            country: _countryController.text,
+            aadhaarImage: aadhaarImagePath ?? "",
+            panImage: panImagePath ?? "",
+            reference: _referenceController.text,
+            type: widget.type,
+            referenceNumber: _referenceNumController.text,
+            panNumber: _panController.text,
+            aadhaarNumber: _aadhaarController.text,
+            rcHolderName: _rcHolderNameController.text,
+            rcImage: rcHOLDERImagePath ?? "",
+            houseImage: propertyDocImagePath,
+            propertyDetails: _propertyDetailsController.text,
+            propertyHolderName: _propertyHolderNameController.text,
+            chequeNumber: _chequeNumController.text,
+            bankName: _bankNameController.text,
+            bankBranchName: _bankBranchController.text,
+            bankIFSCCode: _bankIFSCcodeController.text,
+            accNumber: _accNumController.text,
+            passbookImage: passBookImagePath,
+            signatureImage: signatureImagePath,
+            buildingImagePath1: building1ImagePath,
+            buildingImagePath2: buildingImage2Path,
+            buildingImagePath3: building3ImagePath,
+            buildingImagePath4: building4ImagePath,
+            buildingImagePath5: building5ImagePath,
+            buildingImagePath6: building6ImagePath,
+            buildingImagePath7: building7ImagePath,
+            buildingStreetImagePath: buildingStreetImagePath,
+            buildingAreaImagePath: buildingAreaImagePath,
+            permanentAddress: _permanentAddressController.text,
+          );
+        } else if (widget.type == "2") {
+          result = await NetworkService().updateGroupIndividualCustomerDetails(
+            userName: _nameController.text,
+            mobNum: _phNumController.text,
+            altMobNum: _altPhNumController.text,
+            emailAddress: _emailController.text,
+            streetAddress: _streetAddressController.text,
+            city: _cityController.text,
+            state: _stateController.text,
+            zipCode: _zipController.text,
+            country: _countryController.text,
+            aadhaarImage: aadhaarImagePath ?? "",
+            panImage: panImagePath ?? "",
+            panNumber: _panController.text,
+            aadhaarNumber: _aadhaarController.text,
+            rcHolderName: _rcHolderNameController.text,
+            rcImage: rcHOLDERImagePath ?? "",
+            houseImage: propertyDocImagePath,
+            propertyDetails: _propertyDetailsController.text,
+            propertyHolderName: _propertyHolderNameController.text,
+            chequeNumber: _chequeNumController.text,
+            bankName: _bankNameController.text,
+            bankBranchName: _bankBranchController.text,
+            bankIFSCCode: _bankIFSCcodeController.text,
+            accNumber: _accNumController.text,
+            passbookImage: passBookImagePath,
+            signatureImage: signatureImagePath,
+            type: widget.type,
+            buildingImagePath1: building1ImagePath,
+            buildingImagePath2: buildingImage2Path,
+            buildingImagePath3: building3ImagePath,
+            buildingImagePath4: building4ImagePath,
+            buildingImagePath5: building5ImagePath,
+            buildingImagePath6: building6ImagePath,
+            buildingImagePath7: building7ImagePath,
+            buildingStreetImagePath: buildingStreetImagePath,
+            buildingAreaImagePath: buildingAreaImagePath,
+            permanentAddress: _permanentAddressController.text,
+          );
+        } else if (widget.type == "3") {
+          result = await NetworkService().updateKYCDetails(
+            type:
+                "3", // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+            userName: _nameController.text,
+            mobNum: _phNumController.text,
+            altMobNum: _altPhNumController.text,
+            emailAddress: _emailController.text,
+            streetAddress: _streetAddressController.text,
+            city: _cityController.text,
+            state: _stateController.text,
+            zipCode: _zipController.text,
+            country: _countryController.text,
+            aadhaarImage: aadhaarImagePath ?? "",
+            panImage: panImagePath ?? "",
+            panNumber: _panController.text,
+            aadhaarNumber: _aadhaarController.text,
+            rcHolderName: _rcHolderNameController.text,
+            rcImage: rcHOLDERImagePath ?? "",
+            houseImage: propertyDocImagePath,
+            propertyDetails: _propertyDetailsController.text,
+            propertyHolderName: _propertyHolderNameController.text,
+            chequeNumber: _chequeNumController.text,
+            bankName: _bankNameController.text,
+            bankBranchName: _bankBranchController.text,
+            bankIFSCCode: _bankIFSCcodeController.text,
+            accNumber: _accNumController.text,
+            passbookImage: passBookImagePath,
+            signatureImage: signatureImagePath,
+            reason: _reasonController.text,
+            reference: _referenceController.text,
+            isVerified: (isVerified == true) ? true : false,
+            customerID: widget.id,
+            referenceNum: _referenceNumController.text,
+            buildingImagePath1: building1ImagePath,
+            buildingImagePath2: buildingImage2Path,
+            buildingImagePath3: building3ImagePath,
+            buildingImagePath4: building4ImagePath,
+            buildingImagePath5: building5ImagePath,
+            buildingImagePath6: building6ImagePath,
+            buildingImagePath7: building7ImagePath,
+            buildingStreetImagePath: buildingStreetImagePath,
+            buildingAreaImagePath: buildingAreaImagePath,
+            permanentAddress: _permanentAddressController.text,
+          );
+        } else {
+          result = await NetworkService().updateKYCDetails(
+            type: "0",
+            userName: _nameController.text,
+            mobNum: _phNumController.text,
+            altMobNum: _altPhNumController.text,
+            emailAddress: _emailController.text,
+            streetAddress: _streetAddressController.text,
+            city: _cityController.text,
+            state: _stateController.text,
+            zipCode: _zipController.text,
+            country: _countryController.text,
+            aadhaarImage: aadhaarImagePath ?? "",
+            panImage: panImagePath ?? "",
+            panNumber: _panController.text,
+            aadhaarNumber: _aadhaarController.text,
+            rcHolderName: _rcHolderNameController.text,
+            rcImage: rcHOLDERImagePath ?? "",
+            houseImage: propertyDocImagePath,
+            propertyDetails: _propertyDetailsController.text,
+            propertyHolderName: _propertyHolderNameController.text,
+            chequeNumber: _chequeNumController.text,
+            bankName: _bankNameController.text,
+            bankBranchName: _bankBranchController.text,
+            bankIFSCCode: _bankIFSCcodeController.text,
+            accNumber: _accNumController.text,
+            passbookImage: passBookImagePath,
+            signatureImage: signatureImagePath,
+            buildingImagePath1: building1ImagePath,
+            buildingImagePath2: buildingImage2Path,
+            buildingImagePath3: building3ImagePath,
+            buildingImagePath4: building4ImagePath,
+            buildingImagePath5: building5ImagePath,
+            buildingImagePath6: building6ImagePath,
+            buildingImagePath7: building7ImagePath,
+            buildingStreetImagePath: buildingStreetImagePath,
+            buildingAreaImagePath: buildingAreaImagePath,
+            permanentAddress: _permanentAddressController.text,
+          );
+        }
 
         if (result != null && result['status'] == true) {
           if (!mounted) return;
@@ -2032,13 +3505,15 @@ class _VerifyCustomersDetailsScreenState
           message: panImageError,
           isError: true,
         );
-      } else if (chequeImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: chequeImageError,
-          isError: true,
-        );
-      } else if (rcImageError != null) {
+      }
+      // else if (chequeImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: chequeImageError,
+      //     isError: true,
+      //   );
+      // }
+      else if (rcImageError != null) {
         ToastUtil().showSnackBar(
           context: context,
           message: rcImageError,
@@ -2073,6 +3548,8 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_altPhNumFocusNode, altMobileError);
       } else if (emailError != null) {
         _showErrorAndFocus(_emailFocusNode, emailError);
+      } else if (permanentAddressError != null) {
+        _showErrorAndFocus(_permanentAddressFocusNode, permanentAddressError);
       } else if (streetAddressError != null) {
         _showErrorAndFocus(_streetAddressFocusNode, streetAddressError);
       } else if (cityError != null) {
@@ -2100,6 +3577,14 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_bankNameFocusNode, bankNameError);
       } else if (accNumError != null) {
         _showErrorAndFocus(_bankAccNumFocusNode, accNumError);
+      } else if ((widget.type == "1") && referenceError != null) {
+        _showErrorAndFocus(_referenceFocusNode, referenceError);
+      } else if ((widget.type == "3") && referenceError != null) {
+        _showErrorAndFocus(_referenceFocusNode, referenceError);
+      } else if ((widget.type == "3") &&
+          (isRejected == true) &&
+          reasonError != null) {
+        _showErrorAndFocus(_reasonFocusNode, reasonError);
       }
       // else if (bankIFSCError != null) {
       //   _showErrorAndFocus(_bankIFSCCodeFocusNode, bankIFSCError);
@@ -2118,13 +3603,15 @@ class _VerifyCustomersDetailsScreenState
           message: panImageError,
           isError: true,
         );
-      } else if (chequeImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: chequeImageError,
-          isError: true,
-        );
-      } else if (rcImageError != null) {
+      }
+      // else if (chequeImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: chequeImageError,
+      //     isError: true,
+      //   );
+      // }
+      else if (rcImageError != null) {
         ToastUtil().showSnackBar(
           context: context,
           message: rcImageError,

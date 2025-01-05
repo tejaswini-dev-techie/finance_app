@@ -2,7 +2,7 @@ class ValidationUtil {
   /* Group Name Validation */
   static String? validateGroupName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your name';
+      return 'Please enter name';
     } else if (value.length < 3) {
       return 'Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%]').hasMatch(value)) {
@@ -15,7 +15,7 @@ class ValidationUtil {
   /* Name Validation */
   static String? validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your name';
+      return 'Please enter name';
     } else if (value.length < 3) {
       return 'Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -78,14 +78,16 @@ class ValidationUtil {
     /* type 1 - Street Address | 2 - State | 3 - City | 4 - Country */
     if (value == null || value.isEmpty) {
       return (type == 1)
-          ? 'Please enter your Street Address'
+          ? 'Please enter Current Address'
           : (type == 2)
-              ? 'Please enter your State'
+              ? 'Please enter State'
               : (type == 3)
-                  ? 'Please enter your City'
+                  ? 'Please enter City'
                   : (type == 4)
-                      ? 'Please enter your Country'
-                      : "Please enter your location details";
+                      ? 'Please enter Country'
+                      : (type == 5)
+                          ? "Please enter Permanent Address"
+                          : "Please enter location details";
     }
     return null;
   }
@@ -136,7 +138,7 @@ class ValidationUtil {
   static String? validateFrequency(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please select the frequency';
-    } else if (value == "Select your PIGMY Frequency") {
+    } else if (value == "Select PIGMY Frequency") {
       return 'Please select the frequency';
     }
     return null;
@@ -170,7 +172,7 @@ class ValidationUtil {
     final aadhaarPattern =
         RegExp(r"^[2-9]{1}[0-9]{11}$"); // Aadhaar regex pattern
     if (value == null || value.isEmpty) {
-      return 'Please enter your Aadhaar number';
+      return 'Please enter Aadhaar number';
     } else if (!aadhaarPattern.hasMatch(value)) {
       return 'Please enter a valid 12-digit Aadhaar number';
     }
@@ -183,7 +185,7 @@ class ValidationUtil {
     // PAN regex pattern: 5 uppercase letters, 4 digits, and 1 uppercase letter
     final panPattern = RegExp(r"^[A-Z]{5}[0-9]{4}[A-Z]{1}$");
     if (value == null || value.isEmpty) {
-      return 'Please enter your PAN number';
+      return 'Please enter PAN number';
     } else if (!panPattern.hasMatch(value)) {
       return 'Please enter a valid 10-character PAN number';
     }
@@ -205,7 +207,7 @@ class ValidationUtil {
     // Cheque number regex pattern: 6 to 10 digits
     final chequePattern = RegExp(r"^[0-9]{6,10}$");
     if (value == null || value.isEmpty) {
-      return 'Please enter your cheque number';
+      return 'Please enter cheque number';
     } else if (!chequePattern.hasMatch(value)) {
       return 'Please enter a valid cheque number (6-10 digits)';
     }
@@ -295,7 +297,7 @@ class ValidationUtil {
 /* Bank Account Number Validation */
   static String? validateAccountNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your bank account number';
+      return 'Please enter bank account number';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
       return 'Account number should contain only numbers';
     } else if (value.length < 8 || value.length > 18) {

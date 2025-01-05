@@ -66,6 +66,8 @@ class _CreatePigmySavingsAccountScreenState
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _altPhNumController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _permanentAddressController =
+      TextEditingController();
   final TextEditingController _streetAddressController =
       TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -100,6 +102,7 @@ class _CreatePigmySavingsAccountScreenState
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _altPhNumFocusNode = FocusNode();
+  final FocusNode _permanentAddressFocusNode = FocusNode();
   final FocusNode _streetAddressFocusNode = FocusNode();
   final FocusNode _cityFocusNode = FocusNode();
   final FocusNode _stateFocusNode = FocusNode();
@@ -130,6 +133,22 @@ class _CreatePigmySavingsAccountScreenState
   ];
   ValueNotifier<String?> selectedValue = ValueNotifier<String>("Monthly");
 
+  /* Group Pigmy */
+  ValueNotifier<bool> refreshGroupPigmyCheckbox = ValueNotifier<bool>(true);
+  bool? isGroupPigmy = false;
+
+  final TextEditingController _referenceController = TextEditingController();
+  final TextEditingController _referenceNumController = TextEditingController();
+
+  final FocusNode _referenceFocusNode = FocusNode();
+  final FocusNode _referenceNumFocusNode = FocusNode();
+  /* Group Pigmy */
+
+  /* Same as Permanent Address */
+  ValueNotifier<bool> refreshAddress = ValueNotifier<bool>(true);
+  bool? sameAsPermanentAddress = false;
+  /* Same as Permanent Address */
+
   @override
   void initState() {
     super.initState();
@@ -138,6 +157,7 @@ class _CreatePigmySavingsAccountScreenState
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _altPhNumController.addListener(_validateFields);
+    _permanentAddressController.addListener(_validateFields);
     _streetAddressController.addListener(_validateFields);
     _cityController.addListener(_validateFields);
     _stateController.addListener(_validateFields);
@@ -173,6 +193,7 @@ class _CreatePigmySavingsAccountScreenState
     _phNumController.dispose();
     _altPhNumController.dispose();
     _emailController.dispose();
+    _permanentAddressController.dispose();
     _streetAddressController.dispose();
     _cityController.dispose();
     _zipController.dispose();
@@ -193,6 +214,7 @@ class _CreatePigmySavingsAccountScreenState
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
     _altPhNumFocusNode.dispose();
+    _permanentAddressFocusNode.dispose();
     _streetAddressFocusNode.dispose();
     _cityFocusNode.dispose();
     _stateFocusNode.dispose();
@@ -215,6 +237,7 @@ class _CreatePigmySavingsAccountScreenState
     _phNumController.removeListener(_validateFields);
     _emailController.removeListener(_validateFields);
     _altPhNumController.removeListener(_validateFields);
+    _permanentAddressController.removeListener(_validateFields);
     _streetAddressController.removeListener(_validateFields);
     _cityController.removeListener(_validateFields);
     _stateController.removeListener(_validateFields);
@@ -587,6 +610,93 @@ class _CreatePigmySavingsAccountScreenState
 
                               SizedBox(
                                 height: 16.sp,
+                              ),
+
+                              /* Permanent Address Input Field*/
+                              Text(
+                                "Permanent Address",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _permanentAddressFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.location_on,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: "Address",
+                                textEditingController:
+                                    _permanentAddressController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateLocation(
+                                      value, 5);
+                                },
+                              ),
+                              /* Permanent Address Input Field */
+
+                              SizedBox(
+                                height: 8.sp,
+                              ),
+                              ValueListenableBuilder(
+                                  valueListenable: refreshAddress,
+                                  builder: (context, val, _) {
+                                    return InkWell(
+                                      onTap: () {
+                                        sameAsPermanentAddress =
+                                            !sameAsPermanentAddress!;
+                                        if (sameAsPermanentAddress == true) {
+                                          _streetAddressController.text =
+                                              _permanentAddressController.text;
+                                        } else {
+                                          _streetAddressController.clear();
+                                        }
+
+                                        refreshAddress.value =
+                                            !refreshAddress.value;
+                                      },
+                                      child: Row(
+                                        spacing: 2.sp,
+                                        children: [
+                                          (sameAsPermanentAddress == true)
+                                              ? Icon(
+                                                  Icons.check_box,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                  size: 20.sp,
+                                                )
+                                              : Icon(
+                                                  Icons.check_box_outline_blank,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  size: 20.sp,
+                                                ),
+                                          Text(
+                                            "Same as Permanent Address",
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                              SizedBox(
+                                height: 8.sp,
                               ),
 
                               /* Street Address Input Field*/
@@ -1299,6 +1409,158 @@ class _CreatePigmySavingsAccountScreenState
                               ),
                               /* Nominee Bank Branch Input Field */
 
+                              /* Group Pigmy Check Box */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshGroupPigmyCheckbox,
+                                  builder: (context, val, _) {
+                                    return Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 8.sp,
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            isGroupPigmy = !isGroupPigmy!;
+                                            refreshGroupPigmyCheckbox.value =
+                                                !refreshGroupPigmyCheckbox
+                                                    .value;
+                                          },
+                                          child: Row(
+                                            spacing: 2.sp,
+                                            children: [
+                                              (isGroupPigmy == true)
+                                                  ? Icon(
+                                                      Icons.check_box,
+                                                      color: ColorConstants
+                                                          .darkBlueColor,
+                                                      size: 20.sp,
+                                                    )
+                                                  : Icon(
+                                                      Icons
+                                                          .check_box_outline_blank,
+                                                      color: ColorConstants
+                                                          .lightBlackColor,
+                                                      size: 20.sp,
+                                                    ),
+                                              Text(
+                                                "Group Pigmy",
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color:
+                                                      ColorConstants.blackColor,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 8.sp,
+                                        ),
+                                        /* Group Pigmy Check Box */
+
+                                        /* Reference Input Field*/
+                                        (isGroupPigmy == true)
+                                            ? Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 16.sp,
+                                                  ),
+                                                  Text(
+                                                    "Reference -  Group Leader Name",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      color: ColorConstants
+                                                          .lightBlackColor,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  TextInputField(
+                                                    focusnodes:
+                                                        _referenceFocusNode,
+                                                    suffixWidget: const Icon(
+                                                      Icons.person_pin_rounded,
+                                                      color: ColorConstants
+                                                          .darkBlueColor,
+                                                    ),
+                                                    placeholderText:
+                                                        "Enter Reference Name",
+                                                    textEditingController:
+                                                        _referenceController,
+                                                    validationFunc: (value) {
+                                                      return ValidationUtil
+                                                          .validateName(value);
+                                                    },
+                                                  ),
+                                                  SizedBox(
+                                                    height: 16.sp,
+                                                  ),
+
+                                                  /* Reference Mobile Number Input Field */
+                                                  Text(
+                                                    "Reference Contact Details",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      color: ColorConstants
+                                                          .lightBlackColor,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  TextInputField(
+                                                    focusnodes:
+                                                        _referenceNumFocusNode,
+                                                    suffixWidget: const Icon(
+                                                      Icons.phone_locked,
+                                                      color: ColorConstants
+                                                          .darkBlueColor,
+                                                    ),
+                                                    placeholderText:
+                                                        "Enter Reference Mobile Number",
+                                                    textEditingController:
+                                                        _referenceNumController,
+                                                    inputFormattersList: <TextInputFormatter>[
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                          10),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                            r'^[6-9][0-9]*$'),
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .deny(
+                                                        RegExp(r"\s\s"),
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .deny(
+                                                        RegExp(
+                                                            r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                      ),
+                                                    ],
+                                                    keyboardtype:
+                                                        TextInputType.number,
+                                                    validationFunc: (value) {
+                                                      return ValidationUtil
+                                                          .validateMobileNumber(
+                                                        value,
+                                                      );
+                                                    },
+                                                  ),
+                                                  /* Reference Mobile Number Input Field */
+                                                ],
+                                              )
+                                            : const SizedBox
+                                                .shrink(), /* Reference Input Field */
+                                      ],
+                                    );
+                                  }),
                               SizedBox(
                                 height: 32.sp,
                               ),
@@ -1326,6 +1588,8 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateEmailAddress(_emailController.text);
     String? altMobileError = ValidationUtil.validateAltMobileNumber(
         _altPhNumController.text, _phNumController.text);
+    String? permanentAddressError =
+        ValidationUtil.validateLocation(_permanentAddressController.text, 5);
     String? streetAddressError =
         ValidationUtil.validateLocation(_streetAddressController.text, 1);
     String? cityError =
@@ -1360,7 +1624,8 @@ class _CreatePigmySavingsAccountScreenState
     //     ValidationUtil.validateIFSC(_nomineeIFSCController.text);
     String? bankBranchError =
         ValidationUtil.validateBranchName(_nomineeBranchController.text);
-
+    String? referenceError =
+        ValidationUtil.validateName(_referenceController.text);
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
@@ -1389,6 +1654,10 @@ class _CreatePigmySavingsAccountScreenState
           nomineePanNumber: _nomineePanNumberController.text,
           nomineePhoneNumber: _nomineePhoneNumberController.text,
           nomineeRelation: _nomineeRelationController.text,
+          permanentAddress: _permanentAddressController.text,
+          isGroupPigmy: isGroupPigmy,
+          reference: _referenceController.text,
+          referenceNum: _referenceNumController.text,
         );
 
         if (result != null && result['status'] == true) {
@@ -1432,6 +1701,8 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_altPhNumFocusNode, altMobileError);
       } else if (emailError != null) {
         _showErrorAndFocus(_emailFocusNode, emailError);
+      } else if (permanentAddressError != null) {
+        _showErrorAndFocus(_permanentAddressFocusNode, permanentAddressError);
       } else if (streetAddressError != null) {
         _showErrorAndFocus(_streetAddressFocusNode, streetAddressError);
       } else if (cityError != null) {
@@ -1473,6 +1744,8 @@ class _CreatePigmySavingsAccountScreenState
       // }
       else if (bankBranchError != null) {
         _showErrorAndFocus(_nomineeBranchFocusNode, bankBranchError);
+      } else if ((isGroupPigmy == true) && (referenceError != null)) {
+        _showErrorAndFocus(_referenceFocusNode, referenceError);
       }
     }
   }

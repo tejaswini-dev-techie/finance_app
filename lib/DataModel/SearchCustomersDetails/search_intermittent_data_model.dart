@@ -88,13 +88,15 @@ class Data {
 class DocsList {
   String? id;
   String? title;
+  String? subTitle;
   String? imagePath;
 
-  DocsList({this.id, this.title, this.imagePath});
+  DocsList({this.id, this.title, this.imagePath, this.subTitle});
 
   DocsList.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
+    subTitle = json['subtile'];
     imagePath = json['image_path'];
   }
 
@@ -103,6 +105,7 @@ class DocsList {
     data['id'] = id;
     data['title'] = title;
     data['image_path'] = imagePath;
+    data['subtile'] = subTitle;
     return data;
   }
 }

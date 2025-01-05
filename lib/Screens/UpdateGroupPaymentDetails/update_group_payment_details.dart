@@ -6,6 +6,7 @@ import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/UpdateGroupPaymentDetails/bloc/update_group_payment_details_bloc.dart';
+import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
@@ -106,6 +107,8 @@ class _UpdateGroupPaymentDetailsScreenState
   ];
 
   bool? isCheckedAll = false;
+
+  String? internetAlert = "Please check your internet connection";
 
   @override
   void initState() {
@@ -1689,23 +1692,65 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                           20.sp,
                                                                     ),
                                                             ),
-                                                            Text(
-                                                              updateGroupPaymentDetailsBloc
-                                                                      .userData!
-                                                                      .customersList![
-                                                                          index]
-                                                                      .cusName ??
-                                                                  "",
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                fontSize: 12.sp,
-                                                                color: ColorConstants
-                                                                    .lightBlackColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
+                                                            InkWell(
+                                                              onTap: () {
+                                                                InternetUtil()
+                                                                    .checkInternetConnection()
+                                                                    .then(
+                                                                        (internet) {
+                                                                  if (internet) {
+                                                                    Map<String,
+                                                                            dynamic>
+                                                                        data =
+                                                                        {};
+                                                                    data = {
+                                                                      "type":
+                                                                          "2", // type 1 - My Profile | 2 - Others Profile
+                                                                      "customerID":
+                                                                          updateGroupPaymentDetailsBloc.userData!.customersList![index].cusId ??
+                                                                              "",
+                                                                    };
+                                                                    Navigator
+                                                                        .pushReplacementNamed(
+                                                                      context,
+                                                                      RoutingConstants
+                                                                          .routeProfileScreen,
+                                                                      arguments: {
+                                                                        "data":
+                                                                            data
+                                                                      },
+                                                                    );
+                                                                  } else {
+                                                                    ToastUtil().showSnackBar(
+                                                                        context:
+                                                                            context,
+                                                                        message:
+                                                                            internetAlert,
+                                                                        isError:
+                                                                            true);
+                                                                  }
+                                                                });
+                                                              },
+                                                              child: Text(
+                                                                updateGroupPaymentDetailsBloc
+                                                                        .userData!
+                                                                        .customersList![
+                                                                            index]
+                                                                        .cusName ??
+                                                                    "",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                  color: ColorConstants
+                                                                      .lightBlackColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
                                                               ),
                                                             ),
                                                             const Spacer(),

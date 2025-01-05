@@ -171,34 +171,39 @@ class _AgentsTabState extends State<AgentsTab> {
                         ),
                         (agentsTabBloc.userData?.findBtnText != null &&
                                 agentsTabBloc.userData!.findBtnText!.isNotEmpty)
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.sp),
-                                child: InkWell(
-                                  onTap: () => onFindCustomerDetailsAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          agentsTabBloc.userData?.findBtnText ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onFindCustomerDetailsAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc
+                                                    .userData?.findBtnText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -206,35 +211,39 @@ class _AgentsTabState extends State<AgentsTab> {
                         (agentsTabBloc.userData?.finGrpBtnTxt != null &&
                                 agentsTabBloc
                                     .userData!.finGrpBtnTxt!.isNotEmpty)
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.sp),
-                                child: InkWell(
-                                  onTap: () => onFindGroupDetailsAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          agentsTabBloc
-                                                  .userData?.finGrpBtnTxt ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onFindGroupDetailsAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc
+                                                    .userData?.finGrpBtnTxt ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -242,35 +251,40 @@ class _AgentsTabState extends State<AgentsTab> {
                         (agentsTabBloc.userData?.verifyBtnText != null &&
                                 agentsTabBloc
                                     .userData!.verifyBtnText!.isNotEmpty)
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.sp),
-                                child: InkWell(
-                                  onTap: () => onVerifyCustomerDetailsAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          agentsTabBloc
-                                                  .userData?.verifyBtnText ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () =>
+                                        onVerifyCustomerDetailsAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc
+                                                    .userData?.verifyBtnText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -278,35 +292,39 @@ class _AgentsTabState extends State<AgentsTab> {
                         (agentsTabBloc.userData?.updatePaymentDetText != null &&
                                 agentsTabBloc
                                     .userData!.updatePaymentDetText!.isNotEmpty)
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.sp),
-                                child: InkWell(
-                                  onTap: () => onUpdatePaymentDetailsAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          agentsTabBloc.userData
-                                                  ?.updatePaymentDetText ??
-                                              "",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onUpdatePaymentDetailsAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc.userData
+                                                    ?.updatePaymentDetText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -314,35 +332,120 @@ class _AgentsTabState extends State<AgentsTab> {
                         (agentsTabBloc.userData?.grpCreationText != null &&
                                 agentsTabBloc
                                     .userData!.grpCreationText!.isNotEmpty)
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.sp),
-                                child: InkWell(
-                                  onTap: () => onGropCreationAction(),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          agentsTabBloc
-                                                  .userData!.grpCreationText ??
-                                              "GROUP CREATION",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: ColorConstants.darkBlueColor,
-                                            fontWeight: FontWeight.w700,
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onGropCreationAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc.userData!
+                                                    .grpCreationText ??
+                                                "Open Group Account",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: ColorConstants.darkBlueColor,
-                                        size: 12.sp,
-                                      ),
-                                    ],
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.addGrpCustomer != null &&
+                                agentsTabBloc
+                                    .userData!.addGrpCustomer!.isNotEmpty)
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onAddGroupCustomerAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc
+                                                    .userData!.addGrpCustomer ??
+                                                "Add Group Customer",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.registerIndividualCustomer !=
+                                    null &&
+                                agentsTabBloc.userData!
+                                    .registerIndividualCustomer!.isNotEmpty)
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onIndividualCustomerAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc.userData!
+                                                    .registerIndividualCustomer ??
+                                                "Register Individual Customer Account",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -376,6 +479,62 @@ class _AgentsTabState extends State<AgentsTab> {
           Navigator.pushNamed(
             context,
             RoutingConstants.routeGroupCreationScreen,
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
+          );
+        }
+      },
+    );
+  }
+
+  void onAddGroupCustomerAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "title": "Add Group Customer",
+            "type":
+                "1", // type: 1 - Add Group Customer | 2 - Register Individual Customer
+            //"id": customerProfileVerificationBloc.infoDetList![index].id,
+          };
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeVerifyCustomersDetailsScreen,
+            arguments: {"data": data},
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
+          );
+        }
+      },
+    );
+  }
+
+  void onIndividualCustomerAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "title": "Register Customer",
+            "type":
+                "2", // type: 1 - Add Group Customer | 2 - Register Individual Customer
+            //"id": customerProfileVerificationBloc.infoDetList![index].id,
+          };
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeVerifyCustomersDetailsScreen,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(

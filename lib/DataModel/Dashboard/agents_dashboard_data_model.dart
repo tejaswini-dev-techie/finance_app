@@ -32,6 +32,8 @@ class Data {
   String? verifyBtnText;
   String? updatePaymentDetText;
   String? grpCreationText;
+  String? addGrpCustomer;
+  String? registerIndividualCustomer;
 
   Data({
     this.agentMenusList,
@@ -40,6 +42,8 @@ class Data {
     this.updatePaymentDetText,
     this.finGrpBtnTxt,
     this.grpCreationText,
+    this.addGrpCustomer,
+    this.registerIndividualCustomer,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -53,7 +57,10 @@ class Data {
     verifyBtnText = json['verify_btn_text'] ?? "Verify Customers Dashboard";
     finGrpBtnTxt = json['find_grp_btn_text'] ?? "Find Group Details";
     updatePaymentDetText = json['update_payment_det_text'] ?? "";
-    grpCreationText = json['group_creation'] ?? "Group Creation";
+    grpCreationText = json['group_creation'] ?? "Open Group Account";
+    addGrpCustomer = json['add_group_customer'] ?? "Add Group Customer";
+    registerIndividualCustomer = json['register_individual_customer'] ??
+        "Register Individual Customer Account";
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +74,8 @@ class Data {
     data['update_payment_det_text'] = updatePaymentDetText;
     data['find_grp_btn_text'] = finGrpBtnTxt;
     data['group_creation'] = grpCreationText;
+    data['add_group_customer'] = addGrpCustomer;
+    data['register_individual_customer'] = registerIndividualCustomer;
     return data;
   }
 }

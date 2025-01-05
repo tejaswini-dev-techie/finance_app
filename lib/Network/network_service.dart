@@ -520,7 +520,8 @@ class NetworkService {
     "status": true,
     "logout": false,
     "data": {
-      "type": "1",
+      "type": "2",
+      "customer_id": "1234",
       "profile_img": "",
       "name": "Tejaswini D",
       "mob_num": "7259889622",
@@ -534,12 +535,15 @@ class NetworkService {
       "pincode": "560057"
     }
   };
-  Future<ProfileDataModel> profileDetails() {
+  Future<ProfileDataModel> profileDetails(
+      {required String? type, required String? customerID}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['type'] = type; // type 1 - My Profile | 2 - Others Profile
+        paramsKeyVal['id'] = customerID;
         return _network
-            .httpGet(apiHitTimeout, APIURLs.profileDetailsURL,
-                body: paramsKeyVal)
+            .httpGetQuery(apiHitTimeout, APIURLs.profileDetailsURL,
+                queryParams: paramsKeyVal)
             .then(
           (dynamic res) {
             return ProfileDataModel.fromJson(res);
@@ -611,7 +615,7 @@ class NetworkService {
     required String? zipCode,
     required String? country,
     required String? panImage,
-    required String? chequeImage,
+    // required String? chequeImage,
     required String? panNumber,
     required String? aadhaarNumber,
     required String? rcImage,
@@ -626,9 +630,33 @@ class NetworkService {
     required String? bankBranchName,
     required String? passbookImage,
     required String? signatureImage,
+    required String?
+        type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+    String? customerID,
+    bool? isVerified,
+    String? reference,
+    String? referenceNum,
+    String? reason,
+    String? buildingImagePath1,
+    String? buildingImagePath2,
+    String? buildingImagePath3,
+    String? buildingImagePath4,
+    String? buildingImagePath5,
+    String? buildingImagePath6,
+    String? buildingImagePath7,
+    String? buildingStreetImagePath,
+    String? buildingAreaImagePath,
+    required String? permanentAddress,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['type'] =
+            type; // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+        paramsKeyVal['customerID'] = customerID;
+        paramsKeyVal['isVerified'] = isVerified;
+        paramsKeyVal['reference'] = reference;
+        paramsKeyVal['referenceNum'] = referenceNum;
+        paramsKeyVal['reason'] = reason;
         paramsKeyVal['aadhaarImage'] = aadhaarImage;
         paramsKeyVal['aadhaarNumber'] = aadhaarNumber;
         paramsKeyVal['panNumber'] = panNumber;
@@ -642,7 +670,6 @@ class NetworkService {
         paramsKeyVal['zipCode'] = zipCode;
         paramsKeyVal['country'] = country;
         paramsKeyVal['panImage'] = panImage;
-        paramsKeyVal['chequeImage'] = chequeImage;
         paramsKeyVal['rcImage'] = rcImage;
         paramsKeyVal['rcHolderName'] = rcHolderName;
         paramsKeyVal['houseImage'] = houseImage;
@@ -655,6 +682,16 @@ class NetworkService {
         paramsKeyVal['bankBranchName'] = bankBranchName;
         paramsKeyVal['passbookImage'] = passbookImage;
         paramsKeyVal['signatureImage'] = signatureImage;
+        paramsKeyVal['buildingImagePath1'] = buildingImagePath1;
+        paramsKeyVal['buildingImagePath2'] = buildingImagePath2;
+        paramsKeyVal['buildingImagePath3'] = buildingImagePath3;
+        paramsKeyVal['buildingImagePath4'] = buildingImagePath4;
+        paramsKeyVal['buildingImagePath5'] = buildingImagePath5;
+        paramsKeyVal['buildingImagePath6'] = buildingImagePath6;
+        paramsKeyVal['buildingImagePath7'] = buildingImagePath7;
+        paramsKeyVal['buildingStreetImagePath'] = buildingStreetImagePath;
+        paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
+        paramsKeyVal['permanent_address'] = permanentAddress;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -739,6 +776,10 @@ class NetworkService {
     required String? nomineeAccountName,
     required String? nomineeIFSC,
     required String? nomineeBranch,
+    required String? permanentAddress,
+    bool? isGroupPigmy,
+    String? reference,
+    String? referenceNum,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -763,6 +804,10 @@ class NetworkService {
         paramsKeyVal['nomineeAccountName'] = nomineeAccountName;
         paramsKeyVal['nomineeIFSC'] = nomineeIFSC;
         paramsKeyVal['nomineeBranch'] = nomineeBranch;
+        paramsKeyVal['permanentAddress'] = permanentAddress;
+        paramsKeyVal['isGroupPigmy'] = isGroupPigmy;
+        paramsKeyVal['reference'] = reference;
+        paramsKeyVal['referenceNum'] = referenceNum;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYURL, body: paramsKeyVal)
             .then(
@@ -1469,7 +1514,8 @@ class NetworkService {
   Future<SearchCustomerDetailsDataModel> searchCusDetailsService({
     int? page,
     String? searchKey,
-    required String? type, // 1 - Customers Serach | 2 - Group Search
+    required String?
+        type, // 1 - Customers Search | 2 - Group Search | 3 - PIGMY Collections Search | 4 - G-PIGMY Collections Search | 5 - Loans Collections Search | 6 - G-Loan Collections Search
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -1583,7 +1629,7 @@ class NetworkService {
   }
   /* Report History */
 
-  /* Verify CUstomer Info */
+  /* Verify Customer Info */
   var verifyRes = {
     "status": true,
     "logout": false,
@@ -1679,4 +1725,155 @@ class NetworkService {
     );
   }
   /* Verify Customer Profile */
+
+  /* Register Group/Individual Customer */
+  Future<dynamic> updateGroupIndividualCustomerDetails({
+    required String? aadhaarImage,
+    required String? userName,
+    required String? mobNum,
+    required String? altMobNum,
+    required String? emailAddress,
+    required String? streetAddress,
+    required String? city,
+    required String? state,
+    required String? zipCode,
+    required String? country,
+    required String? panImage,
+    String? referenceNumber,
+    required String? panNumber,
+    required String? aadhaarNumber,
+    required String? rcImage,
+    required String? rcHolderName,
+    required String? houseImage,
+    required String? propertyHolderName,
+    required String? propertyDetails,
+    required String? chequeNumber,
+    required String? bankName,
+    required String? accNumber,
+    required String? bankIFSCCode,
+    required String? bankBranchName,
+    required String? passbookImage,
+    required String? signatureImage,
+    required String?
+        type, // type: 1 - Add Group Customer | 2 - Register Individual Customer
+    String? reference,
+    String? buildingImagePath1,
+    String? buildingImagePath2,
+    String? buildingImagePath3,
+    String? buildingImagePath4,
+    String? buildingImagePath5,
+    String? buildingImagePath6,
+    String? buildingImagePath7,
+    String? buildingStreetImagePath,
+    String? buildingAreaImagePath,
+    required String? permanentAddress,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['aadhaarImage'] = aadhaarImage;
+        paramsKeyVal['aadhaarNumber'] = aadhaarNumber;
+        paramsKeyVal['panNumber'] = panNumber;
+        paramsKeyVal['userName'] = userName;
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['altMobNum'] = altMobNum;
+        paramsKeyVal['emailAddress'] = emailAddress;
+        paramsKeyVal['streetAddress'] = streetAddress;
+        paramsKeyVal['city'] = city;
+        paramsKeyVal['state'] = state;
+        paramsKeyVal['zipCode'] = zipCode;
+        paramsKeyVal['country'] = country;
+        paramsKeyVal['panImage'] = panImage;
+        paramsKeyVal['reference'] = reference;
+        paramsKeyVal['referenceNumber'] = referenceNumber;
+        paramsKeyVal['is_group_customer'] = (type == "1") ? true : false;
+        paramsKeyVal['rcImage'] = rcImage;
+        paramsKeyVal['rcHolderName'] = rcHolderName;
+        paramsKeyVal['houseImage'] = houseImage;
+        paramsKeyVal['propertyHolderName'] = propertyHolderName;
+        paramsKeyVal['propertyDetails'] = propertyDetails;
+        paramsKeyVal['chequeNumber'] = chequeNumber;
+        paramsKeyVal['bankName'] = bankName;
+        paramsKeyVal['accNumber'] = accNumber;
+        paramsKeyVal['bankIFSCCode'] = bankIFSCCode;
+        paramsKeyVal['bankBranchName'] = bankBranchName;
+        paramsKeyVal['passbookImage'] = passbookImage;
+        paramsKeyVal['signatureImage'] = signatureImage;
+        paramsKeyVal['buildingImagePath1'] = buildingImagePath1;
+        paramsKeyVal['buildingImagePath2'] = buildingImagePath2;
+        paramsKeyVal['buildingImagePath3'] = buildingImagePath3;
+        paramsKeyVal['buildingImagePath4'] = buildingImagePath4;
+        paramsKeyVal['buildingImagePath5'] = buildingImagePath5;
+        paramsKeyVal['buildingImagePath6'] = buildingImagePath6;
+        paramsKeyVal['buildingImagePath7'] = buildingImagePath7;
+        paramsKeyVal['buildingStreetImagePath'] = buildingStreetImagePath;
+        paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
+        paramsKeyVal['permanent_address'] = permanentAddress;
+        return _network
+            .httpPut(
+          apiHitTimeout,
+          APIURLs.updateIndividualGroupDetailsURL,
+          body: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Register Group/Individual Customer */
+
+  /* Update Address & Mobile Number */
+  Future<dynamic> updateAddressPhNumDetails({
+    required String? customerID,
+    required String? mobNum,
+    required String? streetAddress,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['customer_id'] = customerID;
+        paramsKeyVal['address'] = streetAddress;
+        return _network
+            .httpPut(apiHitTimeout, APIURLs.updateAddressMobNumURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Update Address & Mobile Number */
+
+  /* Search Collection Details */
+  Future<ReportDetailsDataModel> searchCollectionDetailsService({
+    int? page,
+    String? searchKey,
+    required String?
+        type, // type: 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['page'] = "$page";
+        paramsKeyVal['search_key'] = searchKey;
+        paramsKeyVal['type'] =
+            type; // type: 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+        return _network
+            .httpGetQuery(
+          apiHitTimeout,
+          APIURLs.searchCollectionURL,
+          queryParams: paramsKeyVal,
+        )
+            .then(
+          (dynamic res) {
+            return ReportDetailsDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Search Collection Details */
 }

@@ -32,43 +32,45 @@ class MenuInfoCards extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.network(
-            menuDet?.menuImg ?? "",
-            scale: 5.0,
-            fit: BoxFit.fill,
-            height: 24.sp,
-            width: 24.sp,
-            filterQuality:
-                Platform.isIOS ? FilterQuality.medium : FilterQuality.low,
-            loadingBuilder: (BuildContext? context, Widget? child,
-                ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) {
-                return child!;
-              }
-              return Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[400]!,
-                enabled: true,
-                child: Container(
+          (menuDet?.menuImg != null && menuDet!.menuImg!.isNotEmpty)
+              ? Image.network(
+                  menuDet?.menuImg ?? "",
+                  scale: 5.0,
+                  fit: BoxFit.fill,
                   height: 24.sp,
                   width: 24.sp,
-                  color: Colors.grey,
-                ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[400]!,
-                enabled: true,
-                child: Container(
-                  height: 24.sp,
-                  width: 24.sp,
-                  color: Colors.grey,
-                ),
-              );
-            },
-          ),
+                  filterQuality:
+                      Platform.isIOS ? FilterQuality.medium : FilterQuality.low,
+                  loadingBuilder: (BuildContext? context, Widget? child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child!;
+                    }
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[400]!,
+                      enabled: true,
+                      child: Container(
+                        height: 24.sp,
+                        width: 24.sp,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[400]!,
+                      enabled: true,
+                      child: Container(
+                        height: 24.sp,
+                        width: 24.sp,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                )
+              : const SizedBox.shrink(),
           Text(
             menuDet?.menuTitle ?? "",
             textAlign: TextAlign.center,

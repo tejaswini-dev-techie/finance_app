@@ -4,7 +4,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
@@ -17,13 +16,18 @@ import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
 import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
-import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String? type; // type 1 - My Profile | 2 - Others Profile
+  final String? customerID;
+  const ProfileScreen({
+    super.key,
+    this.type = "1", // type 1 - My Profile | 2 - Others Profile
+    this.customerID,
+  });
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -68,7 +72,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    profileBloc.add(GetUserProfileDetails());
+    profileBloc.add(GetUserProfileDetails(
+      type: widget.type, // type 1 - My Profile | 2 - Others Profile
+      customerID: widget.customerID,
+    ));
     _nameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
@@ -549,6 +556,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                             : const SizedBox.shrink(),
                         /* Reset Password */
+
+                        /* Lookup Customer Data */
+                        (profileBloc.userData?.type == "2")
+                            ? Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.sp, vertical: 10.sp),
+                                alignment: Alignment.centerRight,
+                                child: InkWell(
+                                  onTap: () {
+                                    InternetUtil()
+                                        .checkInternetConnection()
+                                        .then((internet) {
+                                      if (internet) {
+                                        if (!mounted) return;
+                                        Map<String, dynamic> data = {};
+                                        data = {
+                                          "customerID": profileBloc
+                                                  .userData?.customerID ??
+                                              "",
+                                          "type": "1",
+                                        };
+
+                                        Navigator.pushNamed(
+                                          context,
+                                          RoutingConstants
+                                              .routeSearchIntermittentScreen,
+                                          arguments: {"data": data},
+                                        );
+                                      } else {
+                                        if (!mounted) return;
+                                        ToastUtil().showSnackBar(
+                                          context: context,
+                                          message: profileBloc.internetAlert,
+                                          isError: true,
+                                        );
+                                      }
+                                    });
+                                  },
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              profileBloc.viewCustomerInfoText,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: ColorConstants.blackColor,
+                                          ),
+                                        ),
+                                        WidgetSpan(
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsets.only(bottom: 2.5.sp),
+                                            child: Icon(
+                                              Icons.arrow_forward_ios,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              size: 12.sp,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        /* Lokkup Customer Data */
                         SizedBox(
                           height: 10.sp,
                         ),
@@ -997,7 +1073,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   body: noInternetWidget(
                     context: context,
-                    retryAction: () => profileBloc.add(GetUserProfileDetails()),
+                    retryAction: () => profileBloc.add(GetUserProfileDetails(
+                      type: widget
+                          .type, // type 1 - My Profile | 2 - Others Profile
+                      customerID: widget.customerID,
+                    )),
                     state: 1,
                   ),
                 );
@@ -1052,7 +1132,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   body: noInternetWidget(
                     context: context,
-                    retryAction: () => profileBloc.add(GetUserProfileDetails()),
+                    retryAction: () => profileBloc.add(GetUserProfileDetails(
+                      type: widget
+                          .type, // type 1 - My Profile | 2 - Others Profile
+                      customerID: widget.customerID,
+                    )),
                     state: 2,
                   ),
                 );

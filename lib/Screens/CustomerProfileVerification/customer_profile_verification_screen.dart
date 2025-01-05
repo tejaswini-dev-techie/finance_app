@@ -229,6 +229,8 @@ class _CustomerProfileVerificationState
                                                       customerProfileVerificationBloc
                                                           .infoDetList![index]
                                                           .id,
+                                                  "type":
+                                                      "3", // type: 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification Screen - Customer Details
                                                 };
                                                 Navigator.pushNamed(
                                                   context,

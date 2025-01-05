@@ -25,6 +25,8 @@ class RoutingConstants {
   static const String routePigmyHistoryScreen = "/pigmyHistoryScreen";
   static const String routeTransactionDetails = "/transactionDetails";
   static const String routeSearchCustomerDetails = "/searchCustomerDetails";
+  static const String routeSearchCollectionDetails =
+      "/routeSearchCollectionDetails";
   static const String routeGroupMembersDetailScreen =
       "/groupMembersDetailScreen";
   static const String routeVerifyCustomersDetailsScreen =

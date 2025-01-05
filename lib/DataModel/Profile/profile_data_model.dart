@@ -35,6 +35,9 @@ class Data {
   String? state;
   String? country;
   String? pincode;
+  String? customerID;
+  String? lookUpCustomerDataText;
+  String? resetText;
 
   Data({
     this.type,
@@ -49,6 +52,9 @@ class Data {
     this.state,
     this.country,
     this.pincode,
+    this.customerID,
+    this.lookUpCustomerDataText,
+    this.resetText,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -64,6 +70,9 @@ class Data {
     state = json['state'];
     country = json['country'];
     pincode = json['pincode'];
+    customerID = json['customer_id'];
+    lookUpCustomerDataText = json['lookup_customer_data_text'] ?? "View Customer Information";
+    resetText = json['reset_text'] ?? "Reset Password";
   }
 
   Map<String, dynamic> toJson() {
@@ -80,6 +89,8 @@ class Data {
     data['state'] = state;
     data['country'] = country;
     data['pincode'] = pincode;
+    data['customer_id'] = customerID;
+    data['reset_text'] = resetText;
     return data;
   }
 }

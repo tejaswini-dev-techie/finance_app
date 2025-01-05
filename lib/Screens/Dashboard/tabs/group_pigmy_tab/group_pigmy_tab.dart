@@ -327,7 +327,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                               children: [
                                 Flexible(
                                   child: Text(
-                                    "GROUP CREATION",
+                                    "Group Account Opening",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontSize: 12.sp,

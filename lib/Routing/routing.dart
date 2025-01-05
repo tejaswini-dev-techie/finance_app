@@ -15,6 +15,7 @@ import 'package:hp_finance/Screens/LoginScreen/login_screen.dart';
 import 'package:hp_finance/Screens/PigmyHistory/pigmy_history_screen.dart';
 import 'package:hp_finance/Screens/Profile/profile_screen.dart';
 import 'package:hp_finance/Screens/ResetPassword/reset_password_screen.dart';
+import 'package:hp_finance/Screens/SearchCollection/search_collection_screen.dart';
 import 'package:hp_finance/Screens/SearchCustomerDetails/search_customer_details_screen.dart';
 import 'package:hp_finance/Screens/SearchIntermitentScreen/search_intermitent_screen.dart';
 import 'package:hp_finance/Screens/TransactionDetails/transaction_details_screen.dart';
@@ -174,7 +175,11 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const ProfileScreen(),
+              builder: (_) => ProfileScreen(
+                type: data['data']['type'] ??
+                    "1", // type 1 - My Profile | 2 - Others Profile
+                customerID: data['data']['customerID'] ?? "",
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),
@@ -334,6 +339,32 @@ class RouteGenerator {
         }
       /* Search Customer Details */
 
+      /* Search Collection Details */
+      case RoutingConstants.routeSearchCollectionDetails:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+              builder: (_) => SearchCollectionDetails(
+                type: data['data']['type'] ??
+                    "1", // type: 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+              ),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const SearchCollectionDetails(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
+      /* Search Customer Details */
+
       /* Search Customer Details */
       case RoutingConstants.routeGroupMembersDetailScreen:
         {
@@ -367,6 +398,8 @@ class RouteGenerator {
               builder: (_) => VerifyCustomersDetailsScreen(
                 title: data['data']['title'] ?? "VERIFICATION",
                 id: data['data']['id'] ?? "",
+                type: data['data']['type'] ??
+                    "0", // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification Screen - Customer Details
               ),
               settings: RouteSettings(
                 name: settings.name,

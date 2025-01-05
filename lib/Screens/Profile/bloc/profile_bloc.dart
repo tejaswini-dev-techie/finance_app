@@ -40,7 +40,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   String profileTitleText = "";
   String profileSubTitleText = "";
 
-  String resetPasswordText = "Reset Password";
+  String resetPasswordText = "";
+  String viewCustomerInfoText = "";
   /* JSON Text */
   Data? userData;
 
@@ -53,10 +54,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       Future<Data?> getUserDetails() async {
         await NetworkService()
-            .profileDetails()
+            .profileDetails(
+          type: event.type, // type 1 - My Profile | 2 - Others Profile
+          customerID: event.customerID,
+        )
             .then((ProfileDataModel? respObj) {
           if (respObj != null && respObj.data != null) {
             userData = respObj.data;
+            resetPasswordText = respObj.data?.resetText ?? "";
+            viewCustomerInfoText = respObj.data?.lookUpCustomerDataText ?? "";
 
             return userData;
           }

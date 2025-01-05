@@ -1,15 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/DataModel/SearchCustomersDetails/search_intermittent_data_model.dart';
 import 'package:hp_finance/Network/network_service.dart';
+import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/SearchIntermitentScreen/widgets/image_data.dart';
 import 'package:hp_finance/Screens/SearchIntermitentScreen/widgets/sec_list.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
+import 'package:hp_finance/Utils/validation_util.dart';
+import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
 import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
@@ -31,6 +35,13 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
 
   Data? searchDet;
 
+  final TextEditingController _altPhNumController = TextEditingController();
+  final FocusNode _altPhNumFocusNode = FocusNode();
+
+  final TextEditingController _streetAddressController =
+      TextEditingController();
+  final FocusNode _streetAddressFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +50,10 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
 
   @override
   void dispose() {
+    _altPhNumController.dispose();
+    _altPhNumFocusNode.dispose();
+    _streetAddressController.dispose();
+    _streetAddressFocusNode.dispose();
     super.dispose();
   }
 
@@ -132,6 +147,17 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                   SizedBox(
                     width: 8.sp,
                   ),
+                  IconButton.filled(
+                    onPressed: () {
+                      showEditSheet(cusID: widget.customerID);
+                    },
+                    icon: const Icon(
+                      Icons.add_card_rounded,
+                      color: ColorConstants.darkBlueColor,
+                    ),
+                    iconSize: 20.sp,
+                    color: ColorConstants.darkBlueColor,
+                  )
                 ],
               ),
             ),
@@ -241,30 +267,42 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                         SizedBox(
                           height: 3.sp,
                         ),
-                        Text(
-                          searchDet?.emailId ?? "",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            color: ColorConstants.lightBlackColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 3.sp,
-                        ),
-                        Text(
-                          searchDet?.address ?? "",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            color: ColorConstants.lightBlackColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.sp,
-                        ),
+                        (searchDet?.emailId != null &&
+                                searchDet!.emailId!.isNotEmpty)
+                            ? Text(
+                                searchDet?.emailId ?? "",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.emailId != null &&
+                                searchDet!.emailId!.isNotEmpty)
+                            ? SizedBox(
+                                height: 3.sp,
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.address != null &&
+                                searchDet!.address!.isNotEmpty)
+                            ? Text(
+                                searchDet?.address ?? "",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.address != null &&
+                                searchDet!.address!.isNotEmpty)
+                            ? SizedBox(
+                                height: 10.sp,
+                              )
+                            : const SizedBox.shrink(),
                         (searchDet?.docsList != null &&
                                 searchDet!.docsList!.isNotEmpty)
                             ? Row(
@@ -302,14 +340,35 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 3.sp,
-                                      ),
-                                      ImageData(
-                                        imagePath: searchDet!
-                                                .docsList![index].imagePath ??
+                                      Text(
+                                        searchDet!.docsList![index].subTitle ??
                                             "",
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
+                                      (searchDet!.docsList![index].imagePath !=
+                                                  null &&
+                                              searchDet!.docsList![index]
+                                                  .imagePath!.isNotEmpty)
+                                          ? SizedBox(
+                                              height: 3.sp,
+                                            )
+                                          : const SizedBox.shrink(),
+                                      (searchDet!.docsList![index].imagePath !=
+                                                  null &&
+                                              searchDet!.docsList![index]
+                                                  .imagePath!.isNotEmpty)
+                                          ? ImageData(
+                                              imagePath: searchDet!
+                                                      .docsList![index]
+                                                      .imagePath ??
+                                                  "",
+                                            )
+                                          : const SizedBox.shrink(),
                                     ],
                                   );
                                 },
@@ -347,7 +406,7 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                                     height: 10.sp,
                                   );
                                 },
-                                itemCount: searchDet!.docsList!.length,
+                                itemCount: searchDet!.listDetails!.length,
                               )
                             : const SizedBox.shrink(),
                         /* LIST */
@@ -405,5 +464,184 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
         }
       },
     );
+  }
+
+  void showEditSheet({
+    required String? cusID,
+  }) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      clipBehavior: Clip.none,
+      context: context,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(4.sp),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+            bottom: MediaQuery.of(context)
+                .viewInsets
+                .bottom, // Adjusts padding for the keyboard
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 16.sp,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /* Alternate Mobile Number Input Field */
+                Text(
+                  "Mobile Number",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: ColorConstants.lightBlackColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextInputField(
+                  focusnodes: _altPhNumFocusNode,
+                  suffixWidget: const Icon(
+                    Icons.phone_locked,
+                    color: ColorConstants.darkBlueColor,
+                  ),
+                  placeholderText: "Enter Mobile Number",
+                  textEditingController: _altPhNumController,
+                  inputFormattersList: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'^[6-9][0-9]*$'),
+                    ),
+                    FilteringTextInputFormatter.deny(
+                      RegExp(r"\s\s"),
+                    ),
+                    FilteringTextInputFormatter.deny(
+                      RegExp(
+                          r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                    ),
+                  ],
+                  keyboardtype: TextInputType.number,
+                  validationFunc: (value) {
+                    return ValidationUtil.validateMobileNumber(
+                      value,
+                    );
+                  },
+                ),
+                /* Alternate Mobile Number Input Field */
+
+                /* Street Address Input Field*/
+                Text(
+                  "Address",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: ColorConstants.lightBlackColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextInputField(
+                  focusnodes: _streetAddressFocusNode,
+                  suffixWidget: const Icon(
+                    Icons.location_on,
+                    color: ColorConstants.darkBlueColor,
+                  ),
+                  placeholderText: "Address",
+                  textEditingController: _streetAddressController,
+                  inputFormattersList: <TextInputFormatter>[
+                    FilteringTextInputFormatter.deny(
+                      RegExp(r"\s\s"),
+                    ),
+                    FilteringTextInputFormatter.deny(
+                      RegExp(
+                          r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                    ),
+                  ],
+                  validationFunc: (value) {
+                    return ValidationUtil.validateLocation(value, 1);
+                  },
+                ),
+                /* Street Address Input Field */
+
+                buttonWidgetHelperUtil(
+                  isDisabled: false,
+                  buttonText: "Update",
+                  onButtonTap: () => onUpdateAction(cusID: cusID),
+                  context: context,
+                  internetAlert: internetAlert,
+                  borderradius: 8.sp,
+                  toastError: () => onUpdateAction(cusID: cusID),
+                ),
+                SizedBox(
+                  height: 32.sp,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  onUpdateAction({
+    required String? cusID,
+  }) {
+    InternetUtil().checkInternetConnection().then((internet) async {
+      if (internet) {
+        if (_altPhNumController.text.isNotEmpty ||
+            _streetAddressController.text.isNotEmpty) {
+// API CAll
+          Navigator.pop(context);
+          var result = await NetworkService().updateAddressPhNumDetails(
+            customerID: widget.customerID,
+            mobNum: _altPhNumController.text,
+            streetAddress: _streetAddressController.text,
+          );
+
+          if (result != null && result['status'] == true) {
+            if (!mounted) return;
+            if (result['message'] != null && result['message'].isNotEmpty) {
+              ToastUtil().showSnackBar(
+                context: context,
+                message: result['message'],
+                isError: false,
+              );
+            }
+
+            Future.delayed(const Duration(seconds: 1)).then((value) {
+              // All validations passed, navigate to the next screen
+              Map<String, dynamic> data = {};
+              data = {
+                "tab_index": 1,
+              };
+              Navigator.pushReplacementNamed(
+                context,
+                RoutingConstants.routeDashboardScreen,
+                arguments: {"data": data},
+              );
+            });
+          } else {
+            if (!mounted) return;
+            ToastUtil().showSnackBar(
+              context: context,
+              message: result['message'] ?? "Something went wrong",
+              isError: true,
+            );
+          }
+        }
+      } else {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: internetAlert,
+          isError: true,
+        );
+      }
+    });
   }
 }

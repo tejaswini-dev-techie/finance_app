@@ -17,6 +17,7 @@ import 'package:hp_finance/Screens/Dashboard/tabs/loans_tab/loans_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_reports_tab/pigmy_reports_tab.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/pigmy_tab.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
+import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/sharedpreferences_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/widgets_util/alert_model.dart';
@@ -312,14 +313,23 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                       const Spacer(),
-                      InkWell(
-                        onTap: () => backAction(type: 1),
-                        child: Image.asset(
-                          ImageConstants.logoutImage,
-                          width: 28.sp,
-                          height: 28.sp,
-                        ),
-                      ),
+                      (_selectedIndex != 0 && ((widget.dashbaordType == 1)))
+                          ? InkWell(
+                              onTap: () => onSearchCollectionDetailsAction(),
+                              child: Icon(
+                                Icons.search,
+                                size: 24.sp,
+                                color: ColorConstants.darkBlueColor,
+                              ),
+                            )
+                          : InkWell(
+                              onTap: () => backAction(type: 1),
+                              child: Image.asset(
+                                ImageConstants.logoutImage,
+                                width: 28.sp,
+                                height: 28.sp,
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -329,6 +339,32 @@ class _DashboardState extends State<Dashboard> {
           },
         ),
       ),
+    );
+  }
+
+  void onSearchCollectionDetailsAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type":
+                "$_selectedIndex", // type: 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+          };
+
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeSearchCollectionDetails,
+            arguments: {"data": data},
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: internetAlert,
+            isError: true,
+          );
+        }
+      },
     );
   }
 }

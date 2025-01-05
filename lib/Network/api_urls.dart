@@ -26,6 +26,10 @@ class APIURLs {
 
   /* KYC */
   static const updateKYCDetailsURL = "$baseURL/customer/update-kyc";
+  static const updateIndividualGroupDetailsURL =
+      "$baseURL/create-customer-agent";
+  static const updateAddressMobNumURL =
+      "$baseURL/customer/update-address-phone";
   /* KYC */
 
   /* Enquiry */
@@ -59,7 +63,8 @@ class APIURLs {
   static const updateGroupEditPayURL = "$baseURL/";
   static const updateGroupPaymentDetailsURL =
       "$baseURL/collection/update-group-collection";
-  static const saveDetailGrpPayURL = "$baseURL/";
+  static const saveDetailGrpPayURL =
+      "$baseURL/collection/save-group-collection";
 
   static const searchIntermittentDetailsURL =
       "$baseURL/customer/get-customer-details-by-id";
@@ -72,6 +77,12 @@ class APIURLs {
   static const reportDetURL = "$baseURL/collection/get-today-collection-list";
   static const verifyCustomerInfoURL =
       "$baseURL/customer/get-verify-customer-list";
-  static const verifyCustomerDetPrefetchURL = "$baseURL/customer/get-verify-details";
+  static const verifyCustomerDetPrefetchURL =
+      "$baseURL/customer/get-verify-details";
   /* Report Details */
+
+  /* Search Collection */
+  static const searchCollectionURL =
+      "$baseURL/collection/search-collection"; // type: 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
+  /* Search Collection */
 }
