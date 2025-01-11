@@ -38,6 +38,8 @@ class APIURLs {
 
   /* PIGMY */
   static const createPIGMYURL = "$baseURL/pigmy/create-pigmy-request";
+  static const createPIGMYbyAgentURL =
+      "$baseURL/customer/create-pigmy-customer-agent";
   static const withdrawPIGMYURL = "$baseURL/pigmy/withdraw-request";
   static const withdrawPIGMYFetchDetailsURL =
       "$baseURL/pigmy/get-withdraw-details";

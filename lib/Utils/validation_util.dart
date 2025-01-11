@@ -454,4 +454,15 @@ class ValidationUtil {
     return null;
   }
   /* Amount To be Paid Validation */
+
+  /* Frequency Validation */
+  static String? validatePigmyPlan(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select the PIGMY Plan';
+    } else if (value == "Select PIGMY Plan") {
+      return 'Please select the PIGMY Plan';
+    }
+    return null;
+  }
+  /* Frequency Validation */
 }

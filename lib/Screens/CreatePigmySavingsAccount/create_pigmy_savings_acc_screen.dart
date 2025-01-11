@@ -8,10 +8,12 @@ import 'package:hp_finance/Utils/app_language_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 class CreatePigmySavingsAccountScreen extends StatefulWidget {
-  const CreatePigmySavingsAccountScreen({super.key});
+  final String? type; /* type: 1 - Individual | 2 - Agent */
+  const CreatePigmySavingsAccountScreen({super.key, this.type = "1"});
 
   @override
   State<CreatePigmySavingsAccountScreen> createState() =>
@@ -95,6 +97,10 @@ class _CreatePigmySavingsAccountScreenState
   final TextEditingController _nomineeIFSCController = TextEditingController();
   final TextEditingController _nomineeBranchController =
       TextEditingController();
+  final TextEditingController _startDateInput = TextEditingController();
+  final TextEditingController _endDateInput = TextEditingController();
+  final TextEditingController _agentNameController = TextEditingController();
+  final TextEditingController _agentPhNumController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -120,13 +126,17 @@ class _CreatePigmySavingsAccountScreenState
   final FocusNode _nomineeAccountNameFocusNode = FocusNode();
   final FocusNode _nomineeIFSCFocusNode = FocusNode();
   final FocusNode _nomineeBranchFocusNode = FocusNode();
+  final FocusNode _startdateInputFocusNode = FocusNode();
+  final FocusNode _enddateInputFocusNode = FocusNode();
+  final FocusNode _agentNameFocusNode = FocusNode();
+  final FocusNode _agentPhNumFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
   ValueNotifier<bool> isDisabled = ValueNotifier<bool>(true);
 
   List<String> frequencyOptions = [
-    "Select your PIGMY Frequency",
+    "Select PIGMY Frequency",
     "Daily",
     "Weekly",
     "Monthly"
@@ -148,6 +158,11 @@ class _CreatePigmySavingsAccountScreenState
   ValueNotifier<bool> refreshAddress = ValueNotifier<bool>(true);
   bool? sameAsPermanentAddress = false;
   /* Same as Permanent Address */
+
+  ValueNotifier<bool> refreshStartDate = ValueNotifier<bool>(true);
+
+  List<String> pigmyOptions = ["Select PIGMY plans", "6", "12", "24", "36"];
+  ValueNotifier<String?> selectedPigmyPlanValue = ValueNotifier<String>("6");
 
   @override
   void initState() {
@@ -174,6 +189,10 @@ class _CreatePigmySavingsAccountScreenState
     _nomineeIFSCController.addListener(_validateFields);
     _nomineeBranchController.addListener(_validateFields);
     _nomineeBankNameController.addListener(_validateFields);
+    _startDateInput.addListener(_validateFields);
+    _endDateInput.addListener(_validateFields);
+    _agentNameController.addListener(_validateFields);
+    _agentPhNumController.addListener(_validateFields);
   }
 
   void _validateFields() {
@@ -209,6 +228,10 @@ class _CreatePigmySavingsAccountScreenState
     _nomineeAccountNameController.dispose();
     _nomineeIFSCController.dispose();
     _nomineeBranchController.dispose();
+    _startDateInput.dispose();
+    _endDateInput.dispose();
+    _agentNameController.dispose();
+    _agentPhNumController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -232,6 +255,10 @@ class _CreatePigmySavingsAccountScreenState
     _nomineeIFSCFocusNode.dispose();
     _nomineeBranchFocusNode.dispose();
     _nomineeBankNameFocusNode.dispose();
+    _startdateInputFocusNode.dispose();
+    _enddateInputFocusNode.dispose();
+    _agentNameFocusNode.dispose();
+    _agentPhNumFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -254,6 +281,10 @@ class _CreatePigmySavingsAccountScreenState
     _nomineeIFSCController.removeListener(_validateFields);
     _nomineeBranchController.removeListener(_validateFields);
     _nomineeBankNameController.removeListener(_validateFields);
+    _startDateInput.removeListener(_validateFields);
+    _endDateInput.removeListener(_validateFields);
+    _agentNameController.removeListener(_validateFields);
+    _agentPhNumController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -320,15 +351,27 @@ class _CreatePigmySavingsAccountScreenState
   }
 
   backAction() {
-    Map<String, dynamic> data = {};
-    data = {
-      "tab_index": 1,
-    };
-    Navigator.pushReplacementNamed(
-      context,
-      RoutingConstants.routeDashboardScreen,
-      arguments: {"data": data},
-    );
+    if (widget.type == "2") {
+      Map<String, dynamic> data = {};
+      data = {
+        "tab_index": 0,
+      };
+      Navigator.pushReplacementNamed(
+        context,
+        RoutingConstants.routeDashboardScreen,
+        arguments: {"data": data},
+      );
+    } else {
+      Map<String, dynamic> data = {};
+      data = {
+        "tab_index": 1,
+      };
+      Navigator.pushReplacementNamed(
+        context,
+        RoutingConstants.routeDashboardScreen,
+        arguments: {"data": data},
+      );
+    }
   }
 
   @override
@@ -1563,6 +1606,484 @@ class _CreatePigmySavingsAccountScreenState
                                     );
                                   }),
                               SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Start Date Input Field */
+                              Text(
+                                "Start Date",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              ValueListenableBuilder(
+                                  valueListenable: refreshStartDate,
+                                  builder: (context, val, _) {
+                                    return TextFormField(
+                                      controller: _startDateInput,
+                                      //editing controller of this TextField
+                                      decoration: InputDecoration(
+                                        suffixIcon: const Icon(
+                                          Icons.calendar_month,
+                                          color: ColorConstants.darkBlueColor,
+                                        ),
+                                        errorStyle: TextStyle(
+                                          color: ColorConstants.redColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                        filled: true,
+                                        fillColor: ColorConstants.whiteColor,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                          ),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                        hintText: "Start Date",
+                                        hintStyle: TextStyle(
+                                          color: ColorConstants.blackColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                      ),
+                                      readOnly: true,
+                                      focusNode: _startdateInputFocusNode,
+                                      style: TextStyle(
+                                        color: ColorConstants.blackColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 10.sp,
+                                      ),
+                                      //set it true, so that user will not able to edit text
+                                      onTap: () async {
+                                        DateTime? pickedDate =
+                                            await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2010),
+                                          //DateTime.now() - not to allow to choose before today.
+                                          lastDate: DateTime(2040),
+                                        );
+
+                                        if (pickedDate != null) {
+                                          //pickedDate output format => 2021-03-10 00:00:00.000
+                                          String formattedDate =
+                                              DateFormat('dd/MM/yyyy')
+                                                  .format(pickedDate);
+                                          //formatted date output using intl package =>  2021-03-16
+
+                                          _startDateInput.text =
+                                              formattedDate; //set output date to TextField value.
+                                          refreshStartDate.value =
+                                              !refreshStartDate.value;
+                                        }
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please select a start date';
+                                        }
+                                        // You can add more complex validation if needed, such as checking date ranges.
+                                        return null;
+                                      },
+                                    );
+                                  }),
+                              /* Start Date Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Pigmy Plan Input Field */
+                              Text(
+                                "Pigmy Plan (MONTHS)",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              ValueListenableBuilder(
+                                valueListenable: selectedPigmyPlanValue,
+                                builder: (context, String? vals, _) {
+                                  String? errorText =
+                                      ValidationUtil.validatePigmyPlan(
+                                          selectedPigmyPlanValue.value);
+                                  bool isError =
+                                      ValidationUtil.validatePigmyPlan(
+                                              selectedPigmyPlanValue.value) !=
+                                          null;
+
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: (isError)
+                                                ? ColorConstants.redColor
+                                                : ColorConstants
+                                                    .lightShadeBlueColor, // Replace with your border color
+                                            width: 1
+                                                .sp, // Adjust the width of the border
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                  8.sp)), // Rounded corners
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8.0.sp,
+                                          vertical: 4.sp,
+                                        ),
+                                        child: DropdownButton<String>(
+                                          focusNode: _frequencyFocusNode,
+                                          value: selectedPigmyPlanValue.value,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          underline: const SizedBox.shrink(),
+                                          isExpanded: true,
+                                          icon: const Icon(
+                                            Icons.timer,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          onTap: () {},
+                                          style: TextStyle(
+                                            color: ColorConstants.blackColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 10.sp,
+                                          ),
+                                          hint: Text(
+                                            "PGMY Plan (MONTHS)",
+                                            style: TextStyle(
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w500,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                          ),
+                                          items:
+                                              pigmyOptions.map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            selectedPigmyPlanValue.value =
+                                                newValue;
+                                            if (_formKey.currentState
+                                                    ?.validate() ??
+                                                false) {
+                                              if (selectedPigmyPlanValue
+                                                      .value !=
+                                                  "Select PIGMY Plan") {
+                                                isDisabled.value = false;
+                                              } else {
+                                                isDisabled.value = true;
+                                              }
+                                            }
+                                            // Recalculate the End Date when Pigmy Plan changes
+                                            if (_startDateInput
+                                                    .text.isNotEmpty &&
+                                                newValue != null) {
+                                              DateTime startDate = DateFormat(
+                                                      'dd/MM/yyyy')
+                                                  .parse(_startDateInput.text);
+                                              int months =
+                                                  int.tryParse(newValue) ?? 0;
+                                              DateTime endDate =
+                                                  calculateEndDate(
+                                                      startDate, months);
+                                              _endDateInput.text =
+                                                  DateFormat('dd/MM/yyyy')
+                                                      .format(endDate);
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      if (isError) // Conditionally show error message
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 4.sp),
+                                          child: Text(
+                                            errorText ?? "",
+                                            style: TextStyle(
+                                              color: ColorConstants.redColor,
+                                              fontWeight: FontWeight.w400,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                              /* Pigmy Plan Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+                              /* End Date Input Field */
+                              Text(
+                                "End Date",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              ValueListenableBuilder(
+                                  valueListenable: refreshStartDate,
+                                  builder: (context, val, _) {
+                                    return TextFormField(
+                                      controller: _endDateInput,
+                                      //editing controller of this TextField
+                                      decoration: InputDecoration(
+                                        suffixIcon: const Icon(
+                                          Icons.calendar_month,
+                                          color: ColorConstants.darkBlueColor,
+                                        ),
+                                        errorStyle: TextStyle(
+                                          color: ColorConstants.redColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                        filled: true,
+                                        fillColor: ColorConstants.whiteColor,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                          ),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                        hintText: "End Date",
+                                        hintStyle: TextStyle(
+                                          color: ColorConstants.blackColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                      ),
+                                      readOnly: true,
+                                      focusNode: _enddateInputFocusNode,
+                                      style: TextStyle(
+                                        color: ColorConstants.blackColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 10.sp,
+                                      ),
+                                      //set it true, so that user will not able to edit text
+                                      onTap: () async {},
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please select a end date';
+                                        }
+                                        // You can add more complex validation if needed, such as checking date ranges.
+                                        return null;
+                                      },
+                                    );
+                                  }),
+                              /* End Date Input Field */
+
+                              /* Agent Input Field*/
+                              (widget.type == "2")
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Agent Name */
+                                        Text(
+                                          "Lead - Agent Name",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _agentNameFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.person_pin_rounded,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: "Enter Agent Name",
+                                          textEditingController:
+                                              _agentNameController,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateAgentName(value);
+                                          },
+                                        ),
+                                        /* Agent Name */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Agent Mobile Number Input Field */
+                                        Text(
+                                          "Agent Contact Details",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _agentPhNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.phone_locked,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText:
+                                              "Enter Agent Mobile Number",
+                                          textEditingController:
+                                              _agentPhNumController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[6-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateReferenceMobileNumber(
+                                              value,
+                                            );
+                                          },
+                                        ),
+                                        /* Agent Mobile Number Input Field */
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                              /* Agent Input Field */
+
+                              SizedBox(
                                 height: 32.sp,
                               ),
                             ],
@@ -1627,39 +2148,85 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateBranchName(_nomineeBranchController.text);
     String? referenceError =
         ValidationUtil.validateReferenceName(_referenceController.text);
+
+    String? agentNameError =
+        ValidationUtil.validateAgentName(_agentNameController.text);
+    String? agentPhNumError =
+        ValidationUtil.validateMobileNumber(_agentPhNumController.text);
+
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
       if (selectedValue.value != "Select your PIGMY Frequency") {
         isDisabled.value = false;
 
-        var result = await NetworkService().createPIGMYDetails(
-          userName: _nameController.text,
-          mobNum: _phNumController.text,
-          altMobNum: _altPhNumController.text,
-          emailAddress: _emailController.text,
-          streetAddress: _streetAddressController.text,
-          city: _cityController.text,
-          state: _stateController.text,
-          zipCode: _zipController.text,
-          country: _countryController.text,
-          depositAmount: _depositAmountController.text,
-          frequency: selectedValue.value,
-          nomineeAadhaarNumber: _nomineeAadhaarNumberController.text,
-          nomineeAccountName: _nomineeAccountNameController.text,
-          nomineeAccountNumber: _nomineeAccountNumberController.text,
-          nomineeBankName: _nomineeBankNameController.text,
-          nomineeBranch: _nomineeBranchController.text,
-          nomineeIFSC: _nomineeIFSCController.text,
-          nomineeName: _nomineeNameController.text,
-          nomineePanNumber: _nomineePanNumberController.text,
-          nomineePhoneNumber: _nomineePhoneNumberController.text,
-          nomineeRelation: _nomineeRelationController.text,
-          permanentAddress: _permanentAddressController.text,
-          isGroupPigmy: isGroupPigmy,
-          reference: _referenceController.text,
-          referenceNum: _referenceNumController.text,
-        );
+        var result;
+
+        if (widget.type == "2") {
+          result = await NetworkService().createPIGMYDetailsbyAgent(
+            userName: _nameController.text,
+            mobNum: _phNumController.text,
+            altMobNum: _altPhNumController.text,
+            emailAddress: _emailController.text,
+            streetAddress: _streetAddressController.text,
+            city: _cityController.text,
+            state: _stateController.text,
+            zipCode: _zipController.text,
+            country: _countryController.text,
+            depositAmount: _depositAmountController.text,
+            frequency: selectedValue.value,
+            nomineeAadhaarNumber: _nomineeAadhaarNumberController.text,
+            nomineeAccountName: _nomineeAccountNameController.text,
+            nomineeAccountNumber: _nomineeAccountNumberController.text,
+            nomineeBankName: _nomineeBankNameController.text,
+            nomineeBranch: _nomineeBranchController.text,
+            nomineeIFSC: _nomineeIFSCController.text,
+            nomineeName: _nomineeNameController.text,
+            nomineePanNumber: _nomineePanNumberController.text,
+            nomineePhoneNumber: _nomineePhoneNumberController.text,
+            nomineeRelation: _nomineeRelationController.text,
+            permanentAddress: _permanentAddressController.text,
+            isGroupPigmy: isGroupPigmy,
+            reference: _referenceController.text,
+            referenceNum: _referenceNumController.text,
+            startDate: _startDateInput.text,
+            pigmyPlan: selectedPigmyPlanValue.value,
+            endDate: _endDateInput.text,
+            agentName: _agentNameController.text,
+            agentPhNum: _agentPhNumController.text,
+          );
+        } else {
+          result = await NetworkService().createPIGMYDetails(
+            userName: _nameController.text,
+            mobNum: _phNumController.text,
+            altMobNum: _altPhNumController.text,
+            emailAddress: _emailController.text,
+            streetAddress: _streetAddressController.text,
+            city: _cityController.text,
+            state: _stateController.text,
+            zipCode: _zipController.text,
+            country: _countryController.text,
+            depositAmount: _depositAmountController.text,
+            frequency: selectedValue.value,
+            nomineeAadhaarNumber: _nomineeAadhaarNumberController.text,
+            nomineeAccountName: _nomineeAccountNameController.text,
+            nomineeAccountNumber: _nomineeAccountNumberController.text,
+            nomineeBankName: _nomineeBankNameController.text,
+            nomineeBranch: _nomineeBranchController.text,
+            nomineeIFSC: _nomineeIFSCController.text,
+            nomineeName: _nomineeNameController.text,
+            nomineePanNumber: _nomineePanNumberController.text,
+            nomineePhoneNumber: _nomineePhoneNumberController.text,
+            nomineeRelation: _nomineeRelationController.text,
+            permanentAddress: _permanentAddressController.text,
+            isGroupPigmy: isGroupPigmy,
+            reference: _referenceController.text,
+            referenceNum: _referenceNumController.text,
+            startDate: _startDateInput.text,
+            pigmyPlan: selectedPigmyPlanValue.value,
+            endDate: _endDateInput.text,
+          );
+        }
 
         if (result != null && result['status'] == true) {
           if (!mounted) return;
@@ -1716,7 +2283,7 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_countryFocusNode, countryError);
       } else if (depositAmountError != null) {
         _showErrorAndFocus(_depositAmountFocusNode, depositAmountError);
-      } else if (selectedValue.value == "Select your PIGMY Frequency") {
+      } else if (selectedValue.value == "Select PIGMY Frequency") {
         ToastUtil().showSnackBar(
           context: context,
           message: frequencyError,
@@ -1747,6 +2314,16 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_nomineeBranchFocusNode, bankBranchError);
       } else if ((isGroupPigmy == true) && (referenceError != null)) {
         _showErrorAndFocus(_referenceFocusNode, referenceError);
+      } else if (selectedPigmyPlanValue.value == "Select PIGMY plans") {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: "Please select PIGMY plans",
+          isError: true,
+        );
+      } else if ((widget.type == "2") && agentNameError != null) {
+        _showErrorAndFocus(_agentNameFocusNode, agentNameError);
+      } else if ((widget.type == "2") && agentPhNumError != null) {
+        _showErrorAndFocus(_agentPhNumFocusNode, agentPhNumError);
       }
     }
   }
@@ -1768,5 +2345,10 @@ class _CreatePigmySavingsAccountScreenState
         );
       },
     );
+  }
+
+  // Add this method for calculating the end date
+  DateTime calculateEndDate(DateTime startDate, int months) {
+    return DateTime(startDate.year, startDate.month + months, startDate.day);
   }
 }

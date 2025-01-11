@@ -32,6 +32,32 @@ class _AgentsTabState extends State<AgentsTab> {
     agentsTabBloc.close();
   }
 
+  void onOpenPigmyAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "2",
+          };
+
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeCreatePigmySavingsAccountScreen,
+            arguments: {"data": data},
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: agentsTabBloc.internetAlert ??
+                "Please check your internet connection",
+            isError: true,
+          );
+        }
+      },
+    );
+  }
+
   void onFindCustomerDetailsAction() {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
@@ -449,7 +475,47 @@ class _AgentsTabState extends State<AgentsTab> {
                                   ),
                                 ),
                               )
-                            : const SizedBox.shrink()
+                            : const SizedBox.shrink(),
+                        (agentsTabBloc.userData?.createPigmyBtnText != null &&
+                                agentsTabBloc
+                                    .userData!.createPigmyBtnText!.isNotEmpty)
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onOpenPigmyAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            agentsTabBloc.userData
+                                                    ?.createPigmyBtnText ??
+                                                "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ],
                     ),
                   ),

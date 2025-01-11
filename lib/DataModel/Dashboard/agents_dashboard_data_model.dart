@@ -34,6 +34,7 @@ class Data {
   String? grpCreationText;
   String? addGrpCustomer;
   String? registerIndividualCustomer;
+  String? createPigmyBtnText;
 
   Data({
     this.agentMenusList,
@@ -44,6 +45,7 @@ class Data {
     this.grpCreationText,
     this.addGrpCustomer,
     this.registerIndividualCustomer,
+    this.createPigmyBtnText,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -61,6 +63,8 @@ class Data {
     addGrpCustomer = json['add_group_customer'] ?? "Add Group Customer";
     registerIndividualCustomer = json['register_individual_customer'] ??
         "Register Individual Customer Account";
+    createPigmyBtnText = json['create_pigmy_text'] ??
+        "Open PIGMY Account";
   }
 
   Map<String, dynamic> toJson() {

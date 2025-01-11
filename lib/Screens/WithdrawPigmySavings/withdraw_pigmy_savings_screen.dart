@@ -13,7 +13,8 @@ import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:sizer/sizer.dart';
 
 class WithdrawPigmySavings extends StatefulWidget {
-  const WithdrawPigmySavings({super.key});
+  final String? type; /* type: 1 - Individual | 2 - Agent */
+  const WithdrawPigmySavings({super.key, this.type = "1"});
 
   @override
   State<WithdrawPigmySavings> createState() => _WithdrawPigmySavingsState();
@@ -40,6 +41,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
   final TextEditingController _withdrawAmountController =
       TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
+  final TextEditingController _agentNameController = TextEditingController();
+  final TextEditingController _agentPhNumController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -54,6 +57,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
   final FocusNode _countryFocusNode = FocusNode();
   final FocusNode _withdrawAmountFocusNode = FocusNode();
   final FocusNode _reasonFocusNode = FocusNode();
+  final FocusNode _agentNameFocusNode = FocusNode();
+  final FocusNode _agentPhNumFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -74,6 +79,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     _countryController.addListener(_validateFields);
     _withdrawAmountController.addListener(_validateFields);
     _reasonController.addListener(_validateFields);
+    _agentNameController.addListener(_validateFields);
+    _agentPhNumController.addListener(_validateFields);
   }
 
   @override
@@ -90,6 +97,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     _countryController.dispose();
     _withdrawAmountController.dispose();
     _reasonController.dispose();
+    _agentNameController.dispose();
+    _agentPhNumController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -102,6 +111,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     _countryFocusNode.dispose();
     _withdrawAmountFocusNode.dispose();
     _reasonFocusNode.dispose();
+    _agentNameFocusNode.dispose();
+    _agentPhNumFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -114,6 +125,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     _countryController.removeListener(_validateFields);
     _withdrawAmountController.removeListener(_validateFields);
     _reasonController.removeListener(_validateFields);
+    _agentNameController.removeListener(_validateFields);
+    _agentPhNumController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -837,6 +850,106 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
                                     ),
                                     /* Withdraw Reason Input Field */
 
+/* Agent Input Field*/
+                                    (widget.type == "2")
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Agent Name */
+                                              Text(
+                                                "Lead - Agent Name",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextInputField(
+                                                focusnodes: _agentNameFocusNode,
+                                                suffixWidget: const Icon(
+                                                  Icons.person_pin_rounded,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                ),
+                                                placeholderText:
+                                                    "Enter Agent Name",
+                                                textEditingController:
+                                                    _agentNameController,
+                                                validationFunc: (value) {
+                                                  return ValidationUtil
+                                                      .validateAgentName(value);
+                                                },
+                                              ),
+                                              /* Agent Name */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Agent Mobile Number Input Field */
+                                              Text(
+                                                "Agent Contact Details",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextInputField(
+                                                focusnodes:
+                                                    _agentPhNumFocusNode,
+                                                suffixWidget: const Icon(
+                                                  Icons.phone_locked,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                ),
+                                                placeholderText:
+                                                    "Enter Agent Mobile Number",
+                                                textEditingController:
+                                                    _agentPhNumController,
+                                                inputFormattersList: <TextInputFormatter>[
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly,
+                                                  LengthLimitingTextInputFormatter(
+                                                      10),
+                                                  FilteringTextInputFormatter
+                                                      .allow(
+                                                    RegExp(r'^[6-9][0-9]*$'),
+                                                  ),
+                                                  FilteringTextInputFormatter
+                                                      .deny(
+                                                    RegExp(r"\s\s"),
+                                                  ),
+                                                  FilteringTextInputFormatter
+                                                      .deny(
+                                                    RegExp(
+                                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                  ),
+                                                ],
+                                                keyboardtype:
+                                                    TextInputType.number,
+                                                validationFunc: (value) {
+                                                  return ValidationUtil
+                                                      .validateReferenceMobileNumber(
+                                                    value,
+                                                  );
+                                                },
+                                              ),
+                                              /* Agent Mobile Number Input Field */
+                                            ],
+                                          )
+                                        : const SizedBox.shrink(),
+                                    /* Agent Input Field */
+
                                     SizedBox(
                                       height: 16.sp,
                                     ),
@@ -1023,6 +1136,11 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     String? withdrawReasonError =
         ValidationUtil.validateWithdrawReason(_reasonController.text);
 
+    String? agentNameError =
+        ValidationUtil.validateAgentName(_agentNameController.text);
+    String? agentPhNumError =
+        ValidationUtil.validateMobileNumber(_agentPhNumController.text);
+
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
@@ -1040,6 +1158,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
         // country: _countryController.text,
         withdrawalAmount: _withdrawAmountController.text,
         reason: _reasonController.text,
+        agentName: _agentNameController.text,
+        agentPhNum: _agentPhNumController.text,
       );
 
       if (result != null && result['status'] == true) {
@@ -1098,6 +1218,10 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
         _showErrorAndFocus(_withdrawAmountFocusNode, withdrawAmountError);
       } else if (withdrawReasonError != null) {
         _showErrorAndFocus(_reasonFocusNode, withdrawReasonError);
+      } else if ((widget.type == "2") && agentNameError != null) {
+        _showErrorAndFocus(_agentNameFocusNode, agentNameError);
+      } else if ((widget.type == "2") && agentPhNumError != null) {
+        _showErrorAndFocus(_agentPhNumFocusNode, agentPhNumError);
       }
     }
   }

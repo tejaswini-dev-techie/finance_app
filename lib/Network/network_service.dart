@@ -781,6 +781,9 @@ class NetworkService {
     bool? isGroupPigmy,
     String? reference,
     String? referenceNum,
+    required String? startDate,
+    required String? endDate,
+    required String? pigmyPlan,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -809,17 +812,98 @@ class NetworkService {
         paramsKeyVal['isGroupPigmy'] = isGroupPigmy;
         paramsKeyVal['reference'] = reference;
         paramsKeyVal['referenceNum'] = referenceNum;
+        paramsKeyVal['startDate'] = startDate;
+        paramsKeyVal['endDate'] = endDate;
+        paramsKeyVal['pigmyPlan'] = pigmyPlan;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYURL, body: paramsKeyVal)
             .then(
           (dynamic res) {
-            return resultCreatePIGMYDetails;
+            return res;
           },
         );
       },
     );
   }
   /* Create PIGMY */
+
+  /* Create PIGMY - by Agent */
+  Future<dynamic> createPIGMYDetailsbyAgent({
+    required String? userName,
+    required String? mobNum,
+    required String? altMobNum,
+    required String? emailAddress,
+    required String? streetAddress,
+    required String? city,
+    required String? state,
+    required String? zipCode,
+    required String? country,
+    required String? depositAmount,
+    required String? frequency,
+    required String? nomineeName,
+    required String? nomineeRelation,
+    required String? nomineePhoneNumber,
+    required String? nomineeAadhaarNumber,
+    required String? nomineePanNumber,
+    required String? nomineeBankName,
+    required String? nomineeAccountNumber,
+    required String? nomineeAccountName,
+    required String? nomineeIFSC,
+    required String? nomineeBranch,
+    required String? permanentAddress,
+    bool? isGroupPigmy,
+    String? reference,
+    String? referenceNum,
+    required String? startDate,
+    required String? endDate,
+    required String? pigmyPlan,
+    required String? agentName,
+    required String? agentPhNum,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['userName'] = userName;
+        paramsKeyVal['mobNum'] = mobNum;
+        paramsKeyVal['altMobNum'] = altMobNum;
+        paramsKeyVal['emailAddress'] = emailAddress;
+        paramsKeyVal['streetAddress'] = streetAddress;
+        paramsKeyVal['city'] = city;
+        paramsKeyVal['state'] = state;
+        paramsKeyVal['zipCode'] = zipCode;
+        paramsKeyVal['country'] = country;
+        paramsKeyVal['depositAmount'] = depositAmount;
+        paramsKeyVal['frequency'] = frequency;
+        paramsKeyVal['nomineeName'] = nomineeName;
+        paramsKeyVal['nomineeRelation'] = nomineeRelation;
+        paramsKeyVal['nomineePhoneNumber'] = nomineePhoneNumber;
+        paramsKeyVal['nomineeAadhaarNumber'] = nomineeAadhaarNumber;
+        paramsKeyVal['nomineePanNumber'] = nomineePanNumber;
+        paramsKeyVal['nomineeBankName'] = nomineeBankName;
+        paramsKeyVal['nomineeAccountNumber'] = nomineeAccountNumber;
+        paramsKeyVal['nomineeAccountName'] = nomineeAccountName;
+        paramsKeyVal['nomineeIFSC'] = nomineeIFSC;
+        paramsKeyVal['nomineeBranch'] = nomineeBranch;
+        paramsKeyVal['permanentAddress'] = permanentAddress;
+        paramsKeyVal['isGroupPigmy'] = isGroupPigmy;
+        paramsKeyVal['reference'] = reference;
+        paramsKeyVal['referenceNum'] = referenceNum;
+        paramsKeyVal['startDate'] = startDate;
+        paramsKeyVal['endDate'] = endDate;
+        paramsKeyVal['pigmyPlan'] = pigmyPlan;
+        paramsKeyVal['agentName'] = agentName;
+        paramsKeyVal['agentPhNum'] = agentPhNum;
+        return _network
+            .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
+                body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+  /* Create PIGMY - by Agent */
 
   /* Withdraw PIGMY */
   var resultWithdrawPIGMYDetailsUpdate = {
@@ -839,6 +923,8 @@ class NetworkService {
     // required String? country,
     required String? withdrawalAmount,
     required String? reason,
+    required String? agentName,
+    required String? agentPhNum,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -853,6 +939,8 @@ class NetworkService {
         // paramsKeyVal['country'] = country;
         paramsKeyVal['withdrawalAmount'] = withdrawalAmount;
         paramsKeyVal['reason'] = reason;
+        paramsKeyVal['agentName'] = agentName;
+        paramsKeyVal['agentPhNum'] = agentPhNum;
         return _network
             .httpPost(apiHitTimeout, APIURLs.withdrawPIGMYURL,
                 body: paramsKeyVal)

@@ -153,7 +153,9 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const CreatePigmySavingsAccountScreen(),
+              builder: (_) => CreatePigmySavingsAccountScreen(
+                type: data['data']['type'] ?? "1",
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),
@@ -251,7 +253,9 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const WithdrawPigmySavings(),
+              builder: (_) => WithdrawPigmySavings(
+                type: data['data']['type'] ?? "1",
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),
