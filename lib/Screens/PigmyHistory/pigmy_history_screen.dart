@@ -11,7 +11,8 @@ import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
 import 'package:sizer/sizer.dart';
 
 class PigmyHistoryScreen extends StatefulWidget {
-  const PigmyHistoryScreen({super.key});
+  final String? pageType; /* 1 - PIGMY | 2 - G PIGMY */
+  const PigmyHistoryScreen({super.key, this.pageType = "1"});
 
   @override
   State<PigmyHistoryScreen> createState() => _PigmyHistoryScreenState();
@@ -45,7 +46,7 @@ class _PigmyHistoryScreenState extends State<PigmyHistoryScreen> {
   backAction() {
     Map<String, dynamic> data = {};
     data = {
-      "tab_index": 1,
+      "tab_index": (widget.pageType == "1") ? 1 : 2,
     };
     Navigator.pushReplacementNamed(
       context,

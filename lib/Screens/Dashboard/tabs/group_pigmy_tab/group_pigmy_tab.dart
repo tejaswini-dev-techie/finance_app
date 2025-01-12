@@ -4,7 +4,6 @@ import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_tab/bloc/group_pigmy_bloc.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/group_pigmy_tab/widgets/group_pigmy_screen.dart';
-import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/bloc/pigmy_bloc.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/widgets/no_pigmy_started.dart';
 import 'package:hp_finance/Screens/Dashboard/tabs/pigmy_tab/widgets/pigmy_shimmer.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
@@ -60,6 +59,7 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
           Map<String, dynamic> data = {};
           data = {
             "type": "2",
+            "pageType": "2",
           };
           Navigator.pushNamed(
             context,
@@ -127,9 +127,14 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "pageType": "2",
+          };
           Navigator.pushNamed(
             context,
             RoutingConstants.routePigmyHistoryScreen,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(

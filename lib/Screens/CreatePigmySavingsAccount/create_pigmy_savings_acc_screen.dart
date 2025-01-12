@@ -13,7 +13,10 @@ import 'package:sizer/sizer.dart';
 
 class CreatePigmySavingsAccountScreen extends StatefulWidget {
   final String? type; /* type: 1 - Individual | 2 - Agent */
-  const CreatePigmySavingsAccountScreen({super.key, this.type = "1"});
+  final String?
+      pageType; /* pageType: 1 - Individual PIGMY | 2 - Individual GPIGMY*/
+  const CreatePigmySavingsAccountScreen(
+      {super.key, this.type = "1", this.pageType = "1"});
 
   @override
   State<CreatePigmySavingsAccountScreen> createState() =>
@@ -364,7 +367,7 @@ class _CreatePigmySavingsAccountScreenState
     } else {
       Map<String, dynamic> data = {};
       data = {
-        "tab_index": 1,
+        "tab_index": (widget.pageType == "1") ? 1 : 2,
       };
       Navigator.pushReplacementNamed(
         context,
@@ -1497,9 +1500,7 @@ class _CreatePigmySavingsAccountScreenState
                                             ],
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 8.sp,
-                                        ),
+
                                         /* Group Pigmy Check Box */
 
                                         /* Reference Input Field*/

@@ -13,9 +13,12 @@ import 'package:sizer/sizer.dart';
 class LearnAboutPigmySavingsScreen extends StatefulWidget {
   final String?
       type; // 1 - Learn About PIGMY SAVINGS | 2 - Learn About GROUP PIGMY SAVINGS
+  final String?
+      pageType; /* pageType: 1 - Individual PIGMY | 2 - Individual GPIGMY*/
   const LearnAboutPigmySavingsScreen({
     super.key,
     this.type,
+    this.pageType = "1",
   });
 
   @override
@@ -463,9 +466,16 @@ class _LearnAboutPigmySavingsScreenState
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "1",
+            "pageType": widget.pageType,
+          };
+
           Navigator.pushNamed(
             context,
             RoutingConstants.routeCreatePigmySavingsAccountScreen,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(

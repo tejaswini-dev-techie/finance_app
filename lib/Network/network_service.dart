@@ -893,8 +893,8 @@ class NetworkService {
         paramsKeyVal['agentName'] = agentName;
         paramsKeyVal['agentPhNum'] = agentPhNum;
         return _network
-            .httpGetQuery(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
-                queryParams: paramsKeyVal)
+            .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
+                body: paramsKeyVal)
             .then(
           (dynamic res) {
             return res;
@@ -1024,7 +1024,8 @@ class NetworkService {
       (paramsKeyVal) {
         paramsKeyVal['id'] = customerID;
         return _network
-            .httpGetQuery(apiHitTimeout, APIURLs.withdrawPIGMYFetchDetailsByAgentURL,
+            .httpGetQuery(
+                apiHitTimeout, APIURLs.withdrawPIGMYFetchDetailsByAgentURL,
                 queryParams: paramsKeyVal)
             .then(
           (dynamic res) {

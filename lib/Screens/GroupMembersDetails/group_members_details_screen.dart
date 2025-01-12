@@ -55,7 +55,7 @@ class _GroupMembersDetailsScreenState extends State<GroupMembersDetailsScreen> {
   backAction() {
     Map<String, dynamic> data = {};
     data = {
-      "tab_index": 3,
+      "tab_index": (widget.type == "1") ? 2 : 4,
     };
     Navigator.pushReplacementNamed(
       context,

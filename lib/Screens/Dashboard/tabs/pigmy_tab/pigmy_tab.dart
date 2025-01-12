@@ -59,6 +59,7 @@ class _PigmyTabState extends State<PigmyTab> {
           Map<String, dynamic> data = {};
           data = {
             "type": "1",
+            "pageType": "1",
           };
           Navigator.pushNamed(
             context,
@@ -126,9 +127,14 @@ class _PigmyTabState extends State<PigmyTab> {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "pageType": "1",
+          };
           Navigator.pushNamed(
             context,
             RoutingConstants.routePigmyHistoryScreen,
+            arguments: {"data": data},
           );
         } else {
           ToastUtil().showSnackBar(
