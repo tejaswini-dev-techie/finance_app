@@ -859,6 +859,7 @@ class NetworkService {
     required String? pigmyPlan,
     required String? agentName,
     required String? agentPhNum,
+    String? password,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -892,6 +893,7 @@ class NetworkService {
         paramsKeyVal['pigmyPlan'] = pigmyPlan;
         paramsKeyVal['agentName'] = agentName;
         paramsKeyVal['agentPhNum'] = agentPhNum;
+        paramsKeyVal['password'] = password;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
                 body: paramsKeyVal)

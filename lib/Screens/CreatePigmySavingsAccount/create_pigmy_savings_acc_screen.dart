@@ -104,6 +104,7 @@ class _CreatePigmySavingsAccountScreenState
   final TextEditingController _endDateInput = TextEditingController();
   final TextEditingController _agentNameController = TextEditingController();
   final TextEditingController _agentPhNumController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -133,6 +134,7 @@ class _CreatePigmySavingsAccountScreenState
   final FocusNode _enddateInputFocusNode = FocusNode();
   final FocusNode _agentNameFocusNode = FocusNode();
   final FocusNode _agentPhNumFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -196,6 +198,7 @@ class _CreatePigmySavingsAccountScreenState
     _endDateInput.addListener(_validateFields);
     _agentNameController.addListener(_validateFields);
     _agentPhNumController.addListener(_validateFields);
+    _passwordController.addListener(_validateFields);
   }
 
   void _validateFields() {
@@ -235,7 +238,7 @@ class _CreatePigmySavingsAccountScreenState
     _endDateInput.dispose();
     _agentNameController.dispose();
     _agentPhNumController.dispose();
-
+    _passwordController.dispose();
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
@@ -262,6 +265,7 @@ class _CreatePigmySavingsAccountScreenState
     _enddateInputFocusNode.dispose();
     _agentNameFocusNode.dispose();
     _agentPhNumFocusNode.dispose();
+    _passwordFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -288,6 +292,7 @@ class _CreatePigmySavingsAccountScreenState
     _endDateInput.removeListener(_validateFields);
     _agentNameController.removeListener(_validateFields);
     _agentPhNumController.removeListener(_validateFields);
+    _passwordController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -350,6 +355,9 @@ class _CreatePigmySavingsAccountScreenState
         appContent['create_pigmy_savings_acc']['nominee_IFSC_text'] ?? "";
     nomineeBranchText =
         appContent['create_pigmy_savings_acc']['nominee_branch_text'] ?? "";
+    pswdText = appContent['create_account']['pswd_text'] ?? "";
+    pswdPlaceholderText =
+        appContent['create_account']['pswd_placeholder_text'] ?? "";
     setState(() {});
   }
 
@@ -2002,6 +2010,46 @@ class _CreatePigmySavingsAccountScreenState
                                           height: 16.sp,
                                         ),
 
+                                        /* Password Input Field */
+                                        Text(
+                                          pswdText,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _passwordFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.lock,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: pswdPlaceholderText,
+                                          textEditingController:
+                                              _passwordController,
+                                          inputFormattersList: [
+                                            FilteringTextInputFormatter.deny(
+                                                RegExp(r"\s")),
+                                            FilteringTextInputFormatter.deny(
+                                                RegExp(r"\s\s")),
+                                            FilteringTextInputFormatter.deny(RegExp(
+                                                r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])')),
+                                          ],
+                                          obscureTextVal: true,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validatePassword(value);
+                                          },
+                                        ),
+                                        /* Password Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
                                         /* Agent Name */
                                         Text(
                                           "Lead - Agent Name",
@@ -2149,7 +2197,8 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateBranchName(_nomineeBranchController.text);
     String? referenceError =
         ValidationUtil.validateReferenceName(_referenceController.text);
-
+    String? passwordError =
+        ValidationUtil.validatePassword(_passwordController.text);
     String? agentNameError =
         ValidationUtil.validateAgentName(_agentNameController.text);
     String? agentPhNumError =
@@ -2195,6 +2244,7 @@ class _CreatePigmySavingsAccountScreenState
             endDate: _endDateInput.text,
             agentName: _agentNameController.text,
             agentPhNum: _agentPhNumController.text,
+            password: _passwordController.text,
           );
         } else {
           result = await NetworkService().createPIGMYDetails(
@@ -2321,6 +2371,8 @@ class _CreatePigmySavingsAccountScreenState
           message: "Please select PIGMY plans",
           isError: true,
         );
+      } else if ((widget.type == "2") && (passwordError != null)) {
+        _showErrorAndFocus(_passwordFocusNode, passwordError);
       } else if ((widget.type == "2") && agentNameError != null) {
         _showErrorAndFocus(_agentNameFocusNode, agentNameError);
       } else if ((widget.type == "2") && agentPhNumError != null) {
