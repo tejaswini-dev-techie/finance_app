@@ -78,6 +78,14 @@ class _VerifyCustomersDetailsScreenState
 
   String addText = "CLICK HERE TO ADD";
 
+  List<String> docOptions = [
+    "Select Document Type",
+    "Property",
+    "Vehicle",
+  ];
+  ValueNotifier<String?> selectedDocValue =
+      ValueNotifier<String>("Select Document Type");
+
   /* TextEditing Controller */
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
@@ -137,6 +145,7 @@ class _VerifyCustomersDetailsScreenState
   final FocusNode _agentNameFocusNode = FocusNode();
   final FocusNode _referenceNumFocusNode = FocusNode();
   final FocusNode _reasonFocusNode = FocusNode();
+  final FocusNode _docTypeFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -338,6 +347,7 @@ class _VerifyCustomersDetailsScreenState
     _referenceFocusNode.dispose();
     _reasonFocusNode.dispose();
     _agentNameFocusNode.dispose();
+    _docTypeFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -1092,135 +1102,6 @@ class _VerifyCustomersDetailsScreenState
                                 },
                               ),
                               /* PAN Input Field */
-
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* RC Holder Name Field */
-                              Text(
-                                rcHolderNameText,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ColorConstants.lightBlackColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              TextInputField(
-                                focusnodes: _rcHolderNameFocusNode,
-                                suffixWidget: const Icon(
-                                  Icons.assignment_ind_outlined,
-                                  color: ColorConstants.darkBlueColor,
-                                ),
-                                placeholderText: rcHolderNameText,
-                                textEditingController: _rcHolderNameController,
-                                textcapitalization: TextCapitalization.words,
-                                inputFormattersList: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(r"\s\s"),
-                                  ),
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(
-                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                  ),
-                                ],
-                                keyboardtype: TextInputType.text,
-                                validationFunc: (value) {
-                                  return ValidationUtil.validateRCHolderName(
-                                    value,
-                                  );
-                                },
-                              ),
-                              /* RC Holder Name Field */
-
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* Property Holder Name Field */
-                              Text(
-                                propertyHolderNameText,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ColorConstants.lightBlackColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              TextInputField(
-                                focusnodes: _propertyHolderNameFocusNode,
-                                suffixWidget: const Icon(
-                                  Icons.badge_outlined,
-                                  color: ColorConstants.darkBlueColor,
-                                ),
-                                placeholderText: propertyHolderNameText,
-                                textEditingController:
-                                    _propertyHolderNameController,
-                                textcapitalization:
-                                    TextCapitalization.sentences,
-                                inputFormattersList: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(r"\s\s"),
-                                  ),
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(
-                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                  ),
-                                ],
-                                keyboardtype: TextInputType.text,
-                                validationFunc: (value) {
-                                  return ValidationUtil
-                                      .validatePropertyHolderName(
-                                    value,
-                                  );
-                                },
-                              ),
-                              /* Property Holder Name Field */
-
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* Property Details Field */
-                              Text(
-                                propertyDetailsText,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ColorConstants.lightBlackColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              TextInputField(
-                                focusnodes: _propertyDetailsFocusNode,
-                                suffixWidget: const Icon(
-                                  Icons.chalet_rounded,
-                                  color: ColorConstants.darkBlueColor,
-                                ),
-                                placeholderText: propertyDetailsText,
-                                textEditingController:
-                                    _propertyDetailsController,
-                                textcapitalization:
-                                    TextCapitalization.sentences,
-                                inputFormattersList: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(r"\s\s"),
-                                  ),
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(
-                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                  ),
-                                ],
-                                keyboardtype: TextInputType.text,
-                                validationFunc: (value) {
-                                  return ValidationUtil.validatePropertyDetails(
-                                    value,
-                                  );
-                                },
-                              ),
-                              /* Property Details Field */
-
                               SizedBox(
                                 height: 16.sp,
                               ),
@@ -1418,6 +1299,300 @@ class _VerifyCustomersDetailsScreenState
                                 },
                               ),
                               /* Bank Branch Name Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Doc Options Input Field */
+                              Text(
+                                "Document Type",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              ValueListenableBuilder(
+                                valueListenable: selectedDocValue,
+                                builder: (context, String? vals, _) {
+                                  String? errorText =
+                                      ValidationUtil.validateFrequency(
+                                          selectedDocValue.value);
+                                  bool isError =
+                                      ValidationUtil.validateFrequency(
+                                              selectedDocValue.value) !=
+                                          null;
+
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: (isError)
+                                                ? ColorConstants.redColor
+                                                : ColorConstants
+                                                    .lightShadeBlueColor, // Replace with your border color
+                                            width: 1
+                                                .sp, // Adjust the width of the border
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                  8.sp)), // Rounded corners
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8.0.sp,
+                                          vertical: 4.sp,
+                                        ),
+                                        child: DropdownButton<String>(
+                                          focusNode: _docTypeFocusNode,
+                                          value: selectedDocValue.value,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          underline: const SizedBox.shrink(),
+                                          isExpanded: true,
+                                          icon: const Icon(
+                                            Icons.document_scanner_sharp,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          onTap: () {},
+                                          style: TextStyle(
+                                            color: ColorConstants.blackColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 10.sp,
+                                          ),
+                                          hint: Text(
+                                            "Select Document Type",
+                                            style: TextStyle(
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w500,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                          ),
+                                          items: docOptions.map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            selectedDocValue.value = newValue;
+                                            if (_formKey.currentState
+                                                    ?.validate() ??
+                                                false) {
+                                              if (selectedDocValue.value !=
+                                                  "Select Document type") {
+                                                isDisabled.value = false;
+                                              } else {
+                                                isDisabled.value = true;
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      if (isError) // Conditionally show error message
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 4.sp),
+                                          child: Text(
+                                            errorText ?? "",
+                                            style: TextStyle(
+                                              color: ColorConstants.redColor,
+                                              fontWeight: FontWeight.w400,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                              /* Doc Options Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* RC Holder Name Field */
+                              ValueListenableBuilder(
+                                  valueListenable: selectedDocValue,
+                                  builder: (context, value, child) {
+                                    return (selectedDocValue.value == "Vehicle")
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                rcHolderNameText,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextInputField(
+                                                focusnodes:
+                                                    _rcHolderNameFocusNode,
+                                                suffixWidget: const Icon(
+                                                  Icons.assignment_ind_outlined,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                ),
+                                                placeholderText:
+                                                    rcHolderNameText,
+                                                textEditingController:
+                                                    _rcHolderNameController,
+                                                textcapitalization:
+                                                    TextCapitalization.words,
+                                                inputFormattersList: <TextInputFormatter>[
+                                                  FilteringTextInputFormatter
+                                                      .deny(
+                                                    RegExp(r"\s\s"),
+                                                  ),
+                                                  FilteringTextInputFormatter
+                                                      .deny(
+                                                    RegExp(
+                                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                  ),
+                                                ],
+                                                keyboardtype:
+                                                    TextInputType.text,
+                                                validationFunc: (value) {
+                                                  return ValidationUtil
+                                                      .validateRCHolderName(
+                                                    value,
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox.shrink();
+                                  }),
+                              /* RC Holder Name Field */
+
+                              ValueListenableBuilder(
+                                valueListenable: selectedDocValue,
+                                builder: (context, value, child) {
+                                  return (selectedDocValue.value == "Property")
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            /* Property Holder Name Field */
+                                            Text(
+                                              propertyHolderNameText,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: ColorConstants
+                                                    .lightBlackColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            TextInputField(
+                                              focusnodes:
+                                                  _propertyHolderNameFocusNode,
+                                              suffixWidget: const Icon(
+                                                Icons.badge_outlined,
+                                                color: ColorConstants
+                                                    .darkBlueColor,
+                                              ),
+                                              placeholderText:
+                                                  propertyHolderNameText,
+                                              textEditingController:
+                                                  _propertyHolderNameController,
+                                              textcapitalization:
+                                                  TextCapitalization.sentences,
+                                              inputFormattersList: <TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .deny(
+                                                  RegExp(r"\s\s"),
+                                                ),
+                                                FilteringTextInputFormatter
+                                                    .deny(
+                                                  RegExp(
+                                                      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                ),
+                                              ],
+                                              keyboardtype: TextInputType.text,
+                                              validationFunc: (value) {
+                                                return ValidationUtil
+                                                    .validatePropertyHolderName(
+                                                  value,
+                                                );
+                                              },
+                                            ),
+                                            /* Property Holder Name Field */
+
+                                            SizedBox(
+                                              height: 16.sp,
+                                            ),
+
+                                            /* Property Details Field */
+                                            Text(
+                                              propertyDetailsText,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 10.sp,
+                                                color: ColorConstants
+                                                    .lightBlackColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            TextInputField(
+                                              focusnodes:
+                                                  _propertyDetailsFocusNode,
+                                              suffixWidget: const Icon(
+                                                Icons.chalet_rounded,
+                                                color: ColorConstants
+                                                    .darkBlueColor,
+                                              ),
+                                              placeholderText:
+                                                  propertyDetailsText,
+                                              textEditingController:
+                                                  _propertyDetailsController,
+                                              textcapitalization:
+                                                  TextCapitalization.sentences,
+                                              inputFormattersList: <TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .deny(
+                                                  RegExp(r"\s\s"),
+                                                ),
+                                                FilteringTextInputFormatter
+                                                    .deny(
+                                                  RegExp(
+                                                      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                                ),
+                                              ],
+                                              keyboardtype: TextInputType.text,
+                                              validationFunc: (value) {
+                                                return ValidationUtil
+                                                    .validatePropertyDetails(
+                                                  value,
+                                                );
+                                              },
+                                            ),
+                                            /* Property Details Field */
+                                          ],
+                                        )
+                                      : const SizedBox.shrink();
+                                },
+                              ),
 
                               /* Reference Input Field*/
                               (widget.type == "1")
@@ -1811,248 +1986,6 @@ class _VerifyCustomersDetailsScreenState
                                   }),
                               /* Add PAN Doc Image */
 
-                              // SizedBox(
-                              //   height: 16.sp,
-                              // ),
-
-                              // /* Add Cheque Doc Image */
-                              // ValueListenableBuilder(
-                              //     valueListenable: refreshChequeImage,
-                              //     builder: (context, bool val, _) {
-                              //       return AddDocImagePlaceholder(
-                              //         imagePath: chequeImagePath ?? "",
-                              //         placeholderText: "Add Cheque Image",
-                              //         addText: addText,
-                              //         onImageTap: () async {
-                              //           await InternetUtil()
-                              //               .checkInternetConnection()
-                              //               .then((internet) async {
-                              //             if (internet) {
-                              //               showDocsAlertDialog(
-                              //                 context: context,
-                              //                 onCaptureAction: () async {
-                              //                   compressedPhotosChequeList = [];
-                              //                   compressedPhotosChequeList =
-                              //                       await capturePhoto(
-                              //                     type: 2,
-                              //                     screenName: "KYC",
-                              //                     maxImagesCount: 1,
-                              //                     context: context,
-                              //                     compressedPhotosList:
-                              //                         compressedPhotosChequeList,
-                              //                   );
-
-                              //                   chequeImagePath =
-                              //                       await NetworkService()
-                              //                           .imageUpload(
-                              //                     compressedPhotosChequeList[0]
-                              //                         .path,
-                              //                   );
-
-                              //                   refreshChequeImage.value =
-                              //                       !refreshChequeImage.value;
-                              //                 },
-                              //                 onGalleryAction: () async {
-                              //                   compressedPhotosChequeList = [];
-                              //                   compressedPhotosChequeList =
-                              //                       await pickPhotos(
-                              //                     maxImagesCount: 1,
-                              //                     context: context,
-                              //                     compressedPhotosList:
-                              //                         compressedPhotosChequeList,
-                              //                     invalidFormatErrorText:
-                              //                         "Invalid",
-                              //                   );
-
-                              //                   chequeImagePath =
-                              //                       await NetworkService()
-                              //                           .imageUpload(
-                              //                     compressedPhotosChequeList[0]
-                              //                         .path,
-                              //                   );
-
-                              //                   refreshChequeImage.value =
-                              //                       !refreshChequeImage.value;
-                              //                 },
-                              //               );
-                              //             } else {
-                              //               ToastUtil().showSnackBar(
-                              //                 context: context,
-                              //                 message: internetAlert,
-                              //                 isError: true,
-                              //               );
-                              //             }
-                              //           });
-                              //         },
-                              //       );
-                              //     }),
-                              // /* Add Cheque Doc Image */
-
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* Add RC Doc Image */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshRCHOLDERImage,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: rcHOLDERImagePath ?? "",
-                                      placeholderText: "Add RC Image",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosRCHOLDERList =
-                                                    [];
-                                                compressedPhotosRCHOLDERList =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosRCHOLDERList,
-                                                );
-
-                                                rcHOLDERImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosRCHOLDERList[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshRCHOLDERImage.value =
-                                                    !refreshRCHOLDERImage.value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosRCHOLDERList =
-                                                    [];
-                                                compressedPhotosRCHOLDERList =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosRCHOLDERList,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-
-                                                rcHOLDERImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosRCHOLDERList[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshRCHOLDERImage.value =
-                                                    !refreshRCHOLDERImage.value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add RC Doc Image */
-
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* Add Property Doc Image */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshPropertyDocImage,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: propertyDocImagePath ?? "",
-                                      placeholderText: "Add Property Doc Image",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            // Upload Profile Photo
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosPropertyDocList =
-                                                    [];
-                                                compressedPhotosPropertyDocList =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosPropertyDocList,
-                                                );
-
-                                                propertyDocImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosPropertyDocList[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshPropertyDocImage.value =
-                                                    !refreshPropertyDocImage
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosPropertyDocList =
-                                                    [];
-                                                compressedPhotosPropertyDocList =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosPropertyDocList,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-
-                                                propertyDocImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosPropertyDocList[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshPropertyDocImage.value =
-                                                    !refreshPropertyDocImage
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Property Doc Image */
-
                               SizedBox(
                                 height: 16.sp,
                               ),
@@ -2221,772 +2154,1244 @@ class _VerifyCustomersDetailsScreenState
                                   }),
                               /* Add Signature Image */
 
-                              SizedBox(
-                                height: 16.sp,
-                              ),
+                              // SizedBox(
+                              //   height: 16.sp,
+                              // ),
 
-                              /* Add Building Image 1 */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuilding1Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: building1ImagePath ?? "",
-                                      placeholderText: "Add Building Image 1",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding1List =
-                                                    [];
-                                                compressedPhotosBuilding1List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding1List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "building1ImagePath: 1 ${compressedPhotosBuilding1List[0].path}");
-                                                building1ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding1List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "building1ImagePath: 2$building1ImagePath");
-                                                refreshBuilding1Image.value =
-                                                    !refreshBuilding1Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding1List =
-                                                    [];
-                                                compressedPhotosBuilding1List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding1List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "building1ImagePath: 1 ${compressedPhotosBuilding1List[0].path}");
-                                                building1ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding1List[
-                                                          0]
-                                                      .path,
-                                                );
+                              // /* Add Cheque Doc Image */
+                              // ValueListenableBuilder(
+                              //     valueListenable: refreshChequeImage,
+                              //     builder: (context, bool val, _) {
+                              //       return AddDocImagePlaceholder(
+                              //         imagePath: chequeImagePath ?? "",
+                              //         placeholderText: "Add Cheque Image",
+                              //         addText: addText,
+                              //         onImageTap: () async {
+                              //           await InternetUtil()
+                              //               .checkInternetConnection()
+                              //               .then((internet) async {
+                              //             if (internet) {
+                              //               showDocsAlertDialog(
+                              //                 context: context,
+                              //                 onCaptureAction: () async {
+                              //                   compressedPhotosChequeList = [];
+                              //                   compressedPhotosChequeList =
+                              //                       await capturePhoto(
+                              //                     type: 2,
+                              //                     screenName: "KYC",
+                              //                     maxImagesCount: 1,
+                              //                     context: context,
+                              //                     compressedPhotosList:
+                              //                         compressedPhotosChequeList,
+                              //                   );
 
-                                                refreshBuilding1Image.value =
-                                                    !refreshBuilding1Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Image 1 */
+                              //                   chequeImagePath =
+                              //                       await NetworkService()
+                              //                           .imageUpload(
+                              //                     compressedPhotosChequeList[0]
+                              //                         .path,
+                              //                   );
+
+                              //                   refreshChequeImage.value =
+                              //                       !refreshChequeImage.value;
+                              //                 },
+                              //                 onGalleryAction: () async {
+                              //                   compressedPhotosChequeList = [];
+                              //                   compressedPhotosChequeList =
+                              //                       await pickPhotos(
+                              //                     maxImagesCount: 1,
+                              //                     context: context,
+                              //                     compressedPhotosList:
+                              //                         compressedPhotosChequeList,
+                              //                     invalidFormatErrorText:
+                              //                         "Invalid",
+                              //                   );
+
+                              //                   chequeImagePath =
+                              //                       await NetworkService()
+                              //                           .imageUpload(
+                              //                     compressedPhotosChequeList[0]
+                              //                         .path,
+                              //                   );
+
+                              //                   refreshChequeImage.value =
+                              //                       !refreshChequeImage.value;
+                              //                 },
+                              //               );
+                              //             } else {
+                              //               ToastUtil().showSnackBar(
+                              //                 context: context,
+                              //                 message: internetAlert,
+                              //                 isError: true,
+                              //               );
+                              //             }
+                              //           });
+                              //         },
+                              //       );
+                              //     }),
+                              // /* Add Cheque Doc Image */
 
                               SizedBox(
                                 height: 16.sp,
                               ),
 
-                              /* Add Building Image 2 */
+                              /* Add RC Doc Image */
                               ValueListenableBuilder(
-                                  valueListenable: refreshBuilding2Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: buildingImage2Path ?? "",
-                                      placeholderText: "Add Building Image 2",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding2List =
-                                                    [];
-                                                compressedPhotosBuilding2List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding2List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "buildingImage2Path: 1 ${compressedPhotosBuilding2List[0].path}");
-                                                buildingImage2Path =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding2List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "buildingImage2Path: 2$buildingImage2Path");
-                                                refreshBuilding2Image.value =
-                                                    !refreshBuilding2Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding2List =
-                                                    [];
-                                                compressedPhotosBuilding2List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding2List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "buildingImage2Path: 1 ${compressedPhotosBuilding2List[0].path}");
-                                                buildingImage2Path =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding2List[
-                                                          0]
-                                                      .path,
-                                                );
+                                  valueListenable: selectedDocValue,
+                                  builder: (context, value, child) {
+                                    return (selectedDocValue.value == "Vehicle")
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshRCHOLDERImage,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          rcHOLDERImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add RC Image",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosRCHOLDERList =
+                                                                    [];
+                                                                compressedPhotosRCHOLDERList =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosRCHOLDERList,
+                                                                );
 
-                                                refreshBuilding2Image.value =
-                                                    !refreshBuilding2Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
+                                                                rcHOLDERImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosRCHOLDERList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshRCHOLDERImage
+                                                                        .value =
+                                                                    !refreshRCHOLDERImage
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosRCHOLDERList =
+                                                                    [];
+                                                                compressedPhotosRCHOLDERList =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosRCHOLDERList,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+
+                                                                rcHOLDERImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosRCHOLDERList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshRCHOLDERImage
+                                                                        .value =
+                                                                    !refreshRCHOLDERImage
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                            ],
+                                          )
+                                        : const SizedBox.shrink();
                                   }),
-                              /* Add Building Image 2 */
+                              /* Add RC Doc Image */
 
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* Add Building Image 3 */
                               ValueListenableBuilder(
-                                  valueListenable: refreshBuilding3Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: building3ImagePath ?? "",
-                                      placeholderText: "Add Building Image 3",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding3List =
-                                                    [];
-                                                compressedPhotosBuilding3List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding3List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "building3ImagePath: 1 ${compressedPhotosBuilding3List[0].path}");
-                                                building3ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding3List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "building3ImagePath: 2$building3ImagePath");
-                                                refreshBuilding3Image.value =
-                                                    !refreshBuilding3Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding3List =
-                                                    [];
-                                                compressedPhotosBuilding3List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding3List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "building3ImagePath: 1 ${compressedPhotosBuilding3List[0].path}");
-                                                building3ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding3List[
-                                                          0]
-                                                      .path,
-                                                );
+                                  valueListenable: selectedDocValue,
+                                  builder: (context, value, child) {
+                                    return (selectedDocValue.value ==
+                                            "Property")
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
 
-                                                refreshBuilding3Image.value =
-                                                    !refreshBuilding3Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
+                                              /* Add Property Doc Image */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshPropertyDocImage,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          propertyDocImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Property Doc Image",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            // Upload Profile Photo
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosPropertyDocList =
+                                                                    [];
+                                                                compressedPhotosPropertyDocList =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosPropertyDocList,
+                                                                );
+
+                                                                propertyDocImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosPropertyDocList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshPropertyDocImage
+                                                                        .value =
+                                                                    !refreshPropertyDocImage
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosPropertyDocList =
+                                                                    [];
+                                                                compressedPhotosPropertyDocList =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosPropertyDocList,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+
+                                                                propertyDocImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosPropertyDocList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshPropertyDocImage
+                                                                        .value =
+                                                                    !refreshPropertyDocImage
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Property Doc Image */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 1 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding1Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          building1ImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 1",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding1List =
+                                                                    [];
+                                                                compressedPhotosBuilding1List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding1List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building1ImagePath: 1 ${compressedPhotosBuilding1List[0].path}");
+                                                                building1ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding1List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "building1ImagePath: 2$building1ImagePath");
+                                                                refreshBuilding1Image
+                                                                        .value =
+                                                                    !refreshBuilding1Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding1List =
+                                                                    [];
+                                                                compressedPhotosBuilding1List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding1List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building1ImagePath: 1 ${compressedPhotosBuilding1List[0].path}");
+                                                                building1ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding1List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding1Image
+                                                                        .value =
+                                                                    !refreshBuilding1Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 1 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 2 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding2Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          buildingImage2Path ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 2",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding2List =
+                                                                    [];
+                                                                compressedPhotosBuilding2List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding2List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "buildingImage2Path: 1 ${compressedPhotosBuilding2List[0].path}");
+                                                                buildingImage2Path =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding2List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "buildingImage2Path: 2$buildingImage2Path");
+                                                                refreshBuilding2Image
+                                                                        .value =
+                                                                    !refreshBuilding2Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding2List =
+                                                                    [];
+                                                                compressedPhotosBuilding2List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding2List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "buildingImage2Path: 1 ${compressedPhotosBuilding2List[0].path}");
+                                                                buildingImage2Path =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding2List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding2Image
+                                                                        .value =
+                                                                    !refreshBuilding2Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 2 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 3 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding3Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          building3ImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 3",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding3List =
+                                                                    [];
+                                                                compressedPhotosBuilding3List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding3List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building3ImagePath: 1 ${compressedPhotosBuilding3List[0].path}");
+                                                                building3ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding3List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "building3ImagePath: 2$building3ImagePath");
+                                                                refreshBuilding3Image
+                                                                        .value =
+                                                                    !refreshBuilding3Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding3List =
+                                                                    [];
+                                                                compressedPhotosBuilding3List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding3List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building3ImagePath: 1 ${compressedPhotosBuilding3List[0].path}");
+                                                                building3ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding3List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding3Image
+                                                                        .value =
+                                                                    !refreshBuilding3Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 3 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 4 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding4Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          building4ImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 4",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding4List =
+                                                                    [];
+                                                                compressedPhotosBuilding4List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding4List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building4ImagePath: 1 ${compressedPhotosBuilding4List[0].path}");
+                                                                building4ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding4List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "building4ImagePath: 2 $building4ImagePath");
+                                                                refreshBuilding4Image
+                                                                        .value =
+                                                                    !refreshBuilding4Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding4List =
+                                                                    [];
+                                                                compressedPhotosBuilding4List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding4List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building4ImagePath: 1 ${compressedPhotosBuilding4List[0].path}");
+                                                                building4ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding4List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding4Image
+                                                                        .value =
+                                                                    !refreshBuilding4Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 4 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 5 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding5Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          building5ImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 5",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding5List =
+                                                                    [];
+                                                                compressedPhotosBuilding5List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding5List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building5ImagePath: 1 ${compressedPhotosBuilding5List[0].path}");
+                                                                building5ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding5List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "building5ImagePath: 2 $building5ImagePath");
+                                                                refreshBuilding5Image
+                                                                        .value =
+                                                                    !refreshBuilding5Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding5List =
+                                                                    [];
+                                                                compressedPhotosBuilding5List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding5List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building5ImagePath: 1 ${compressedPhotosBuilding5List[0].path}");
+                                                                building5ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding5List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding5Image
+                                                                        .value =
+                                                                    !refreshBuilding5Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 5 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 6 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding6Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          building6ImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 6",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding6List =
+                                                                    [];
+                                                                compressedPhotosBuilding6List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding6List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building6ImagePath: 1 ${compressedPhotosBuilding6List[0].path}");
+                                                                building6ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding6List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "building6ImagePath: 2 $building6ImagePath");
+                                                                refreshBuilding6Image
+                                                                        .value =
+                                                                    !refreshBuilding6Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding6List =
+                                                                    [];
+                                                                compressedPhotosBuilding6List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding6List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building6ImagePath: 1 ${compressedPhotosBuilding6List[0].path}");
+                                                                building6ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding6List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding6Image
+                                                                        .value =
+                                                                    !refreshBuilding6Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 6 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Image 7 */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuilding7Image,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          building7ImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Image 7",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding7List =
+                                                                    [];
+                                                                compressedPhotosBuilding7List =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding7List,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building7ImagePath: 1 ${compressedPhotosBuilding7List[0].path}");
+                                                                building7ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding7List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "building7ImagePath: 2 $building7ImagePath");
+                                                                refreshBuilding7Image
+                                                                        .value =
+                                                                    !refreshBuilding7Image
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuilding7List =
+                                                                    [];
+                                                                compressedPhotosBuilding7List =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuilding7List,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "building7ImagePath: 1 ${compressedPhotosBuilding7List[0].path}");
+                                                                building7ImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuilding7List[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuilding7Image
+                                                                        .value =
+                                                                    !refreshBuilding7Image
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Image 7 */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Street Image */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuildingStreetImage,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          buildingStreetImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Street Image",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuildingStreetList =
+                                                                    [];
+                                                                compressedPhotosBuildingStreetList =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuildingStreetList,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "buildingStreetImagePath: 1 ${compressedPhotosBuildingStreetList[0].path}");
+                                                                buildingStreetImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuildingStreetList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "buildingStreetImagePath: 2 $buildingStreetImagePath");
+                                                                refreshBuildingStreetImage
+                                                                        .value =
+                                                                    !refreshBuildingStreetImage
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuildingStreetList =
+                                                                    [];
+                                                                compressedPhotosBuildingStreetList =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuildingStreetList,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "buildingStreetImagePath: 1 ${compressedPhotosBuildingStreetList[0].path}");
+                                                                buildingStreetImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuildingStreetList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuildingStreetImage
+                                                                        .value =
+                                                                    !refreshBuildingStreetImage
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Street Image */
+
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Add Building Area Image */
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      refreshBuildingAreaImage,
+                                                  builder:
+                                                      (context, bool val, _) {
+                                                    return AddDocImagePlaceholder(
+                                                      imagePath:
+                                                          buildingAreaImagePath ??
+                                                              "",
+                                                      placeholderText:
+                                                          "Add Building Area Image",
+                                                      addText: addText,
+                                                      onImageTap: () async {
+                                                        await InternetUtil()
+                                                            .checkInternetConnection()
+                                                            .then(
+                                                                (internet) async {
+                                                          if (internet) {
+                                                            showDocsAlertDialog(
+                                                              context: context,
+                                                              onCaptureAction:
+                                                                  () async {
+                                                                compressedPhotosBuildingAreaList =
+                                                                    [];
+                                                                compressedPhotosBuildingAreaList =
+                                                                    await capturePhoto(
+                                                                  type: 2,
+                                                                  screenName:
+                                                                      "KYC",
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuildingAreaList,
+                                                                  // invalidFormatErrorText: "Invalid",
+                                                                );
+                                                                print(
+                                                                    "buildingAreaImagePath: 1 ${compressedPhotosBuildingAreaList[0].path}");
+                                                                buildingAreaImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuildingAreaList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+                                                                print(
+                                                                    "buildingAreaImagePath: 2 $buildingAreaImagePath");
+                                                                refreshBuildingAreaImage
+                                                                        .value =
+                                                                    !refreshBuildingAreaImage
+                                                                        .value;
+                                                              },
+                                                              onGalleryAction:
+                                                                  () async {
+                                                                compressedPhotosBuildingAreaList =
+                                                                    [];
+                                                                compressedPhotosBuildingAreaList =
+                                                                    await pickPhotos(
+                                                                  maxImagesCount:
+                                                                      1,
+                                                                  context:
+                                                                      context,
+                                                                  compressedPhotosList:
+                                                                      compressedPhotosBuildingAreaList,
+                                                                  invalidFormatErrorText:
+                                                                      "Invalid",
+                                                                );
+                                                                print(
+                                                                    "buildingAreaImagePath: 1 ${compressedPhotosBuildingAreaList[0].path}");
+                                                                buildingAreaImagePath =
+                                                                    await NetworkService()
+                                                                        .imageUpload(
+                                                                  compressedPhotosBuildingAreaList[
+                                                                          0]
+                                                                      .path,
+                                                                );
+
+                                                                refreshBuildingAreaImage
+                                                                        .value =
+                                                                    !refreshBuildingAreaImage
+                                                                        .value;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            ToastUtil()
+                                                                .showSnackBar(
+                                                              context: context,
+                                                              message:
+                                                                  internetAlert,
+                                                              isError: true,
+                                                            );
+                                                          }
+                                                        });
+                                                      },
+                                                    );
+                                                  }),
+                                              /* Add Building Area Image */
+                                            ],
+                                          )
+                                        : const SizedBox.shrink();
                                   }),
-                              /* Add Building Image 3 */
-
-                              SizedBox(
-                                height: 16.sp,
-                              ),
-
-                              /* Add Building Image 4 */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuilding4Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: building4ImagePath ?? "",
-                                      placeholderText: "Add Building Image 4",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding4List =
-                                                    [];
-                                                compressedPhotosBuilding4List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding4List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "building4ImagePath: 1 ${compressedPhotosBuilding4List[0].path}");
-                                                building4ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding4List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "building4ImagePath: 2 $building4ImagePath");
-                                                refreshBuilding4Image.value =
-                                                    !refreshBuilding4Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding4List =
-                                                    [];
-                                                compressedPhotosBuilding4List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding4List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "building4ImagePath: 1 ${compressedPhotosBuilding4List[0].path}");
-                                                building4ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding4List[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshBuilding4Image.value =
-                                                    !refreshBuilding4Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Image 4 */
-
-                              /* Add Building Image 5 */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuilding5Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: building5ImagePath ?? "",
-                                      placeholderText: "Add Building Image 5",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding5List =
-                                                    [];
-                                                compressedPhotosBuilding5List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding5List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "building5ImagePath: 1 ${compressedPhotosBuilding5List[0].path}");
-                                                building5ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding5List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "building5ImagePath: 2 $building5ImagePath");
-                                                refreshBuilding5Image.value =
-                                                    !refreshBuilding5Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding5List =
-                                                    [];
-                                                compressedPhotosBuilding5List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding5List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "building5ImagePath: 1 ${compressedPhotosBuilding5List[0].path}");
-                                                building5ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding5List[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshBuilding5Image.value =
-                                                    !refreshBuilding5Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Image 5 */
-
-                              /* Add Building Image 6 */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuilding6Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: building6ImagePath ?? "",
-                                      placeholderText: "Add Building Image 6",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding6List =
-                                                    [];
-                                                compressedPhotosBuilding6List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding6List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "building6ImagePath: 1 ${compressedPhotosBuilding6List[0].path}");
-                                                building6ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding6List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "building6ImagePath: 2 $building6ImagePath");
-                                                refreshBuilding6Image.value =
-                                                    !refreshBuilding6Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding6List =
-                                                    [];
-                                                compressedPhotosBuilding6List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding6List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "building6ImagePath: 1 ${compressedPhotosBuilding6List[0].path}");
-                                                building6ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding6List[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshBuilding6Image.value =
-                                                    !refreshBuilding6Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Image 6 */
-
-                              /* Add Building Image 7 */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuilding7Image,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: building7ImagePath ?? "",
-                                      placeholderText: "Add Building Image 7",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuilding7List =
-                                                    [];
-                                                compressedPhotosBuilding7List =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding7List,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "building7ImagePath: 1 ${compressedPhotosBuilding7List[0].path}");
-                                                building7ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding7List[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "building7ImagePath: 2 $building7ImagePath");
-                                                refreshBuilding7Image.value =
-                                                    !refreshBuilding7Image
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuilding7List =
-                                                    [];
-                                                compressedPhotosBuilding7List =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuilding7List,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "building7ImagePath: 1 ${compressedPhotosBuilding7List[0].path}");
-                                                building7ImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuilding7List[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshBuilding7Image.value =
-                                                    !refreshBuilding7Image
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Image 7 */
-
-                              /* Add Building Street Image */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuildingStreetImage,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: buildingStreetImagePath ?? "",
-                                      placeholderText:
-                                          "Add Building Street Image",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuildingStreetList =
-                                                    [];
-                                                compressedPhotosBuildingStreetList =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuildingStreetList,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "buildingStreetImagePath: 1 ${compressedPhotosBuildingStreetList[0].path}");
-                                                buildingStreetImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuildingStreetList[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "buildingStreetImagePath: 2 $buildingStreetImagePath");
-                                                refreshBuildingStreetImage
-                                                        .value =
-                                                    !refreshBuildingStreetImage
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuildingStreetList =
-                                                    [];
-                                                compressedPhotosBuildingStreetList =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuildingStreetList,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "buildingStreetImagePath: 1 ${compressedPhotosBuildingStreetList[0].path}");
-                                                buildingStreetImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuildingStreetList[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshBuildingStreetImage
-                                                        .value =
-                                                    !refreshBuildingStreetImage
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Street Image */
-
-                              /* Add Building Area Image */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshBuildingAreaImage,
-                                  builder: (context, bool val, _) {
-                                    return AddDocImagePlaceholder(
-                                      imagePath: buildingAreaImagePath ?? "",
-                                      placeholderText:
-                                          "Add Building Area Image",
-                                      addText: addText,
-                                      onImageTap: () async {
-                                        await InternetUtil()
-                                            .checkInternetConnection()
-                                            .then((internet) async {
-                                          if (internet) {
-                                            showDocsAlertDialog(
-                                              context: context,
-                                              onCaptureAction: () async {
-                                                compressedPhotosBuildingAreaList =
-                                                    [];
-                                                compressedPhotosBuildingAreaList =
-                                                    await capturePhoto(
-                                                  type: 2,
-                                                  screenName: "KYC",
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuildingAreaList,
-                                                  // invalidFormatErrorText: "Invalid",
-                                                );
-                                                print(
-                                                    "buildingAreaImagePath: 1 ${compressedPhotosBuildingAreaList[0].path}");
-                                                buildingAreaImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuildingAreaList[
-                                                          0]
-                                                      .path,
-                                                );
-                                                print(
-                                                    "buildingAreaImagePath: 2 $buildingAreaImagePath");
-                                                refreshBuildingAreaImage.value =
-                                                    !refreshBuildingAreaImage
-                                                        .value;
-                                              },
-                                              onGalleryAction: () async {
-                                                compressedPhotosBuildingAreaList =
-                                                    [];
-                                                compressedPhotosBuildingAreaList =
-                                                    await pickPhotos(
-                                                  maxImagesCount: 1,
-                                                  context: context,
-                                                  compressedPhotosList:
-                                                      compressedPhotosBuildingAreaList,
-                                                  invalidFormatErrorText:
-                                                      "Invalid",
-                                                );
-                                                print(
-                                                    "buildingAreaImagePath: 1 ${compressedPhotosBuildingAreaList[0].path}");
-                                                buildingAreaImagePath =
-                                                    await NetworkService()
-                                                        .imageUpload(
-                                                  compressedPhotosBuildingAreaList[
-                                                          0]
-                                                      .path,
-                                                );
-
-                                                refreshBuildingAreaImage.value =
-                                                    !refreshBuildingAreaImage
-                                                        .value;
-                                              },
-                                            );
-                                          } else {
-                                            ToastUtil().showSnackBar(
-                                              context: context,
-                                              message: internetAlert,
-                                              isError: true,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    );
-                                  }),
-                              /* Add Building Area Image */
 
                               (widget.type == "3")
                                   ? Column(
@@ -3319,6 +3724,9 @@ class _VerifyCustomersDetailsScreenState
     String? aadhaarError =
         ValidationUtil.validateAadhaar(_aadhaarController.text);
     String? panError = ValidationUtil.validatePAN(_panController.text);
+
+    String? docTypeError =
+        ValidationUtil.validateDocType(selectedDocValue.value);
     String? rcHolderNameError =
         ValidationUtil.validateRCHolderName(_rcHolderNameController.text);
     String? propertyHolderNameError = ValidationUtil.validatePropertyHolderName(
@@ -3335,7 +3743,7 @@ class _VerifyCustomersDetailsScreenState
     //     ValidationUtil.validateIFSC(_bankIFSCcodeController.text);
     String? bankBranchError =
         ValidationUtil.validateBranchName(_bankBranchController.text);
-
+    String? photoImageError = ValidationUtil.validateImage(photoImagePath, 8);
     String? aadhaarImageError =
         ValidationUtil.validateImage(aadhaarImagePath, 1);
     String? panImageError = ValidationUtil.validateImage(panImagePath, 2);
@@ -3362,21 +3770,25 @@ class _VerifyCustomersDetailsScreenState
 
     if (form?.validate() ?? false) {
       isDisabled.value = false;
-
-      if (aadhaarImagePath != null &&
-          aadhaarImagePath!.isNotEmpty &&
-          panImagePath != null &&
-          panImagePath!.isNotEmpty &&
-          // chequeImagePath != null &&
-          // chequeImagePath!.isNotEmpty &&
-          rcHOLDERImagePath != null &&
-          rcHOLDERImagePath!.isNotEmpty &&
-          propertyDocImagePath != null &&
-          propertyDocImagePath!.isNotEmpty &&
-          passBookImagePath != null &&
-          passBookImagePath!.isNotEmpty &&
-          signatureImagePath != null &&
-          signatureImagePath!.isNotEmpty) {
+      print("Data Enter");
+      if (photoImagePath != null &&
+              photoImagePath!.isNotEmpty &&
+              aadhaarImagePath != null &&
+              aadhaarImagePath!.isNotEmpty &&
+              panImagePath != null &&
+              panImagePath!.isNotEmpty &&
+              // chequeImagePath != null &&
+              // chequeImagePath!.isNotEmpty &&
+              passBookImagePath != null &&
+              passBookImagePath!.isNotEmpty &&
+              signatureImagePath != null &&
+              signatureImagePath!.isNotEmpty &&
+              (((selectedDocValue.value == "Vehicle") &&
+                  rcHOLDERImagePath != null &&
+                  rcHOLDERImagePath!.isNotEmpty)) ||
+          (((selectedDocValue.value == "Property") &&
+              propertyDocImagePath != null &&
+              propertyDocImagePath!.isNotEmpty))) {
         var result;
         if (widget.type == "1") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
@@ -3578,6 +3990,12 @@ class _VerifyCustomersDetailsScreenState
             isError: true,
           );
         }
+      } else if (photoImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: photoImageError,
+          isError: true,
+        );
       } else if (aadhaarImageError != null) {
         ToastUtil().showSnackBar(
           context: context,
@@ -3590,26 +4008,6 @@ class _VerifyCustomersDetailsScreenState
           message: panImageError,
           isError: true,
         );
-      }
-      // else if (chequeImageError != null) {
-      //   ToastUtil().showSnackBar(
-      //     context: context,
-      //     message: chequeImageError,
-      //     isError: true,
-      //   );
-      // }
-      else if (rcImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: rcImageError,
-          isError: true,
-        );
-      } else if (propertyImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: propertyImageError,
-          isError: true,
-        );
       } else if (passbookImageError != null) {
         ToastUtil().showSnackBar(
           context: context,
@@ -3620,6 +4018,28 @@ class _VerifyCustomersDetailsScreenState
         ToastUtil().showSnackBar(
           context: context,
           message: signatureImageError,
+          isError: true,
+        );
+      }
+      // else if (chequeImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: chequeImageError,
+      //     isError: true,
+      //   );
+      // }
+      else if ((selectedDocValue.value == "Vehicle") &&
+          (rcImageError != null)) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: rcImageError,
+          isError: true,
+        );
+      } else if ((selectedDocValue.value == "Property") &&
+          (propertyImageError != null)) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: propertyImageError,
           isError: true,
         );
       }
@@ -3649,19 +4069,28 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_aadhaarFocusNode, aadhaarError);
       } else if (panError != null) {
         _showErrorAndFocus(_panFocusNode, panError);
-      } else if (rcHolderNameError != null) {
-        _showErrorAndFocus(_rcHolderNameFocusNode, rcHolderNameError);
-      } else if (propertyHolderNameError != null) {
-        _showErrorAndFocus(
-            _propertyHolderNameFocusNode, propertyHolderNameError);
-      } else if (propertyDetailsError != null) {
-        _showErrorAndFocus(_propertyDetailsFocusNode, propertyDetailsError);
       } else if (chequeNumError != null) {
         _showErrorAndFocus(_chequeNumFocusNode, chequeNumError);
       } else if (bankNameError != null) {
         _showErrorAndFocus(_bankNameFocusNode, bankNameError);
       } else if (accNumError != null) {
         _showErrorAndFocus(_bankAccNumFocusNode, accNumError);
+      } else if (selectedDocValue.value == "Select Document Type") {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: "Select Document Type",
+          isError: true,
+        );
+      } else if ((selectedDocValue.value == "Vehicle") &&
+          (rcHolderNameError != null)) {
+        _showErrorAndFocus(_rcHolderNameFocusNode, rcHolderNameError);
+      } else if ((selectedDocValue.value == "Property") &&
+          (propertyHolderNameError != null)) {
+        _showErrorAndFocus(
+            _propertyHolderNameFocusNode, propertyHolderNameError);
+      } else if ((selectedDocValue.value == "Property") &&
+          (propertyDetailsError != null)) {
+        _showErrorAndFocus(_propertyDetailsFocusNode, propertyDetailsError);
       } else if ((widget.type == "1") && referenceError != null) {
         _showErrorAndFocus(_referenceFocusNode, referenceError);
       } else if ((widget.type == "1") && agentNameError != null) {
@@ -3680,6 +4109,12 @@ class _VerifyCustomersDetailsScreenState
       // }
       else if (bankBranchError != null) {
         _showErrorAndFocus(_bankBranchFocusNode, bankBranchError);
+      } else if (photoImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: photoImageError,
+          isError: true,
+        );
       } else if (aadhaarImageError != null) {
         ToastUtil().showSnackBar(
           context: context,
@@ -3692,26 +4127,6 @@ class _VerifyCustomersDetailsScreenState
           message: panImageError,
           isError: true,
         );
-      }
-      // else if (chequeImageError != null) {
-      //   ToastUtil().showSnackBar(
-      //     context: context,
-      //     message: chequeImageError,
-      //     isError: true,
-      //   );
-      // }
-      else if (rcImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: rcImageError,
-          isError: true,
-        );
-      } else if (propertyImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: propertyImageError,
-          isError: true,
-        );
       } else if (passbookImageError != null) {
         ToastUtil().showSnackBar(
           context: context,
@@ -3722,6 +4137,28 @@ class _VerifyCustomersDetailsScreenState
         ToastUtil().showSnackBar(
           context: context,
           message: signatureImageError,
+          isError: true,
+        );
+      }
+      // else if (chequeImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: chequeImageError,
+      //     isError: true,
+      //   );
+      // }
+      else if ((selectedDocValue.value == "Vehicle") &&
+          (rcImageError != null)) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: rcImageError,
+          isError: true,
+        );
+      } else if ((selectedDocValue.value == "Property") &&
+          (propertyImageError != null)) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: propertyImageError,
           isError: true,
         );
       }

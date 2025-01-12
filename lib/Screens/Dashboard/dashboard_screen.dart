@@ -122,25 +122,21 @@ class _DashboardState extends State<Dashboard> {
         : 1; // dashbaordType 1 - Agent Dashboard "agent" | 2 - Customer Dashboard "customer"
     widget.dashbaordType = navigationType;
 
-    widgetOptions =
-            // (widget.dashbaordType == 1)
-            //     ?
-            <Widget>[
-      const AgentsTab(),
-      const PigmyReportsTab(),
-      const GroupPigmyReports(),
-      const LoansReportsTab(),
-      const GroupLoansReportsTab(),
-    ]
-
-        // : <Widget>[
-        //     const HomeTab(),
-        //     const PigmyTab(),
-        //     const GroupPigmyTab(),
-        //     const LoansTab(),
-        //     const GroupLoansTab(),
-        //   ]
-        ;
+    widgetOptions = (widget.dashbaordType == 1)
+        ? <Widget>[
+            const AgentsTab(),
+            const PigmyReportsTab(),
+            const GroupPigmyReports(),
+            const LoansReportsTab(),
+            const GroupLoansReportsTab(),
+          ]
+        : <Widget>[
+            const HomeTab(),
+            const PigmyTab(),
+            const GroupPigmyTab(),
+            const LoansTab(),
+            const GroupLoansTab(),
+          ];
 
     var appContent = await AppLanguageUtil().getAppContentDetails();
     internetAlert = appContent['action_items']['internet_alert'] ?? "";

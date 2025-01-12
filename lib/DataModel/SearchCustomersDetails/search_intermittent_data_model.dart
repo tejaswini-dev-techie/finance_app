@@ -35,16 +35,23 @@ class Data {
   String? documentsText;
   List<DocsList>? docsList;
   List<ListDetails>? listDetails;
+  String? withdrawPigmyText;
+  String? closeLoanText;
+  String? loanID;
 
-  Data(
-      {this.profileImage,
-      this.name,
-      this.phNum,
-      this.emailId,
-      this.address,
-      this.documentsText,
-      this.docsList,
-      this.listDetails});
+  Data({
+    this.profileImage,
+    this.name,
+    this.phNum,
+    this.emailId,
+    this.address,
+    this.documentsText,
+    this.docsList,
+    this.listDetails,
+    this.withdrawPigmyText,
+    this.closeLoanText,
+    this.loanID,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     profileImage = json['profile_image'];
@@ -53,6 +60,9 @@ class Data {
     emailId = json['email_id'];
     address = json['address'];
     documentsText = json['documents_text'];
+    withdrawPigmyText = json['withdraw_pigmy_text'] ?? "Withdraw PIGMY Savings";
+    closeLoanText = json['close_loan_text'] ?? "Close Loan";
+    loanID = json['loanID'] ?? "";
     if (json['docs_list'] != null) {
       docsList = <DocsList>[];
       json['docs_list'].forEach((v) {
@@ -75,6 +85,9 @@ class Data {
     data['email_id'] = emailId;
     data['address'] = address;
     data['documents_text'] = documentsText;
+    data['withdraw_pigmy_text'] = withdrawPigmyText;
+    data['close_loan_text'] = closeLoanText;
+    data['loanID'] = loanID;
     if (docsList != null) {
       data['docs_list'] = docsList!.map((v) => v.toJson()).toList();
     }

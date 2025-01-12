@@ -320,7 +320,9 @@ class ValidationUtil {
                               ? "Please upload valid Bank Pass book Image"
                               : (type == 7)
                                   ? "Please upload valid Signature Image"
-                                  : 'Please upload valid Image';
+                                  : (type == 8)
+                                      ? 'Please upload valid Photo Image'
+                                      : 'Please upload valid Image';
     }
     return null;
   }
@@ -461,6 +463,17 @@ class ValidationUtil {
       return 'Please select the PIGMY Plan';
     } else if (value == "Select PIGMY Plan") {
       return 'Please select the PIGMY Plan';
+    }
+    return null;
+  }
+  /* Frequency Validation */
+
+  /* Frequency Validation */
+  static String? validateDocType(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select the document type';
+    } else if (value == "Select Document Type") {
+      return 'Please select the document type';
     }
     return null;
   }

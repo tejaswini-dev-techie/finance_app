@@ -94,6 +94,99 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
     Navigator.pop(context);
   }
 
+  void onWithdrawPigmyAction() {
+    InternetUtil().checkInternetConnection().then(
+      (internet) async {
+        if (internet) {
+          Map<String, dynamic> data = {};
+          data = {
+            "type": "2",
+            "customerID": widget.customerID,
+          };
+
+          Navigator.pushNamed(
+            context,
+            RoutingConstants.routeWithdrawPigmySavingsScreen,
+            arguments: {"data": data},
+          );
+        } else {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: "Please check your internet connection",
+            isError: true,
+          );
+        }
+      },
+    );
+  }
+
+  void _showCloseLoanConfirmationDialog(BuildContext context, String? loanID) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm"),
+          content: Text("Are you sure you want to close the loan?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                await _handleLoanClosure(
+                  context,
+                  loanID,
+                );
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _handleLoanClosure(BuildContext context, String? loanID) async {
+    var result = await NetworkService().closeLoanUpdate(
+      id: widget.customerID,
+      loanID: loanID,
+    );
+    if (result != null && result['status'] == true) {
+      if (!mounted) return;
+      if (result['message'] != null && result['message'].isNotEmpty) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: result['message'],
+          isError: false,
+        );
+      }
+      // All validations passed, navigate to the next screen
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        Map<String, dynamic> data = {};
+        data = {
+          "tab_index": 0,
+        };
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(
+          context,
+          RoutingConstants.routeDashboardScreen,
+          arguments: {"data": data},
+        );
+      });
+    } else {
+      if (!mounted) return;
+      ToastUtil().showSnackBar(
+        context: context,
+        message: result['message'] ?? "Something went wrong",
+        isError: true,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -303,6 +396,91 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                                 height: 10.sp,
                               )
                             : const SizedBox.shrink(),
+
+                        /* Withdraw Pigmy Savings */
+                        (searchDet?.withdrawPigmyText != null &&
+                                searchDet!.withdrawPigmyText!.isNotEmpty)
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () => onWithdrawPigmyAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            searchDet?.withdrawPigmyText ?? "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        /* Withdraw Pigmy Savings */
+
+                        /* Withdraw Pigmy Savings */
+                        (searchDet?.closeLoanText != null &&
+                                searchDet!.closeLoanText!.isNotEmpty)
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.sp),
+                                  child: InkWell(
+                                    onTap: () =>
+                                        _showCloseLoanConfirmationDialog(
+                                      context,
+                                      searchDet?.loanID,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            searchDet?.closeLoanText ?? "",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        /* Withdraw Pigmy Savings */
+
                         (searchDet?.docsList != null &&
                                 searchDet!.docsList!.isNotEmpty)
                             ? Row(

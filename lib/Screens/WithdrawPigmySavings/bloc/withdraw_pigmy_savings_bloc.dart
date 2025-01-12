@@ -52,15 +52,30 @@ class WithdrawPigmySavingsBloc
       bool isInternetConnected = true;
 
       Future<Data?> getUserDetails() async {
-        await NetworkService()
-            .withdrawPIGMYFetchDetails()
-            .then((WithdrawPigmyDataModel? respObj) {
-          if (respObj != null && respObj.data != null) {
-            userData = respObj.data;
+        if (event.type == "2") {
+          await NetworkService()
+              .withdrawPIGMYFetchDetailsbyAgent(
+            customerID: event.customerID,
+          )
+              .then((WithdrawPigmyDataModel? respObj) {
+            if (respObj != null && respObj.data != null) {
+              userData = respObj.data;
 
-            return userData;
-          }
-        });
+              return userData;
+            }
+          });
+        } else {
+          await NetworkService()
+              .withdrawPIGMYFetchDetails()
+              .then((WithdrawPigmyDataModel? respObj) {
+            if (respObj != null && respObj.data != null) {
+              userData = respObj.data;
+
+              return userData;
+            }
+          });
+        }
+
         return userData;
       }
 

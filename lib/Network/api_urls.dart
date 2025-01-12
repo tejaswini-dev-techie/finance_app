@@ -44,6 +44,10 @@ class APIURLs {
   static const withdrawPIGMYFetchDetailsURL =
       "$baseURL/pigmy/get-withdraw-details";
   static const pigmyTransactionDetURL = "$baseURL/pigmy/get-pigmy-history";
+  static const withdrawPIGMYFetchDetailsByAgentURL =
+      "$baseURL/pigmy/get-withdraw-prefill-agent";
+  static const withdrawPIGMYbyAgentURL =
+      "$baseURL/pigmy/create-withdraw-request-agent";
   /* PIGMY */
 
   static const imageUploadURL = "$baseURL/util/image-upload";
@@ -87,4 +91,8 @@ class APIURLs {
   static const searchCollectionURL =
       "$baseURL/collection/search-collection"; // type: 1 - PIGMY | 2 - G PIGMY | 3 - LOANS | 4 - G Loans
   /* Search Collection */
+
+  /* Close Loan */
+  static const closeLoanURL = "$baseURL/loan/close-loan";
+  /* Close Loan */
 }

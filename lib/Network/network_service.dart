@@ -893,8 +893,8 @@ class NetworkService {
         paramsKeyVal['agentName'] = agentName;
         paramsKeyVal['agentPhNum'] = agentPhNum;
         return _network
-            .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
-                body: paramsKeyVal)
+            .httpGetQuery(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
+                queryParams: paramsKeyVal)
             .then(
           (dynamic res) {
             return res;
@@ -923,8 +923,9 @@ class NetworkService {
     // required String? country,
     required String? withdrawalAmount,
     required String? reason,
-    required String? agentName,
-    required String? agentPhNum,
+    // required String? agentName,
+    // required String? agentPhNum,
+    required String? type,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -939,20 +940,47 @@ class NetworkService {
         // paramsKeyVal['country'] = country;
         paramsKeyVal['withdrawalAmount'] = withdrawalAmount;
         paramsKeyVal['reason'] = reason;
-        paramsKeyVal['agentName'] = agentName;
-        paramsKeyVal['agentPhNum'] = agentPhNum;
+        // paramsKeyVal['agentName'] = agentName;
+        // paramsKeyVal['agentPhNum'] = agentPhNum;
         return _network
-            .httpPost(apiHitTimeout, APIURLs.withdrawPIGMYURL,
+            .httpPost(
+                apiHitTimeout,
+                (type == "2")
+                    ? APIURLs.withdrawPIGMYbyAgentURL
+                    : APIURLs.withdrawPIGMYURL,
                 body: paramsKeyVal)
             .then(
           (dynamic res) {
-            return resultWithdrawPIGMYDetailsUpdate;
+            return res;
           },
         );
       },
     );
   }
   /* Withdraw PIGMY */
+
+/* Close Loan */
+
+  Future<dynamic> closeLoanUpdate({
+    required String? id,
+    required String? loanID,
+  }) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = id;
+        paramsKeyVal['loanID'] = loanID;
+        return _network
+            .httpPut(apiHitTimeout, APIURLs.closeLoanURL, body: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return res;
+          },
+        );
+      },
+    );
+  }
+
+  /* Close Loan */
 
   /* Withdraw PIGMY Details */
   var pigmyFetchDet = {
@@ -988,6 +1016,25 @@ class NetworkService {
     );
   }
   /* Withdraw PIGMY Details */
+
+  /* Withdraw Pigmy Details by Agent */
+  Future<WithdrawPigmyDataModel> withdrawPIGMYFetchDetailsbyAgent(
+      {required String? customerID}) {
+    return GetDeviceInfo().getDeviceInfo().then(
+      (paramsKeyVal) {
+        paramsKeyVal['id'] = customerID;
+        return _network
+            .httpGetQuery(apiHitTimeout, APIURLs.withdrawPIGMYFetchDetailsByAgentURL,
+                queryParams: paramsKeyVal)
+            .then(
+          (dynamic res) {
+            return WithdrawPigmyDataModel.fromJson(res);
+          },
+        );
+      },
+    );
+  }
+  /* Withdraw Pigmy Details by Agent */
 
   /* Post Image */
   Future<String?> imageUpload(String profilePath) async {

@@ -255,6 +255,7 @@ class RouteGenerator {
             return MaterialPageRoute(
               builder: (_) => WithdrawPigmySavings(
                 type: data['data']['type'] ?? "1",
+                customerID: data['data']['customerID'] ?? "",
               ),
               settings: RouteSettings(
                 name: settings.name,
