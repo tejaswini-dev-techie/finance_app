@@ -1,6 +1,13 @@
 class APIURLs {
   static const networkCheckURL = 'https://www.google.com/';
+
+  /* Staging */
   static const baseURL = "http://3.111.52.128:5000/api";
+  /* Staging */
+
+  /* Production */
+  // static const baseURL = "http://3.111.52.128:5000/api";
+  /* Production */
 
   static const loginURL = "$baseURL/auth/user-login";
   static const createUserURL = "$baseURL/auth/customer-sign-up";
