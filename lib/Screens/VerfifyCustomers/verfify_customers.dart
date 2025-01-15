@@ -82,6 +82,7 @@ class _VerifyCustomersDetailsScreenState
     "Select Document Type",
     "Property",
     "Vehicle",
+    "Personal"
   ];
   ValueNotifier<String?> selectedDocValue =
       ValueNotifier<String>("Select Document Type");
@@ -118,6 +119,7 @@ class _VerifyCustomersDetailsScreenState
   final TextEditingController _agentNameController = TextEditingController();
   final TextEditingController _referenceNumController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
+  final TextEditingController _locationLinkController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -322,6 +324,7 @@ class _VerifyCustomersDetailsScreenState
     _referenceNumController.dispose();
     _reasonController.dispose();
     _agentNameController.dispose();
+    _locationLinkController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -1102,52 +1105,77 @@ class _VerifyCustomersDetailsScreenState
                                 },
                               ),
                               /* PAN Input Field */
-                              SizedBox(
-                                height: 16.sp,
-                              ),
 
-                              /* Cheque Number Field */
-                              Text(
-                                chequeNumberText,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ColorConstants.lightBlackColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              TextInputField(
-                                focusnodes: _chequeNumFocusNode,
-                                suffixWidget: const Icon(
-                                  Icons.money,
-                                  color: ColorConstants.darkBlueColor,
-                                ),
-                                placeholderText: chequeNumberPlaceHolderText,
-                                textEditingController: _chequeNumController,
-                                textcapitalization:
-                                    TextCapitalization.characters,
-                                inputFormattersList: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[0-9]*$'), // Allows only digits
-                                  ),
-                                  LengthLimitingTextInputFormatter(
-                                      10), // Limits input to 10 characters (adjust if needed)
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(
-                                        r"\s\s"), // Prevents multiple spaces (though likely unnecessary for digits only)
-                                  ),
-                                  FilteringTextInputFormatter.deny(
-                                    RegExp(
-                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'), // Blocks certain unicode characters (emojis, special symbols)
-                                  ),
-                                ],
-                                keyboardtype: TextInputType.number,
-                                validationFunc: (value) {
-                                  return ValidationUtil.validateChequeNumber(
-                                    value,
-                                  );
-                                },
-                              ),
+                              ValueListenableBuilder(
+                                  valueListenable: selectedDocValue,
+                                  builder: (context, value, child) {
+                                    return (selectedDocValue.value ==
+                                            "Personal")
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 16.sp,
+                                              ),
+
+                                              /* Cheque Number Field */
+                                              Text(
+                                                chequeNumberText,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: ColorConstants
+                                                      .lightBlackColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextInputField(
+                                                focusnodes: _chequeNumFocusNode,
+                                                suffixWidget: const Icon(
+                                                  Icons.money,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                ),
+                                                placeholderText:
+                                                    chequeNumberPlaceHolderText,
+                                                textEditingController:
+                                                    _chequeNumController,
+                                                textcapitalization:
+                                                    TextCapitalization
+                                                        .characters,
+                                                inputFormattersList: <TextInputFormatter>[
+                                                  FilteringTextInputFormatter
+                                                      .allow(
+                                                    RegExp(
+                                                        r'^[0-9]*$'), // Allows only digits
+                                                  ),
+                                                  LengthLimitingTextInputFormatter(
+                                                      10), // Limits input to 10 characters (adjust if needed)
+                                                  FilteringTextInputFormatter
+                                                      .deny(
+                                                    RegExp(
+                                                        r"\s\s"), // Prevents multiple spaces (though likely unnecessary for digits only)
+                                                  ),
+                                                  FilteringTextInputFormatter
+                                                      .deny(
+                                                    RegExp(
+                                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'), // Blocks certain unicode characters (emojis, special symbols)
+                                                  ),
+                                                ],
+                                                keyboardtype:
+                                                    TextInputType.number,
+                                                validationFunc: (value) {
+                                                  return ValidationUtil
+                                                      .validateChequeNumber(
+                                                    value,
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox.shrink();
+                                  }),
                               /* Cheque Number Field */
 
                               SizedBox(
@@ -1204,7 +1232,7 @@ class _VerifyCustomersDetailsScreenState
                                   FilteringTextInputFormatter.digitsOnly,
                                   LengthLimitingTextInputFormatter(18),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[6-9][0-9]*$'),
+                                    RegExp(r'^[1-9][0-9]*$'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s\s"),
@@ -3684,6 +3712,113 @@ class _VerifyCustomersDetailsScreenState
                                   : const SizedBox.shrink(),
 
                               SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Location Link */
+                              Text(
+                                "Location Link",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextField(
+                                controller: _locationLinkController,
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(
+                                      Icons.paste,
+                                      color: ColorConstants.darkBlueColor,
+                                    ),
+                                    onPressed: () => _pasteText(context),
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: ColorConstants.redColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                  filled: true,
+                                  fillColor: ColorConstants.whiteColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  hintText: 'Paste text here',
+                                  hintStyle: TextStyle(
+                                    color: ColorConstants.blackColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  color: ColorConstants.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 10.sp,
+                                ),
+                              ),
+
+                              SizedBox(height: 10.sp),
+                              Text(
+                                'Long-press in the TextField to see the context menu with paste option.',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              /* Location Link */
+
+                              SizedBox(
                                 height: 32.sp,
                               ),
                             ],
@@ -3831,6 +3966,8 @@ class _VerifyCustomersDetailsScreenState
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
             agentName: _agentNameController.text,
+            photoImagePath: photoImagePath,
+            locLink: _locationLinkController.text,
           );
         } else if (widget.type == "2") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
@@ -3871,6 +4008,8 @@ class _VerifyCustomersDetailsScreenState
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
             agentName: _agentNameController.text,
+            photoImagePath: photoImagePath,
+            locLink: _locationLinkController.text,
           );
         } else if (widget.type == "3") {
           result = await NetworkService().updateKYCDetails(
@@ -3917,6 +4056,8 @@ class _VerifyCustomersDetailsScreenState
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
             agentName: _agentNameController.text,
+            photoImagePath: photoImagePath,
+            locLink: _locationLinkController.text,
           );
         } else {
           result = await NetworkService().updateKYCDetails(
@@ -3957,6 +4098,8 @@ class _VerifyCustomersDetailsScreenState
             buildingAreaImagePath: buildingAreaImagePath,
             permanentAddress: _permanentAddressController.text,
             agentName: _agentNameController.text,
+            photoImagePath: photoImagePath,
+            locLink: _locationLinkController.text,
           );
         }
 
@@ -4069,7 +4212,8 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_aadhaarFocusNode, aadhaarError);
       } else if (panError != null) {
         _showErrorAndFocus(_panFocusNode, panError);
-      } else if (chequeNumError != null) {
+      } else if ((selectedDocValue.value == "Personal") &&
+          (chequeNumError != null)) {
         _showErrorAndFocus(_chequeNumFocusNode, chequeNumError);
       } else if (bankNameError != null) {
         _showErrorAndFocus(_bankNameFocusNode, bankNameError);
@@ -4505,4 +4649,22 @@ class _VerifyCustomersDetailsScreenState
     );
   }
   /* Alert Dialog for Updating KYC Docs */
+
+  Future<void> _pasteText(BuildContext context) async {
+    final clipboardData = await Clipboard.getData('text/plain');
+    if (clipboardData?.text != null) {
+      _locationLinkController.text = clipboardData!.text!;
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Pasted from clipboard!',
+        isError: false,
+      );
+    } else {
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Clipboard is empty',
+        isError: false,
+      );
+    }
+  }
 }

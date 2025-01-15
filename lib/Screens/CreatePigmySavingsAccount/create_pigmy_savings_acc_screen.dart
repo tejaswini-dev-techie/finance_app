@@ -1,14 +1,23 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
+import 'package:hp_finance/Screens/VerfifyCustomers/widgets/add_doc_image_placeholder.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
+import 'package:hp_finance/Utils/internet_util.dart';
+import 'package:hp_finance/Utils/print_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 class CreatePigmySavingsAccountScreen extends StatefulWidget {
@@ -63,6 +72,26 @@ class _CreatePigmySavingsAccountScreenState
   String aadhaarNumPlaceholderText = "";
   String panNumPlaceholderText = "";
 
+  String bankName = "";
+  String accNumber = "";
+  String bankBranch = "";
+  String ifscCode = "";
+  String photoText = "";
+
+  String addText = "CLICK HERE TO ADD";
+
+  /* Photo Image */
+  ValueNotifier<bool> refreshphotoImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosphotoList = [];
+  String? photoImagePath = "";
+  /* Photo Image */
+
+  /* Signature */
+  ValueNotifier<bool> refreshSignImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosSignList = [];
+  String? signatureImagePath = "";
+  /* Signature */
+
   /* TextEditing Controller */
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
@@ -105,6 +134,11 @@ class _CreatePigmySavingsAccountScreenState
   final TextEditingController _agentNameController = TextEditingController();
   final TextEditingController _agentPhNumController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _bankNameController = TextEditingController();
+  final TextEditingController _accNumController = TextEditingController();
+  final TextEditingController _bankBranchController = TextEditingController();
+  final TextEditingController _bankIFSCcodeController = TextEditingController();
+  final TextEditingController _locationLinkController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -135,6 +169,10 @@ class _CreatePigmySavingsAccountScreenState
   final FocusNode _agentNameFocusNode = FocusNode();
   final FocusNode _agentPhNumFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _bankNameFocusNode = FocusNode();
+  final FocusNode _bankBranchFocusNode = FocusNode();
+  final FocusNode _bankIFSCCodeFocusNode = FocusNode();
+  final FocusNode _bankAccNumFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -199,6 +237,11 @@ class _CreatePigmySavingsAccountScreenState
     _agentNameController.addListener(_validateFields);
     _agentPhNumController.addListener(_validateFields);
     _passwordController.addListener(_validateFields);
+    _bankNameController.addListener(_validateFields);
+    _accNumController.addListener(_validateFields);
+    _bankBranchController.addListener(_validateFields);
+    _bankIFSCcodeController.addListener(_validateFields);
+    // _locationLinkController.addListener(_validateFields);
   }
 
   void _validateFields() {
@@ -266,6 +309,11 @@ class _CreatePigmySavingsAccountScreenState
     _agentNameFocusNode.dispose();
     _agentPhNumFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _bankNameController.dispose();
+    _accNumController.dispose();
+    _bankBranchController.dispose();
+    _bankIFSCcodeController.dispose();
+    _locationLinkController.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -293,6 +341,11 @@ class _CreatePigmySavingsAccountScreenState
     _agentNameController.removeListener(_validateFields);
     _agentPhNumController.removeListener(_validateFields);
     _passwordController.removeListener(_validateFields);
+    _bankNameController.removeListener(_validateFields);
+    _accNumController.removeListener(_validateFields);
+    _bankBranchController.removeListener(_validateFields);
+    _bankIFSCcodeController.removeListener(_validateFields);
+    // _locationLinkController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -358,6 +411,11 @@ class _CreatePigmySavingsAccountScreenState
     pswdText = appContent['create_account']['pswd_text'] ?? "";
     pswdPlaceholderText =
         appContent['create_account']['pswd_placeholder_text'] ?? "";
+
+    bankName = appContent['verify_customers']['bank_name'] ?? "";
+    bankBranch = appContent['verify_customers']['bank_branch'] ?? "";
+    ifscCode = appContent['verify_customers']['ifsc_code'] ?? "";
+    accNumber = appContent['verify_customers']['acc_num'] ?? "";
     setState(() {});
   }
 
@@ -661,6 +719,156 @@ class _CreatePigmySavingsAccountScreenState
                                 },
                               ),
                               /* Email Address Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Bank Name Input Field*/
+                              Text(
+                                bankName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _bankNameFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.account_balance,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: bankName,
+                                textEditingController: _bankNameController,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateBankName(value);
+                                },
+                              ),
+                              /* Bank Name Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Account Number Input Field */
+                              Text(
+                                accNumber,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _bankAccNumFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.account_balance,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: accNumber,
+                                textEditingController: _accNumController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(18),
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[1-9][0-9]*$'),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                keyboardtype: TextInputType.number,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateAccountNumber(
+                                      value);
+                                },
+                              ),
+                              /* Account Number Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Bank IFSC Code Input Field */
+                              Text(
+                                ifscCode,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _bankIFSCCodeFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.account_balance,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: ifscCode,
+                                textEditingController: _bankIFSCcodeController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                        r'^[A-Z0-9]+$'), // Allows only uppercase letters and numbers
+                                  ),
+                                  LengthLimitingTextInputFormatter(
+                                      11), // Limit input to 11 characters
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r"\s")), // Disallow whitespace
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                keyboardtype: TextInputType.text,
+                                textcapitalization:
+                                    TextCapitalization.characters,
+                                validationFunc: (value) {
+                                  return null;
+                                  // ValidationUtil.validateIFSC(value);
+                                },
+                              ),
+                              /* Bank IFSC Code Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Bank Branch Name Input Field*/
+                              Text(
+                                bankBranch,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _bankBranchFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.account_balance,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: bankBranch,
+                                textEditingController: _bankBranchController,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateBranchName(
+                                      value);
+                                },
+                              ),
+                              /* Bank Branch Name Input Field */
 
                               SizedBox(
                                 height: 16.sp,
@@ -1367,7 +1575,7 @@ class _CreatePigmySavingsAccountScreenState
                                   FilteringTextInputFormatter.digitsOnly,
                                   LengthLimitingTextInputFormatter(18),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[6-9][0-9]*$'),
+                                    RegExp(r'^[1-9][0-9]*$'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s\s"),
@@ -1463,157 +1671,158 @@ class _CreatePigmySavingsAccountScreenState
                               ),
                               /* Nominee Bank Branch Input Field */
 
-                              /* Group Pigmy Check Box */
-                              ValueListenableBuilder(
-                                  valueListenable: refreshGroupPigmyCheckbox,
-                                  builder: (context, val, _) {
-                                    return Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 8.sp,
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            isGroupPigmy = !isGroupPigmy!;
-                                            refreshGroupPigmyCheckbox.value =
-                                                !refreshGroupPigmyCheckbox
-                                                    .value;
-                                          },
-                                          child: Row(
-                                            spacing: 2.sp,
-                                            children: [
-                                              (isGroupPigmy == true)
-                                                  ? Icon(
-                                                      Icons.check_box,
-                                                      color: ColorConstants
-                                                          .darkBlueColor,
-                                                      size: 20.sp,
-                                                    )
-                                                  : Icon(
-                                                      Icons
-                                                          .check_box_outline_blank,
-                                                      color: ColorConstants
-                                                          .lightBlackColor,
-                                                      size: 20.sp,
-                                                    ),
-                                              Text(
-                                                "Group Pigmy",
-                                                style: TextStyle(
-                                                  fontSize: 10.sp,
-                                                  color:
-                                                      ColorConstants.blackColor,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                              // /* Group Pigmy Check Box */
+                              // ValueListenableBuilder(
+                              //     valueListenable: refreshGroupPigmyCheckbox,
+                              //     builder: (context, val, _) {
+                              //       return Column(
+                              //         children: [
+                              //           SizedBox(
+                              //             height: 8.sp,
+                              //           ),
+                              //           InkWell(
+                              //             onTap: () {
+                              //               isGroupPigmy = !isGroupPigmy!;
+                              //               refreshGroupPigmyCheckbox.value =
+                              //                   !refreshGroupPigmyCheckbox
+                              //                       .value;
+                              //             },
+                              //             child: Row(
+                              //               spacing: 2.sp,
+                              //               children: [
+                              //                 (isGroupPigmy == true)
+                              //                     ? Icon(
+                              //                         Icons.check_box,
+                              //                         color: ColorConstants
+                              //                             .darkBlueColor,
+                              //                         size: 20.sp,
+                              //                       )
+                              //                     : Icon(
+                              //                         Icons
+                              //                             .check_box_outline_blank,
+                              //                         color: ColorConstants
+                              //                             .lightBlackColor,
+                              //                         size: 20.sp,
+                              //                       ),
+                              //                 Text(
+                              //                   "Group Pigmy",
+                              //                   style: TextStyle(
+                              //                     fontSize: 10.sp,
+                              //                     color:
+                              //                         ColorConstants.blackColor,
+                              //                     fontWeight: FontWeight.w400,
+                              //                   ),
+                              //                 ),
+                              //               ],
+                              //             ),
+                              //           ),
 
-                                        /* Group Pigmy Check Box */
+                              //           /* Group Pigmy Check Box */
 
-                                        /* Reference Input Field*/
-                                        (isGroupPigmy == true)
-                                            ? Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 16.sp,
-                                                  ),
-                                                  Text(
-                                                    "Reference -  Group Leader Name",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 10.sp,
-                                                      color: ColorConstants
-                                                          .lightBlackColor,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  TextInputField(
-                                                    focusnodes:
-                                                        _referenceFocusNode,
-                                                    suffixWidget: const Icon(
-                                                      Icons.person_pin_rounded,
-                                                      color: ColorConstants
-                                                          .darkBlueColor,
-                                                    ),
-                                                    placeholderText:
-                                                        "Enter Reference Name",
-                                                    textEditingController:
-                                                        _referenceController,
-                                                    validationFunc: (value) {
-                                                      return ValidationUtil
-                                                          .validateReferenceName(
-                                                              value);
-                                                    },
-                                                  ),
-                                                  SizedBox(
-                                                    height: 16.sp,
-                                                  ),
+                              //           /* Reference Input Field*/
+                              //           (isGroupPigmy == true)
+                              //               ? Column(
+                              //                   crossAxisAlignment:
+                              //                       CrossAxisAlignment.start,
+                              //                   children: [
+                              //                     SizedBox(
+                              //                       height: 16.sp,
+                              //                     ),
+                              //                     Text(
+                              //                       "Reference -  Group Leader Name",
+                              //                       textAlign: TextAlign.center,
+                              //                       style: TextStyle(
+                              //                         fontSize: 10.sp,
+                              //                         color: ColorConstants
+                              //                             .lightBlackColor,
+                              //                         fontWeight:
+                              //                             FontWeight.w500,
+                              //                       ),
+                              //                     ),
+                              //                     TextInputField(
+                              //                       focusnodes:
+                              //                           _referenceFocusNode,
+                              //                       suffixWidget: const Icon(
+                              //                         Icons.person_pin_rounded,
+                              //                         color: ColorConstants
+                              //                             .darkBlueColor,
+                              //                       ),
+                              //                       placeholderText:
+                              //                           "Enter Reference Name",
+                              //                       textEditingController:
+                              //                           _referenceController,
+                              //                       validationFunc: (value) {
+                              //                         return ValidationUtil
+                              //                             .validateReferenceName(
+                              //                                 value);
+                              //                       },
+                              //                     ),
+                              //                     SizedBox(
+                              //                       height: 16.sp,
+                              //                     ),
 
-                                                  /* Reference Mobile Number Input Field */
-                                                  Text(
-                                                    "Reference Contact Details",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 10.sp,
-                                                      color: ColorConstants
-                                                          .lightBlackColor,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  TextInputField(
-                                                    focusnodes:
-                                                        _referenceNumFocusNode,
-                                                    suffixWidget: const Icon(
-                                                      Icons.phone_locked,
-                                                      color: ColorConstants
-                                                          .darkBlueColor,
-                                                    ),
-                                                    placeholderText:
-                                                        "Enter Reference Mobile Number",
-                                                    textEditingController:
-                                                        _referenceNumController,
-                                                    inputFormattersList: <TextInputFormatter>[
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly,
-                                                      LengthLimitingTextInputFormatter(
-                                                          10),
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                            r'^[6-9][0-9]*$'),
-                                                      ),
-                                                      FilteringTextInputFormatter
-                                                          .deny(
-                                                        RegExp(r"\s\s"),
-                                                      ),
-                                                      FilteringTextInputFormatter
-                                                          .deny(
-                                                        RegExp(
-                                                            r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                                      ),
-                                                    ],
-                                                    keyboardtype:
-                                                        TextInputType.number,
-                                                    validationFunc: (value) {
-                                                      return ValidationUtil
-                                                          .validateReferenceMobileNumber(
-                                                        value,
-                                                      );
-                                                    },
-                                                  ),
-                                                  /* Reference Mobile Number Input Field */
-                                                ],
-                                              )
-                                            : const SizedBox
-                                                .shrink(), /* Reference Input Field */
-                                      ],
-                                    );
-                                  }),
+                              //                     /* Reference Mobile Number Input Field */
+                              //                     Text(
+                              //                       "Reference Contact Details",
+                              //                       textAlign: TextAlign.center,
+                              //                       style: TextStyle(
+                              //                         fontSize: 10.sp,
+                              //                         color: ColorConstants
+                              //                             .lightBlackColor,
+                              //                         fontWeight:
+                              //                             FontWeight.w500,
+                              //                       ),
+                              //                     ),
+                              //                     TextInputField(
+                              //                       focusnodes:
+                              //                           _referenceNumFocusNode,
+                              //                       suffixWidget: const Icon(
+                              //                         Icons.phone_locked,
+                              //                         color: ColorConstants
+                              //                             .darkBlueColor,
+                              //                       ),
+                              //                       placeholderText:
+                              //                           "Enter Reference Mobile Number",
+                              //                       textEditingController:
+                              //                           _referenceNumController,
+                              //                       inputFormattersList: <TextInputFormatter>[
+                              //                         FilteringTextInputFormatter
+                              //                             .digitsOnly,
+                              //                         LengthLimitingTextInputFormatter(
+                              //                             10),
+                              //                         FilteringTextInputFormatter
+                              //                             .allow(
+                              //                           RegExp(
+                              //                               r'^[6-9][0-9]*$'),
+                              //                         ),
+                              //                         FilteringTextInputFormatter
+                              //                             .deny(
+                              //                           RegExp(r"\s\s"),
+                              //                         ),
+                              //                         FilteringTextInputFormatter
+                              //                             .deny(
+                              //                           RegExp(
+                              //                               r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                              //                         ),
+                              //                       ],
+                              //                       keyboardtype:
+                              //                           TextInputType.number,
+                              //                       validationFunc: (value) {
+                              //                         return ValidationUtil
+                              //                             .validateReferenceMobileNumber(
+                              //                           value,
+                              //                         );
+                              //                       },
+                              //                     ),
+                              //                     /* Reference Mobile Number Input Field */
+                              //                   ],
+                              //                 )
+                              //               : const SizedBox
+                              //                   .shrink(), /* Reference Input Field */
+                              //         ],
+                              //       );
+                              //     }),
+
                               SizedBox(
                                 height: 16.sp,
                               ),
@@ -2133,6 +2342,271 @@ class _CreatePigmySavingsAccountScreenState
                               /* Agent Input Field */
 
                               SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Photo Doc Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshphotoImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      placeholderText: "Add Photo",
+                                      addText: addText,
+                                      imagePath: photoImagePath ?? "",
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosphotoList = [];
+                                                compressedPhotosphotoList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosphotoList,
+                                                );
+
+                                                photoImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosphotoList[0]
+                                                      .path,
+                                                );
+
+                                                refreshphotoImage.value =
+                                                    !refreshphotoImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosphotoList = [];
+                                                compressedPhotosphotoList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosphotoList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+
+                                                photoImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosphotoList[0]
+                                                      .path,
+                                                );
+
+                                                refreshphotoImage.value =
+                                                    !refreshphotoImage.value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Photo Doc Image */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Add Signature Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshSignImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: signatureImagePath ?? "",
+                                      placeholderText: "Add Signature Image",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosSignList = [];
+                                                compressedPhotosSignList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosSignList,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "signatureImagePath: 1 ${compressedPhotosSignList[0].path}");
+                                                signatureImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosSignList[0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "signatureImagePath: 2$signatureImagePath");
+                                                refreshSignImage.value =
+                                                    !refreshSignImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosSignList = [];
+                                                compressedPhotosSignList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosSignList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "signatureImagePath: 1 ${compressedPhotosSignList[0].path}");
+                                                signatureImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosSignList[0]
+                                                      .path,
+                                                );
+
+                                                refreshSignImage.value =
+                                                    !refreshSignImage.value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+                              /* Add Signature Image */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Location Link */
+                              Text(
+                                "Location Link",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextField(
+                                controller: _locationLinkController,
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(
+                                      Icons.paste,
+                                      color: ColorConstants.darkBlueColor,
+                                    ),
+                                    onPressed: () => _pasteText(context),
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: ColorConstants.redColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                  filled: true,
+                                  fillColor: ColorConstants.whiteColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  hintText: 'Paste text here',
+                                  hintStyle: TextStyle(
+                                    color: ColorConstants.blackColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  color: ColorConstants.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 10.sp,
+                                ),
+                              ),
+
+                              SizedBox(height: 10.sp),
+                              Text(
+                                'Long-press in the TextField to see the context menu with paste option.',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              /* Location Link */
+
+                              SizedBox(
                                 height: 32.sp,
                               ),
                             ],
@@ -2157,6 +2631,12 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? emailError =
         ValidationUtil.validateEmailAddress(_emailController.text);
+    String? bankNameError =
+        ValidationUtil.validateBankName(_bankNameController.text);
+    String? accNumError =
+        ValidationUtil.validateAccountNumber(_accNumController.text);
+    String? userbankBranchError =
+        ValidationUtil.validateBranchName(_bankBranchController.text);
     String? altMobileError = ValidationUtil.validateAltMobileNumber(
         _altPhNumController.text, _phNumController.text);
     String? permanentAddressError =
@@ -2203,6 +2683,9 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateAgentName(_agentNameController.text);
     String? agentPhNumError =
         ValidationUtil.validateMobileNumber(_agentPhNumController.text);
+    String? photoImageError = ValidationUtil.validateImage(photoImagePath, 8);
+    String? signatureImageError =
+        ValidationUtil.validateImage(signatureImagePath, 7);
 
     final form = _formKey.currentState;
 
@@ -2245,6 +2728,13 @@ class _CreatePigmySavingsAccountScreenState
             agentName: _agentNameController.text,
             agentPhNum: _agentPhNumController.text,
             password: _passwordController.text,
+            bankName: _bankNameController.text,
+            bankBranchName: _bankBranchController.text,
+            bankIFSCCode: _bankIFSCcodeController.text,
+            accNumber: _accNumController.text,
+            photoImagePath: photoImagePath,
+            signatureImage: signatureImagePath,
+            locLink: _locationLinkController.text,
           );
         } else {
           result = await NetworkService().createPIGMYDetails(
@@ -2276,6 +2766,13 @@ class _CreatePigmySavingsAccountScreenState
             startDate: _startDateInput.text,
             pigmyPlan: selectedPigmyPlanValue.value,
             endDate: _endDateInput.text,
+            bankName: _bankNameController.text,
+            bankBranchName: _bankBranchController.text,
+            bankIFSCCode: _bankIFSCcodeController.text,
+            accNumber: _accNumController.text,
+            photoImagePath: photoImagePath,
+            signatureImage: signatureImagePath,
+            locLink: _locationLinkController.text,
           );
         }
 
@@ -2320,6 +2817,12 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_altPhNumFocusNode, altMobileError);
       } else if (emailError != null) {
         _showErrorAndFocus(_emailFocusNode, emailError);
+      } else if (bankNameError != null) {
+        _showErrorAndFocus(_bankNameFocusNode, bankNameError);
+      } else if (accNumError != null) {
+        _showErrorAndFocus(_bankAccNumFocusNode, accNumError);
+      } else if (userbankBranchError != null) {
+        _showErrorAndFocus(_bankBranchFocusNode, userbankBranchError);
       } else if (permanentAddressError != null) {
         _showErrorAndFocus(_permanentAddressFocusNode, permanentAddressError);
       } else if (streetAddressError != null) {
@@ -2377,6 +2880,18 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_agentNameFocusNode, agentNameError);
       } else if ((widget.type == "2") && agentPhNumError != null) {
         _showErrorAndFocus(_agentPhNumFocusNode, agentPhNumError);
+      } else if (photoImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: photoImageError,
+          isError: true,
+        );
+      } else if (signatureImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: signatureImageError,
+          isError: true,
+        );
       }
     }
   }
@@ -2403,5 +2918,345 @@ class _CreatePigmySavingsAccountScreenState
   // Add this method for calculating the end date
   DateTime calculateEndDate(DateTime startDate, int months) {
     return DateTime(startDate.year, startDate.month + months, startDate.day);
+  }
+
+  /* Pick Image from Gallery */
+  Future<List<File>> pickPhotos({
+    required int maxImagesCount,
+    required BuildContext? context,
+    required List<File> compressedPhotosList,
+    required String invalidFormatErrorText,
+  }) async {
+    try {
+      Map<Permission, PermissionStatus> permissionStatus;
+      bool isGrantedPermission = false;
+      final RegExp regExpImgFor = RegExp(r'\.(jpg|jpeg|png)$');
+
+      if (Platform.isAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        if (androidInfo.version.sdkInt <= 32) {
+          permissionStatus = await permissionServices(
+              permissionRequestList: [Permission.storage]);
+          isGrantedPermission =
+              (permissionStatus[Permission.storage]!.isGranted);
+        } else {
+          permissionStatus = await permissionServices(
+              permissionRequestList: [Permission.photos]);
+          isGrantedPermission =
+              (permissionStatus[Permission.photos]!.isGranted);
+        }
+      } else {
+        permissionStatus = await permissionServices(
+            permissionRequestList: [Permission.photos]);
+        isGrantedPermission = (permissionStatus[Permission.photos]!.isGranted);
+      }
+      if (isGrantedPermission) {
+        List<PlatformFile>? photosList = [];
+        FilePickerResult? picResult;
+        if (Platform.isAndroid) {
+          final androidInfo = await DeviceInfoPlugin().androidInfo;
+          (androidInfo.version.sdkInt <= 29)
+              ? picResult = await FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowedExtensions: ['jpg', 'jpeg', 'png'],
+                  allowCompression: true,
+                  allowMultiple: false,
+                )
+              : picResult = await FilePicker.platform.pickFiles(
+                  type: FileType.image,
+                  allowCompression: true,
+                  allowMultiple: false,
+                );
+        } else {
+          picResult = await FilePicker.platform.pickFiles(
+            type: FileType.image,
+            allowCompression: true,
+            allowMultiple: false,
+          );
+        }
+
+        photosList = picResult?.files;
+
+        if (photosList != null && photosList.isNotEmpty) {
+          for (int i = 0; i < photosList.length; i++) {
+            if (!regExpImgFor.hasMatch(photosList[i].path!.split('/').last)) {
+              // ignore: use_build_context_synchronously
+              print("Invalid Image Format");
+            } else {
+              XFile? photoCompressedFile =
+                  await compressImage(File(photosList[i].path ?? ""));
+              compressedPhotosList.insert(
+                0,
+                File(photoCompressedFile!.path),
+              );
+            }
+          }
+        }
+        return compressedPhotosList;
+      }
+    } catch (e) {
+      return compressedPhotosList;
+    }
+    return compressedPhotosList;
+  }
+
+  Future<XFile?> compressImage(File file) async {
+    final filePath = file.absolute.path;
+    final lastIndex = filePath.lastIndexOf(RegExp(r'.png|.jp'));
+    final splitted = filePath.substring(0, (lastIndex));
+    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+
+    if (lastIndex == filePath.lastIndexOf(RegExp(r'.png'))) {
+      final compressedImage = await FlutterImageCompress.compressAndGetFile(
+          filePath, outPath,
+          minWidth: 1000,
+          minHeight: 1000,
+          quality: 50,
+          format: CompressFormat.png);
+      return compressedImage;
+    } else {
+      final compressedImage = await FlutterImageCompress.compressAndGetFile(
+        filePath,
+        outPath,
+        minWidth: 1000,
+        minHeight: 1000,
+        quality: 50,
+      );
+      return compressedImage;
+    }
+  }
+
+  /*Permission services*/
+  Future<Map<Permission, PermissionStatus>> permissionServices(
+      {required List<Permission> permissionRequestList}) async {
+    Map<Permission, PermissionStatus>? statuses =
+        await permissionRequestList.request();
+    for (var request in permissionRequestList) {
+      if (Platform.isAndroid) {
+        if (statuses[request]!.isPermanentlyDenied) {
+        } else if (statuses[request]!.isGranted) {
+        } else if (statuses[request]!.isDenied) {}
+      }
+    }
+
+    /*{Permission.camera: PermissionStatus.granted, Permission.storage: PermissionStatus.granted}*/
+    return statuses;
+  }
+
+  /* Alert Dialog for Updating KYC Docs */
+  void showDocsAlertDialog({
+    required BuildContext context,
+    required Function onCaptureAction,
+    required Function onGalleryAction,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () {
+            Navigator.pop(context);
+            return Future.value(false);
+          },
+          child: Dialog(
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: 40.sp,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12.sp)),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(
+                  16.sp,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Choose",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.sp,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onCaptureAction();
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Capture a Photo',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12.sp,
+                            color: ColorConstants.blackColor,
+                          )
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onGalleryAction();
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Pick from Gallery',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12.sp,
+                            color: ColorConstants.blackColor,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.sp,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Dismiss',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  /* Alert Dialog for Updating KYC Docs */
+
+  /* Capture Picture */
+  Future<List<File>> capturePhoto(
+      {required maxImagesCount,
+      required BuildContext? context,
+      required List<File> compressedPhotosList,
+      required int type, // 1: means  default, 2 : means only picture
+      required String screenName}) async {
+    try {
+      RegExp regExpImg = RegExp(
+        r'.png|.jp|.heic',
+        caseSensitive: false,
+        multiLine: false,
+      );
+      Map<Permission, PermissionStatus> permissionStatus;
+      bool isGrantedPermission = false;
+      permissionStatus = await permissionServices(
+        permissionRequestList: [
+          Permission.camera,
+          if (type != 2) Permission.microphone,
+        ],
+      );
+      isGrantedPermission = ((type != 2)
+          ? (permissionStatus[Permission.camera]!.isGranted &&
+              permissionStatus[Permission.microphone]!.isGranted)
+          : (permissionStatus[Permission.camera]!.isGranted));
+
+      if (isGrantedPermission) {
+        PrintUtil().printMsg("enter granted");
+        if (maxImagesCount == 1) {
+          compressedPhotosList = [];
+        }
+        if (compressedPhotosList.length != maxImagesCount) {
+          List photosList = [];
+          Map<String, dynamic> data = {};
+          data = {
+            "type": type,
+          };
+
+          var res = await Navigator.pushNamed(
+            context!,
+            RoutingConstants.routeCapturePhotoCamera,
+            arguments: {'data': data},
+          );
+          print("Result: $res");
+          if (res != null) {
+            photosList.add(res);
+          }
+
+          if (photosList.isNotEmpty) {
+            for (int i = 0; i < photosList.length; i++) {
+              if (!regExpImg.hasMatch(photosList[i].split('/').last)) {
+                // ignore: use_build_context_synchronously
+                ToastUtil().showSnackBar(
+                    context: context,
+                    message: "Invalid file format",
+                    isError: true);
+              } else {
+                PrintUtil().printMsg("photoCompressedFile: ${photosList[i]}");
+                XFile? photoCompressedFile =
+                    await compressImage(File(photosList[i]));
+                PrintUtil().printMsg(
+                    "photoCompressedFile: ${photoCompressedFile?.path}");
+                compressedPhotosList.insert(
+                  0,
+                  File(photoCompressedFile?.path ?? ""),
+                );
+              }
+            }
+          }
+        }
+        return compressedPhotosList;
+      }
+    } catch (e) {
+      return compressedPhotosList;
+    }
+    return compressedPhotosList;
+  }
+
+  Future<void> _pasteText(BuildContext context) async {
+    final clipboardData = await Clipboard.getData('text/plain');
+    if (clipboardData?.text != null) {
+      _locationLinkController.text = clipboardData!.text!;
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Pasted from clipboard!',
+        isError: false,
+      );
+    } else {
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Clipboard is empty',
+        isError: false,
+      );
+    }
   }
 }

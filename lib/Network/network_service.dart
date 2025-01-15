@@ -647,6 +647,8 @@ class NetworkService {
     String? buildingStreetImagePath,
     String? buildingAreaImagePath,
     required String? permanentAddress,
+    required String? photoImagePath,
+    required String? locLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -693,6 +695,8 @@ class NetworkService {
         paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
         paramsKeyVal['permanent_address'] = permanentAddress;
         paramsKeyVal['agentName'] = agentName;
+        paramsKeyVal['photoImagePath'] = photoImagePath;
+        paramsKeyVal['locLink'] = locLink;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -784,6 +788,13 @@ class NetworkService {
     required String? startDate,
     required String? endDate,
     required String? pigmyPlan,
+    required String? bankName,
+    required String? accNumber,
+    required String? bankIFSCCode,
+    required String? bankBranchName,
+    required String? photoImagePath,
+    required String? signatureImage,
+    required String? locLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -815,6 +826,13 @@ class NetworkService {
         paramsKeyVal['startDate'] = startDate;
         paramsKeyVal['endDate'] = endDate;
         paramsKeyVal['pigmyPlan'] = pigmyPlan;
+        paramsKeyVal['bankName'] = bankName;
+        paramsKeyVal['accNumber'] = accNumber;
+        paramsKeyVal['bankIFSCCode'] = bankIFSCCode;
+        paramsKeyVal['bankBranchName'] = bankBranchName;
+        paramsKeyVal['photoImagePath'] = photoImagePath;
+        paramsKeyVal['signatureImage'] = signatureImage;
+        paramsKeyVal['locLink'] = locLink;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYURL, body: paramsKeyVal)
             .then(
@@ -860,6 +878,13 @@ class NetworkService {
     required String? agentName,
     required String? agentPhNum,
     String? password,
+    required String? bankName,
+    required String? accNumber,
+    required String? bankIFSCCode,
+    required String? bankBranchName,
+    required String? photoImagePath,
+    required String? signatureImage,
+    required String? locLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -894,6 +919,13 @@ class NetworkService {
         paramsKeyVal['agentName'] = agentName;
         paramsKeyVal['agentPhNum'] = agentPhNum;
         paramsKeyVal['password'] = password;
+        paramsKeyVal['bankName'] = bankName;
+        paramsKeyVal['accNumber'] = accNumber;
+        paramsKeyVal['bankIFSCCode'] = bankIFSCCode;
+        paramsKeyVal['bankBranchName'] = bankBranchName;
+        paramsKeyVal['photoImagePath'] = photoImagePath;
+        paramsKeyVal['signatureImage'] = signatureImage;
+        paramsKeyVal['locLink'] = locLink;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
                 body: paramsKeyVal)
@@ -1963,6 +1995,8 @@ class NetworkService {
     String? buildingAreaImagePath,
     required String? permanentAddress,
     required String? agentName,
+    required String? photoImagePath,
+    required String? locLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -2005,6 +2039,8 @@ class NetworkService {
         paramsKeyVal['buildingAreaImagePath'] = buildingAreaImagePath;
         paramsKeyVal['permanent_address'] = permanentAddress;
         paramsKeyVal['agentName'] = agentName;
+        paramsKeyVal['photoImagePath'] = photoImagePath;
+        paramsKeyVal['locLink'] = locLink;
         return _network
             .httpPost(
           apiHitTimeout,
