@@ -4020,9 +4020,11 @@ class _VerifyCustomersDetailsScreenState
               passBookImagePath!.isNotEmpty &&
               signatureImagePath != null &&
               signatureImagePath!.isNotEmpty &&
-              (((selectedDocValue.value == "Vehicle") &&
-                  rcHOLDERImagePath != null &&
-                  rcHOLDERImagePath!.isNotEmpty)) ||
+              (((selectedDocValue.value == "Personal") &&
+                  _chequeNumController.text.isNotEmpty)) ||
+          (((selectedDocValue.value == "Vehicle") &&
+              rcHOLDERImagePath != null &&
+              rcHOLDERImagePath!.isNotEmpty)) ||
           (((selectedDocValue.value == "Property") &&
               propertyDocImagePath != null &&
               propertyDocImagePath!.isNotEmpty))) {
