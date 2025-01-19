@@ -32,11 +32,13 @@ class AgentsTabBloc extends Bloc<AgentsTabEvent, AgentsTabState> {
 
       Future<Data?> getUserDetails() async {
         await NetworkService()
-            .agentsDashboardService()
+            .agentsDashboardService(
+          startDate: event.startDate,
+          endDate: event.endDate,
+        )
             .then((AgentsDashboardDataModel? respObj) {
           if (respObj != null && respObj.data != null) {
             userData = respObj.data;
-
             return userData;
           }
         });
@@ -52,6 +54,9 @@ class AgentsTabBloc extends Bloc<AgentsTabEvent, AgentsTabState> {
       isInternetConnected = await InternetUtil().checkInternetConnection();
       if (isInternetConnected) {
         //Loaded
+        if (event.showLoader == true) {
+          emit(AgentsTabLoading());
+        }
         userData = await getUserDetails();
         (userData != null) ? emit(AgentsTabLoaded()) : emit(AgentsTabError());
       } else {

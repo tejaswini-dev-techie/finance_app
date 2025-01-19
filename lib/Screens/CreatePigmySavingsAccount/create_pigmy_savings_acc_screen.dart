@@ -139,6 +139,8 @@ class _CreatePigmySavingsAccountScreenState
   final TextEditingController _bankBranchController = TextEditingController();
   final TextEditingController _bankIFSCcodeController = TextEditingController();
   final TextEditingController _locationLinkController = TextEditingController();
+  final TextEditingController _workLocationLinkController =
+      TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -314,6 +316,7 @@ class _CreatePigmySavingsAccountScreenState
     _bankBranchController.dispose();
     _bankIFSCcodeController.dispose();
     _locationLinkController.dispose();
+    _workLocationLinkController.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -2594,6 +2597,104 @@ class _CreatePigmySavingsAccountScreenState
                                 ),
                               ),
 
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Work Location Link */
+                              Text(
+                                "Work Location Link",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextField(
+                                controller: _workLocationLinkController,
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(
+                                      Icons.paste,
+                                      color: ColorConstants.darkBlueColor,
+                                    ),
+                                    onPressed: () =>
+                                        _pasteWorkLocLinkText(context),
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: ColorConstants.redColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                  filled: true,
+                                  fillColor: ColorConstants.whiteColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  hintText: 'Paste text here',
+                                  hintStyle: TextStyle(
+                                    color: ColorConstants.blackColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  color: ColorConstants.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 10.sp,
+                                ),
+                              ),
+
+                              /* Work Location Link */
+
                               SizedBox(height: 10.sp),
                               Text(
                                 'Long-press in the TextField to see the context menu with paste option.',
@@ -2735,6 +2836,7 @@ class _CreatePigmySavingsAccountScreenState
             photoImagePath: photoImagePath,
             signatureImage: signatureImagePath,
             locLink: _locationLinkController.text,
+            workLocLink: _workLocationLinkController.text,
           );
         } else {
           result = await NetworkService().createPIGMYDetails(
@@ -2773,6 +2875,7 @@ class _CreatePigmySavingsAccountScreenState
             photoImagePath: photoImagePath,
             signatureImage: signatureImagePath,
             locLink: _locationLinkController.text,
+            workLocLink: _workLocationLinkController.text,
           );
         }
 
@@ -3246,6 +3349,24 @@ class _CreatePigmySavingsAccountScreenState
     final clipboardData = await Clipboard.getData('text/plain');
     if (clipboardData?.text != null) {
       _locationLinkController.text = clipboardData!.text!;
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Pasted from clipboard!',
+        isError: false,
+      );
+    } else {
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Clipboard is empty',
+        isError: false,
+      );
+    }
+  }
+
+  Future<void> _pasteWorkLocLinkText(BuildContext context) async {
+    final clipboardData = await Clipboard.getData('text/plain');
+    if (clipboardData?.text != null) {
+      _workLocationLinkController.text = clipboardData!.text!;
       ToastUtil().showSnackBar(
         context: context,
         message: 'Pasted from clipboard!',

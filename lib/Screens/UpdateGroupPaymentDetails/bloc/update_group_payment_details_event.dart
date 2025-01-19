@@ -7,8 +7,11 @@ class GetPaymentDetailsEvent extends UpdateGroupPaymentDetailsEvent {
   final String? cusID;
   final String? type;
 
+  final bool? showLoader;
+
   GetPaymentDetailsEvent({
     required this.cusID,
     required this.type,
+    this.showLoader = false,
   });
 }

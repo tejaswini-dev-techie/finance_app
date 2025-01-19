@@ -88,13 +88,16 @@ class CustomersList {
   String? cusAmt;
   bool? isEditable;
   bool? isSelected;
+  String? amtToBePaidBy;
 
-  CustomersList(
-      {this.cusId,
-      this.cusName,
-      this.cusAmt,
-      this.isEditable,
-      this.isSelected});
+  CustomersList({
+    this.cusId,
+    this.cusName,
+    this.cusAmt,
+    this.isEditable,
+    this.isSelected,
+    this.amtToBePaidBy,
+  });
 
   CustomersList.fromJson(Map<String, dynamic> json) {
     cusId = json['cus_id'];
@@ -102,6 +105,7 @@ class CustomersList {
     cusAmt = json['cus_amt'];
     isEditable = json['is_editable'];
     isSelected = json['is_selected'];
+    amtToBePaidBy = json['amount_type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -111,6 +115,7 @@ class CustomersList {
     data['cus_amt'] = cusAmt;
     data['is_editable'] = isEditable;
     data['is_selected'] = isSelected;
+    data['amount_type'] = amtToBePaidBy;
     return data;
   }
 }

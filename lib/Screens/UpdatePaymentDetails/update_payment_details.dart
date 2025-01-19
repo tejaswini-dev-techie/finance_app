@@ -45,8 +45,7 @@ class _UpdateCustomersPaymentDetailsScreenState
   final TextEditingController _amtPaidCodeController = TextEditingController();
   final TextEditingController _amtDueCodeController = TextEditingController();
   final TextEditingController _dateInput = TextEditingController();
-  final TextEditingController _amountToBePaidController =
-      TextEditingController();
+
   final TextEditingController _dateCollectionInput = TextEditingController();
   /* TextEditing Controller */
 
@@ -61,7 +60,8 @@ class _UpdateCustomersPaymentDetailsScreenState
   final FocusNode _dateCollectionFocusNode = FocusNode();
   final FocusNode _paymentModeFocusNode = FocusNode();
   final FocusNode _paymentStatusFocusNode = FocusNode();
-  final FocusNode _amtToBePaidFocusNode = FocusNode();
+  final FocusNode _amtPaidBYStatusFocusNode = FocusNode();
+
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -73,6 +73,7 @@ class _UpdateCustomersPaymentDetailsScreenState
       ValueNotifier<bool>(false);
   ValueNotifier<bool> refreshPaymentStatusInputFields =
       ValueNotifier<bool>(false);
+  ValueNotifier<bool> refreshAmtStatusInputFields = ValueNotifier<bool>(false);
 
   // String? selectedPaymentTypeIDValue;
   // List<Map<String, dynamic>> paymentTypeOptions = [
@@ -100,6 +101,14 @@ class _UpdateCustomersPaymentDetailsScreenState
     {"id": "3", "title": 'FAILED'}
   ];
 
+  String? selectedAmtPaidByModeIDValue;
+  List<Map<String, dynamic>> amtModeOptions = [
+    {"id": "0", "title": 'Select Amount to be Paid By'},
+    {"id": "1", "title": 'EMI'},
+    {"id": "2", "title": 'PENALTY'},
+    {"id": "3", "title": 'INTEREST'},
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -114,7 +123,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     _amtPaidCodeController.addListener(_validateFields);
     _amtDueCodeController.addListener(_validateFields);
     _dateInput.addListener(_validateFields);
-    _amountToBePaidController.addListener(_validateFields);
+
     _dateCollectionInput.addListener(_validateFields);
   }
 
@@ -129,7 +138,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     _amtPaidCodeController.dispose();
     _amtDueCodeController.dispose();
     _dateInput.dispose();
-    _amountToBePaidController.dispose();
+
     _dateCollectionInput.dispose();
 
     _nameFocusNode.dispose();
@@ -142,7 +151,6 @@ class _UpdateCustomersPaymentDetailsScreenState
     _paymentModeFocusNode.dispose();
     _paymentStatusFocusNode.dispose();
     _dateInputFocusNode.dispose();
-    _amtToBePaidFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -151,7 +159,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     _amtPaidCodeController.removeListener(_validateFields);
     _amtDueCodeController.removeListener(_validateFields);
     _dateInput.removeListener(_validateFields);
-    _amountToBePaidController.removeListener(_validateFields);
+
     _dateCollectionInput.removeListener(_validateFields);
 
     _scrollController.dispose();
@@ -310,10 +318,20 @@ class _UpdateCustomersPaymentDetailsScreenState
                           null ||
                       updatePaymentDetailsBloc
                           .userData!.amtToBePaidBy!.isEmpty) {
-                    _amountToBePaidController.text = "NONE";
+                    // Set the corresponding ID for 'EMI'
+                    selectedAmtPaidByModeIDValue = amtModeOptions.firstWhere(
+                        (option) => option['title'] == 'EMI')['id'] as String?;
+                    refreshAmtStatusInputFields.value =
+                        !refreshAmtStatusInputFields.value;
                   } else {
-                    _amountToBePaidController.text =
-                        updatePaymentDetailsBloc.userData?.amtToBePaidBy ?? "";
+                    // Find the corresponding ID for the userData value
+                    selectedAmtPaidByModeIDValue = amtModeOptions.firstWhere(
+                        (option) =>
+                            option['title'] ==
+                            updatePaymentDetailsBloc.userData?.amtToBePaidBy,
+                        orElse: () => {"id": "0"})['id'] as String?;
+                    refreshAmtStatusInputFields.value =
+                        !refreshAmtStatusInputFields.value;
                   }
 
                   return SingleChildScrollView(
@@ -334,7 +352,7 @@ class _UpdateCustomersPaymentDetailsScreenState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    /* Name Input Field*/
+                                    /* Name Input Field */
                                     Text(
                                       updatePaymentDetailsBloc.nameText,
                                       textAlign: TextAlign.center,
@@ -1298,31 +1316,139 @@ class _UpdateCustomersPaymentDetailsScreenState
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    TextInputField(
-                                      focusnodes: _amtToBePaidFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.attach_money_outlined,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .amtTobePaidPlaceholderText,
-                                      textEditingController:
-                                          _amountToBePaidController,
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(r"\s\s"),
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                        ),
-                                      ],
-                                      keyboardtype: TextInputType.text,
-                                      validationFunc: (value) {
-                                        return ValidationUtil
-                                            .validateAmtToBePaid(value);
-                                      },
-                                    ),
+                                    ValueListenableBuilder(
+                                        valueListenable:
+                                            refreshAmtStatusInputFields,
+                                        builder: (context, vals, _) {
+                                          return DropdownButtonFormField<
+                                              String>(
+                                            value: selectedAmtPaidByModeIDValue,
+                                            focusNode:
+                                                _amtPaidBYStatusFocusNode,
+                                            hint: Text(
+                                              updatePaymentDetailsBloc
+                                                  .amtTobePaidPlaceholderText,
+                                              style: TextStyle(
+                                                color:
+                                                    ColorConstants.blackColor,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.normal,
+                                                fontSize: 10.sp,
+                                              ),
+                                            ),
+                                            onChanged: (String? newValue) {
+                                              selectedAmtPaidByModeIDValue =
+                                                  newValue;
+                                              refreshAmtStatusInputFields
+                                                      .value =
+                                                  !refreshAmtStatusInputFields
+                                                      .value;
+                                              updatePaymentDetailsBloc
+                                                  .add(GetPaymentDetailsEvent(
+                                                cusID: widget.customerID,
+                                                type: widget.type,
+                                                amtType:
+                                                    selectedAmtPaidByModeIDValue,
+                                                showLoader: true,
+                                              ));
+                                            },
+                                            onSaved: (String? newValue) {
+                                              selectedAmtPaidByModeIDValue =
+                                                  newValue;
+                                            },
+                                            validator: (String? value) {
+                                              if (value == null ||
+                                                  value.isEmpty ||
+                                                  value == "0") {
+                                                return 'Please choose a valid Amount to be Paid by Status';
+                                              }
+                                              return null;
+                                            },
+                                            items: amtModeOptions
+                                                .map<DropdownMenuItem<String>>(
+                                                    (option) {
+                                              return DropdownMenuItem<String>(
+                                                value: option[
+                                                    'id'], // Using the id as the value
+                                                child: Text(
+                                                  option['title'],
+                                                  style: TextStyle(
+                                                    color: ColorConstants
+                                                        .blackColor,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontStyle: FontStyle.normal,
+                                                    fontSize: 10.sp,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            decoration: InputDecoration(
+                                              errorStyle: TextStyle(
+                                                color: ColorConstants.redColor,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.normal,
+                                                fontSize: 10.sp,
+                                              ),
+                                              filled: true,
+                                              fillColor:
+                                                  ColorConstants.whiteColor,
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.sp)),
+                                                borderSide: BorderSide(
+                                                  width: 1.sp,
+                                                  color: ColorConstants
+                                                      .lightShadeBlueColor,
+                                                ),
+                                              ),
+                                              disabledBorder:
+                                                  OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.sp)),
+                                                borderSide: BorderSide(
+                                                  width: 1.sp,
+                                                  color: ColorConstants
+                                                      .lightShadeBlueColor,
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.sp)),
+                                                borderSide: BorderSide(
+                                                  width: 1.sp,
+                                                  color: ColorConstants
+                                                      .lightShadeBlueColor,
+                                                ),
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.sp)),
+                                                borderSide: BorderSide(
+                                                  width: 1.sp,
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.sp)),
+                                                borderSide: BorderSide(
+                                                  width: 1.sp,
+                                                  color:
+                                                      ColorConstants.redColor,
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8.sp)),
+                                                borderSide: BorderSide(
+                                                  width: 1.sp,
+                                                  color:
+                                                      ColorConstants.redColor,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }),
                                     /* Amount To be Paid Input Field */
 
                                     SizedBox(
@@ -1400,7 +1526,7 @@ class _UpdateCustomersPaymentDetailsScreenState
         paymentCollectionDate: _dateCollectionInput.text,
         paymentMode: selectedPaymentModeIDValue,
         paymentStatus: selectedPaymentStatusIDValue,
-        amountType: _amountToBePaidController.text,
+        amountType: selectedAmtPaidByModeIDValue,
       );
 
       if (result != null && result['status'] == true) {
@@ -1461,6 +1587,11 @@ class _UpdateCustomersPaymentDetailsScreenState
           selectedPaymentStatusIDValue == "0") {
         _showErrorAndFocus(
             _paymentStatusFocusNode, "Please select vaild Payment Status");
+      } else if (selectedAmtPaidByModeIDValue == null ||
+          selectedAmtPaidByModeIDValue!.isEmpty ||
+          selectedAmtPaidByModeIDValue == "0") {
+        _showErrorAndFocus(
+            _amtPaidBYStatusFocusNode, "Please select vaild Payment Status");
       }
       // else if (amtTypeError != null) {
       //   _showErrorAndFocus(_amtToBePaidFocusNode, amtTypeError);

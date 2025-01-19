@@ -142,6 +142,9 @@ class UpdateGroupPaymentDetailsBloc extends Bloc<UpdateGroupPaymentDetailsEvent,
       isInternetConnected = await InternetUtil().checkInternetConnection();
       if (isInternetConnected) {
         //Loaded
+        if (event.showLoader == true) {
+          emit(UpdateGroupPaymentDetailsLoading());
+        }
         userData = await getUserDetails();
         (userData != null)
             ? emit(UpdateGroupPaymentDetailsLoaded())

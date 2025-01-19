@@ -120,6 +120,8 @@ class _VerifyCustomersDetailsScreenState
   final TextEditingController _referenceNumController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
   final TextEditingController _locationLinkController = TextEditingController();
+  final TextEditingController _workLocationLinkController =
+      TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -325,6 +327,7 @@ class _VerifyCustomersDetailsScreenState
     _reasonController.dispose();
     _agentNameController.dispose();
     _locationLinkController.dispose();
+    _workLocationLinkController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -3805,6 +3808,105 @@ class _VerifyCustomersDetailsScreenState
                                   fontSize: 10.sp,
                                 ),
                               ),
+                              /* Location Link */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Work Location Link */
+                              Text(
+                                "Work Location Link",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextField(
+                                controller: _workLocationLinkController,
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(
+                                      Icons.paste,
+                                      color: ColorConstants.darkBlueColor,
+                                    ),
+                                    onPressed: () =>
+                                        _pasteWorkLocLinkText(context),
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: ColorConstants.redColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                  filled: true,
+                                  fillColor: ColorConstants.whiteColor,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.lightShadeBlueColor,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    borderSide: BorderSide(
+                                      width: 1.sp,
+                                      color: ColorConstants.redColor,
+                                    ),
+                                  ),
+                                  hintText: 'Paste text here',
+                                  hintStyle: TextStyle(
+                                    color: ColorConstants.blackColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.sp,
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  color: ColorConstants.blackColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 10.sp,
+                                ),
+                              ),
+
+                              /* Work Location Link */
 
                               SizedBox(height: 10.sp),
                               Text(
@@ -3968,6 +4070,7 @@ class _VerifyCustomersDetailsScreenState
             agentName: _agentNameController.text,
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
+            workLocationLink: _workLocationLinkController.text,
           );
         } else if (widget.type == "2") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
@@ -4010,6 +4113,7 @@ class _VerifyCustomersDetailsScreenState
             agentName: _agentNameController.text,
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
+            workLocationLink: _workLocationLinkController.text,
           );
         } else if (widget.type == "3") {
           result = await NetworkService().updateKYCDetails(
@@ -4058,6 +4162,7 @@ class _VerifyCustomersDetailsScreenState
             agentName: _agentNameController.text,
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
+            workLocationLink: _workLocationLinkController.text,
           );
         } else {
           result = await NetworkService().updateKYCDetails(
@@ -4100,6 +4205,7 @@ class _VerifyCustomersDetailsScreenState
             agentName: _agentNameController.text,
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
+            workLocationLink: _workLocationLinkController.text,
           );
         }
 
@@ -4654,6 +4760,24 @@ class _VerifyCustomersDetailsScreenState
     final clipboardData = await Clipboard.getData('text/plain');
     if (clipboardData?.text != null) {
       _locationLinkController.text = clipboardData!.text!;
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Pasted from clipboard!',
+        isError: false,
+      );
+    } else {
+      ToastUtil().showSnackBar(
+        context: context,
+        message: 'Clipboard is empty',
+        isError: false,
+      );
+    }
+  }
+
+  Future<void> _pasteWorkLocLinkText(BuildContext context) async {
+    final clipboardData = await Clipboard.getData('text/plain');
+    if (clipboardData?.text != null) {
+      _workLocationLinkController.text = clipboardData!.text!;
       ToastUtil().showSnackBar(
         context: context,
         message: 'Pasted from clipboard!',

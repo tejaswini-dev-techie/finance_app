@@ -61,8 +61,6 @@ class APIURLs {
 
   static const transactionDetURL = "$baseURL/loan/loan-transaction";
 
-  // static const verifyCustomerDashboardURL =
-  //     "$baseURL/agent/verify-customer-dashboard";
   static const groupMemberDetailsURL = "$baseURL/agent/get-group-member-detail";
   static const logoutURL = "$baseURL/auth/logout";
 
@@ -73,7 +71,8 @@ class APIURLs {
       "$baseURL/collection/update-collection";
   static const updateGroupPaymentPrefetchDetailsURL =
       "$baseURL/collection/get-group-collection-details";
-  static const updateGroupEditPayURL = "$baseURL/";
+  static const updateGroupEditPayURL =
+      "$baseURL/collection/edit-group-collection";
   static const updateGroupPaymentDetailsURL =
       "$baseURL/collection/update-group-collection";
   static const saveDetailGrpPayURL =

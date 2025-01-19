@@ -17,6 +17,7 @@ import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
 import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SearchIntermitentScreen extends StatefulWidget {
   final String? customerID;
@@ -74,6 +75,22 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
       }
     });
     return searchDet;
+  }
+
+  Future<void> _launchUrl(String url) async {
+    InternetUtil().checkInternetConnection().then((internet) async {
+      if (internet) {
+        if (!await launchUrl(Uri.parse(url))) {
+          throw Exception('Could not launch $url');
+        }
+      } else {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: internetAlert,
+          isError: true,
+        );
+      }
+    });
   }
 
   onCollectNowAction() {
@@ -394,6 +411,68 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                                 searchDet!.address!.isNotEmpty)
                             ? SizedBox(
                                 height: 10.sp,
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.locLink != null &&
+                                searchDet!.locLink!.isNotEmpty)
+                            ? Text(
+                                searchDet?.locLinkText ?? "",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.darkBlueColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.locLink != null &&
+                                searchDet!.locLink!.isNotEmpty)
+                            ? InkWell(
+                                onTap: () =>
+                                    _launchUrl(searchDet?.locLink ?? ""),
+                                child: Text(
+                                  searchDet?.locLink ?? "",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: ColorConstants.lightBlackColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.locLink != null &&
+                                searchDet!.locLink!.isNotEmpty)
+                            ? SizedBox(
+                                height: 10.sp,
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.workLocationLink != null &&
+                                searchDet!.workLocationLink!.isNotEmpty)
+                            ? Text(
+                                searchDet?.workLocationLinkText ?? "",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.darkBlueColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (searchDet?.workLocationLink != null &&
+                                searchDet!.workLocationLink!.isNotEmpty)
+                            ? InkWell(
+                                onTap: () => _launchUrl(
+                                    searchDet?.workLocationLink ?? ""),
+                                child: Text(
+                                  searchDet?.workLocationLink ?? "",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: ColorConstants.lightBlackColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               )
                             : const SizedBox.shrink(),
 

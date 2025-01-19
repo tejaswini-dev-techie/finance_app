@@ -649,6 +649,7 @@ class NetworkService {
     required String? permanentAddress,
     required String? photoImagePath,
     required String? locLink,
+    required String? workLocationLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -697,6 +698,7 @@ class NetworkService {
         paramsKeyVal['agentName'] = agentName;
         paramsKeyVal['photoImagePath'] = photoImagePath;
         paramsKeyVal['locLink'] = locLink;
+        paramsKeyVal['workLocLink'] = workLocationLink;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -795,6 +797,7 @@ class NetworkService {
     required String? photoImagePath,
     required String? signatureImage,
     required String? locLink,
+    required String? workLocLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -833,6 +836,7 @@ class NetworkService {
         paramsKeyVal['photoImagePath'] = photoImagePath;
         paramsKeyVal['signatureImage'] = signatureImage;
         paramsKeyVal['locLink'] = locLink;
+        paramsKeyVal['workLocLink'] = workLocLink;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYURL, body: paramsKeyVal)
             .then(
@@ -885,6 +889,7 @@ class NetworkService {
     required String? photoImagePath,
     required String? signatureImage,
     required String? locLink,
+    required String? workLocLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -926,6 +931,7 @@ class NetworkService {
         paramsKeyVal['photoImagePath'] = photoImagePath;
         paramsKeyVal['signatureImage'] = signatureImage;
         paramsKeyVal['locLink'] = locLink;
+        paramsKeyVal['workLocLink'] = workLocLink;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
                 body: paramsKeyVal)
@@ -1228,9 +1234,14 @@ class NetworkService {
   //     "update_payment_det_text": "UpdatePaymentdetails"
   //   }
   // };
-  Future<AgentsDashboardDataModel> agentsDashboardService() {
+  Future<AgentsDashboardDataModel> agentsDashboardService({
+    String? startDate,
+    String? endDate,
+  }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['startDate'] = startDate;
+        paramsKeyVal['endDate'] = endDate;
         return _network
             .httpGet(apiHitTimeout, APIURLs.agentsDashboardURL,
                 body: paramsKeyVal)
@@ -1353,12 +1364,16 @@ class NetworkService {
   //     ]
   //   }
   // };
-  Future<UpdatePaymentDetailsDataModel> updatePaymentPrefetchDetailsService(
-      {required String? id, required String? type}) {
+  Future<UpdatePaymentDetailsDataModel> updatePaymentPrefetchDetailsService({
+    required String? id,
+    required String? type,
+    String? amtType,
+  }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['id'] = "$id";
         paramsKeyVal['type'] = "$type";
+        paramsKeyVal['amtType'] = amtType;
         return _network
             .httpGetQuery(
                 apiHitTimeout, APIURLs.updatePaymentPrefetchDetailsURL,
@@ -1413,12 +1428,15 @@ class NetworkService {
   // };
 
   Future<UpdateGroupPaymentDetailsDataModel>
-      updateGroupPaymentPrefetchDetailsService(
-          {required String? id, required String? type}) {
+      updateGroupPaymentPrefetchDetailsService({
+    required String? id,
+    required String? type,
+  }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['id'] = "$id";
         paramsKeyVal['type'] = "$type";
+
         return _network
             .httpGetQuery(
                 apiHitTimeout, APIURLs.updateGroupPaymentPrefetchDetailsURL,
@@ -1439,6 +1457,7 @@ class NetworkService {
     required String? type,
     required String? cusID,
     required String? cusAmount,
+    required String? amtType,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -1446,6 +1465,7 @@ class NetworkService {
         paramsKeyVal['type'] = "$type";
         paramsKeyVal['customer_id'] = "$cusID";
         paramsKeyVal['customer_amt'] = "$cusAmount";
+        paramsKeyVal['amtType'] = "$amtType";
         return _network
             .httpGetQuery(apiHitTimeout, APIURLs.updateGroupEditPayURL,
                 queryParams: paramsKeyVal)
@@ -1997,6 +2017,7 @@ class NetworkService {
     required String? agentName,
     required String? photoImagePath,
     required String? locLink,
+    required String? workLocationLink,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -2041,6 +2062,7 @@ class NetworkService {
         paramsKeyVal['agentName'] = agentName;
         paramsKeyVal['photoImagePath'] = photoImagePath;
         paramsKeyVal['locLink'] = locLink;
+        paramsKeyVal['workLocLink'] = workLocationLink;
         return _network
             .httpPost(
           apiHitTimeout,

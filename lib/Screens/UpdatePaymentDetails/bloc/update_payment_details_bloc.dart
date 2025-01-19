@@ -58,6 +58,7 @@ class UpdatePaymentDetailsBloc
             .updatePaymentPrefetchDetailsService(
           id: event.cusID ?? "",
           type: event.type,
+          amtType: event.amtType,
         )
             .then((UpdatePaymentDetailsDataModel? respObj) {
           if (respObj != null && respObj.data != null) {
@@ -147,6 +148,9 @@ class UpdatePaymentDetailsBloc
       isInternetConnected = await InternetUtil().checkInternetConnection();
       if (isInternetConnected) {
         //Loaded
+        if (event.showLoader == true) {
+          emit(UpdatePaymentDetailsLoading());
+        }
         userData = await getUserDetails();
         (userData != null)
             ? emit(UpdatePaymentDetailsLoaded())

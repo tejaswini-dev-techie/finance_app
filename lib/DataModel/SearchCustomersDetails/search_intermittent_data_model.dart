@@ -38,6 +38,10 @@ class Data {
   String? withdrawPigmyText;
   String? closeLoanText;
   String? loanID;
+  String? locLink;
+  String? workLocationLink;
+  String? locLinkText;
+  String? workLocationLinkText;
 
   Data({
     this.profileImage,
@@ -51,6 +55,10 @@ class Data {
     this.withdrawPigmyText,
     this.closeLoanText,
     this.loanID,
+    this.locLink,
+    this.workLocationLink,
+    this.locLinkText,
+    this.workLocationLinkText,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -63,6 +71,10 @@ class Data {
     withdrawPigmyText = json['withdraw_pigmy_text'] ?? "Withdraw PIGMY Savings";
     closeLoanText = json['close_loan_text'] ?? "Close Loan";
     loanID = json['loanID'] ?? "";
+    locLink = json['locLink'] ?? "";
+    workLocationLink = json['workLocationLink'] ?? "";
+    locLinkText = json['locLinkText'] ?? "";
+    workLocationLinkText = json['workLocationLinkText'] ?? "";
     if (json['docs_list'] != null) {
       docsList = <DocsList>[];
       json['docs_list'].forEach((v) {
@@ -88,6 +100,10 @@ class Data {
     data['withdraw_pigmy_text'] = withdrawPigmyText;
     data['close_loan_text'] = closeLoanText;
     data['loanID'] = loanID;
+    data['locLink'] = locLink;
+    data['workLocationLink'] = workLocationLink;
+    data['locLinkText'] = locLinkText;
+    data['workLocationLinkText'] = workLocationLinkText;
     if (docsList != null) {
       data['docs_list'] = docsList!.map((v) => v.toJson()).toList();
     }

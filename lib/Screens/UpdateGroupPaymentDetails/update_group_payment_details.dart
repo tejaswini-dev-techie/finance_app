@@ -46,8 +46,7 @@ class _UpdateGroupPaymentDetailsScreenState
   final TextEditingController _amtPaidCodeController = TextEditingController();
   final TextEditingController _amtDueCodeController = TextEditingController();
   final TextEditingController _dateInput = TextEditingController();
-  final TextEditingController _amountToBePaidController =
-      TextEditingController();
+
   final TextEditingController _dateCollectionInput = TextEditingController();
   final TextEditingController _userAmountInput = TextEditingController();
   /* TextEditing Controller */
@@ -106,6 +105,14 @@ class _UpdateGroupPaymentDetailsScreenState
     {"id": "3", "title": 'FAILED'}
   ];
 
+  List<Map<String, dynamic>> amtModeOptions = [
+    {"id": "0", "title": 'Select Amount to be Paid By'},
+    {"id": "1", "title": 'EMI'},
+    {"id": "2", "title": 'PENALTY'},
+    {"id": "3", "title": 'INTEREST'},
+  ];
+  ValueNotifier<bool> refreshAmtStatusInputFields = ValueNotifier<bool>(false);
+
   bool? isCheckedAll = false;
 
   String? internetAlert = "Please check your internet connection";
@@ -124,7 +131,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _amtPaidCodeController.addListener(_validateFields);
     _amtDueCodeController.addListener(_validateFields);
     _dateInput.addListener(_validateFields);
-    _amountToBePaidController.addListener(_validateFields);
+
     _dateCollectionInput.addListener(_validateFields);
     _userAmountInput.addListener(_validateFields);
   }
@@ -140,7 +147,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _amtPaidCodeController.dispose();
     _amtDueCodeController.dispose();
     _dateInput.dispose();
-    _amountToBePaidController.dispose();
+
     _dateCollectionInput.dispose();
     _userAmountInput.dispose();
 
@@ -164,7 +171,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _amtPaidCodeController.removeListener(_validateFields);
     _amtDueCodeController.removeListener(_validateFields);
     _dateInput.removeListener(_validateFields);
-    _amountToBePaidController.removeListener(_validateFields);
+
     _dateCollectionInput.removeListener(_validateFields);
     _userAmountInput.removeListener(_validateFields);
 
@@ -176,7 +183,9 @@ class _UpdateGroupPaymentDetailsScreenState
     required String? cusID,
     required String? cusName,
     required String? cusAmount,
+    required String? cusAmtType,
   }) {
+    String? selectedAmtPaidByModeIDValue = cusAmtType;
     showModalBottomSheet(
       isScrollControlled: true,
       clipBehavior: Clip.none,
@@ -259,14 +268,136 @@ class _UpdateGroupPaymentDetailsScreenState
                 ),
                 /* Amount Paid Input Field */
 
+                /* Amount To be Paid Input Field */
+                Text(
+                  updateGroupPaymentDetailsBloc.amtTobePaidText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: ColorConstants.lightBlackColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                ValueListenableBuilder(
+                    valueListenable: refreshAmtStatusInputFields,
+                    builder: (context, vals, _) {
+                      return DropdownButtonFormField<String>(
+                        value: selectedAmtPaidByModeIDValue,
+                        focusNode: _amtToBePaidFocusNode,
+                        hint: Text(
+                          updateGroupPaymentDetailsBloc
+                              .amtTobePaidPlaceholderText,
+                          style: TextStyle(
+                            color: ColorConstants.blackColor,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 10.sp,
+                          ),
+                        ),
+                        onChanged: (String? newValue) {
+                          selectedAmtPaidByModeIDValue = newValue;
+                          refreshAmtStatusInputFields.value =
+                              !refreshAmtStatusInputFields.value;
+                        },
+                        onSaved: (String? newValue) {
+                          selectedAmtPaidByModeIDValue = newValue;
+                        },
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty || value == "0") {
+                            return 'Please choose a valid Amount to be Paid by Status';
+                          }
+                          return null;
+                        },
+                        items: amtModeOptions
+                            .map<DropdownMenuItem<String>>((option) {
+                          return DropdownMenuItem<String>(
+                            value: option['id'], // Using the id as the value
+                            child: Text(
+                              option['title'],
+                              style: TextStyle(
+                                color: ColorConstants.blackColor,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 10.sp,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                          errorStyle: TextStyle(
+                            color: ColorConstants.redColor,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 10.sp,
+                          ),
+                          filled: true,
+                          fillColor: ColorConstants.whiteColor,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp)),
+                            borderSide: BorderSide(
+                              width: 1.sp,
+                              color: ColorConstants.lightShadeBlueColor,
+                            ),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp)),
+                            borderSide: BorderSide(
+                              width: 1.sp,
+                              color: ColorConstants.lightShadeBlueColor,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp)),
+                            borderSide: BorderSide(
+                              width: 1.sp,
+                              color: ColorConstants.lightShadeBlueColor,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp)),
+                            borderSide: BorderSide(
+                              width: 1.sp,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp)),
+                            borderSide: BorderSide(
+                              width: 1.sp,
+                              color: ColorConstants.redColor,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp)),
+                            borderSide: BorderSide(
+                              width: 1.sp,
+                              color: ColorConstants.redColor,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                /* Amount To be Paid Input Field */
+
                 buttonWidgetHelperUtil(
                   isDisabled: false,
                   buttonText: updateGroupPaymentDetailsBloc.updateText,
-                  onButtonTap: () => onSaveAction(cusID: cusID),
+                  onButtonTap: () => onSaveAction(
+                    cusID: cusID,
+                    selectedAmtPaidByModeIDValue: selectedAmtPaidByModeIDValue,
+                  ),
                   context: context,
                   internetAlert: updateGroupPaymentDetailsBloc.internetAlert,
                   borderradius: 8.sp,
-                  toastError: () => onSaveAction(cusID: cusID),
+                  toastError: () => onSaveAction(
+                    cusID: cusID,
+                    selectedAmtPaidByModeIDValue: selectedAmtPaidByModeIDValue,
+                  ),
                 ),
                 SizedBox(
                   height: 32.sp,
@@ -431,17 +562,6 @@ class _UpdateGroupPaymentDetailsScreenState
                       updateGroupPaymentDetailsBloc.userData?.date ?? "";
                   _dateCollectionInput.text =
                       DateFormat('dd/MM/yyyy').format(DateTime.now());
-
-                  if (updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy ==
-                          null ||
-                      updateGroupPaymentDetailsBloc
-                          .userData!.amtToBePaidBy!.isEmpty) {
-                    _amountToBePaidController.text = "NONE";
-                  } else {
-                    _amountToBePaidController.text =
-                        updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy ??
-                            "";
-                  }
 
                   if (updateGroupPaymentDetailsBloc.userData?.customersList !=
                           null &&
@@ -1446,49 +1566,6 @@ class _UpdateGroupPaymentDetailsScreenState
                                       height: 16.sp,
                                     ),
 
-                                    /* Amount To be Paid Input Field */
-                                    Text(
-                                      updateGroupPaymentDetailsBloc
-                                          .amtTobePaidText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      focusnodes: _amtToBePaidFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.attach_money_outlined,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText:
-                                          updateGroupPaymentDetailsBloc
-                                              .amtTobePaidPlaceholderText,
-                                      textEditingController:
-                                          _amountToBePaidController,
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(r"\s\s"),
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                        ),
-                                      ],
-                                      keyboardtype: TextInputType.text,
-                                      validationFunc: (value) {
-                                        return ValidationUtil
-                                            .validateAmtToBePaid(value);
-                                      },
-                                    ),
-                                    /* Amount To be Paid Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
                                     (updateGroupPaymentDetailsBloc
                                                     .userData?.customersList !=
                                                 null &&
@@ -1569,9 +1646,7 @@ class _UpdateGroupPaymentDetailsScreenState
                                                             selectedPaymentModeIDValue,
                                                         paymentStatus:
                                                             selectedPaymentStatusIDValue,
-                                                        amountType:
-                                                            _amountToBePaidController
-                                                                .text,
+                                                        amountType: "",
                                                         cusDetails:
                                                             grpCusDetaList,
                                                       );
@@ -1837,6 +1912,35 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                     true)
                                                                 ? InkWell(
                                                                     onTap: () {
+                                                                      String?
+                                                                          cusAmtType =
+                                                                          "EMI";
+                                                                      if (updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy ==
+                                                                              null ||
+                                                                          updateGroupPaymentDetailsBloc
+                                                                              .userData!
+                                                                              .amtToBePaidBy!
+                                                                              .isEmpty) {
+                                                                        // Set the corresponding ID for 'EMI'
+                                                                        cusAmtType = amtModeOptions.firstWhere((option) =>
+                                                                            option['title'] ==
+                                                                            'EMI')['id'] as String?;
+                                                                        refreshAmtStatusInputFields.value =
+                                                                            !refreshAmtStatusInputFields.value;
+                                                                      } else {
+                                                                        // Find the corresponding ID for the userData value
+                                                                        cusAmtType = amtModeOptions.firstWhere(
+                                                                            (option) =>
+                                                                                option['title'] ==
+                                                                                updateGroupPaymentDetailsBloc
+                                                                                    .userData?.amtToBePaidBy,
+                                                                            orElse: () =>
+                                                                                {
+                                                                                  "id": "0"
+                                                                                })['id'] as String?;
+                                                                        refreshAmtStatusInputFields.value =
+                                                                            !refreshAmtStatusInputFields.value;
+                                                                      }
                                                                       showEditSheet(
                                                                         cusAmount:
                                                                             updateGroupPaymentDetailsBloc.userData!.customersList![index].cusAmt ??
@@ -1846,6 +1950,8 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                         cusName:
                                                                             updateGroupPaymentDetailsBloc.userData!.customersList![index].cusName ??
                                                                                 "",
+                                                                        cusAmtType:
+                                                                            cusAmtType,
                                                                       );
                                                                     },
                                                                     child: Icon(
@@ -1918,35 +2024,50 @@ class _UpdateGroupPaymentDetailsScreenState
 
   Future<void> onSaveAction({
     required String? cusID,
+    required String? selectedAmtPaidByModeIDValue,
   }) async {
-    Navigator.pop(context);
+    if (selectedAmtPaidByModeIDValue != null) {
+      Navigator.pop(context);
 
-    var result = await NetworkService().updateGroupEditAmountPayService(
-      id: widget.customerID,
-      type: widget.type,
-      cusAmount: _userAmountInput.text,
-      cusID: cusID,
-    );
+      var result = await NetworkService().updateGroupEditAmountPayService(
+        id: widget.customerID,
+        type: widget.type,
+        cusAmount: _userAmountInput.text,
+        cusID: cusID,
+        amtType: selectedAmtPaidByModeIDValue,
+      );
 
-    if (result != null && result['status'] == true) {
-      if (!mounted) return;
-      if (result['message'] != null && result['message'].isNotEmpty) {
+      if (result != null && result['status'] == true) {
+        if (!mounted) return;
+        if (result['message'] != null && result['message'].isNotEmpty) {
+          ToastUtil().showSnackBar(
+            context: context,
+            message: result['message'],
+            isError: false,
+          );
+        }
+        // All validations passed, navigate to the next screen
+        Future.delayed(const Duration(seconds: 1)).then(
+          (value) {
+            updateGroupPaymentDetailsBloc.add(GetPaymentDetailsEvent(
+              cusID: widget.customerID,
+              type: widget.type,
+              showLoader: true,
+            ));
+          },
+        );
+      } else {
+        if (!mounted) return;
         ToastUtil().showSnackBar(
           context: context,
-          message: result['message'],
-          isError: false,
+          message: result['message'] ?? "Something went wrong",
+          isError: true,
         );
       }
-      // All validations passed, navigate to the next screen
-      Future.delayed(const Duration(seconds: 1)).then((value) {
-        updateGroupPaymentDetailsBloc.add(GetPaymentDetailsEvent(
-            cusID: widget.customerID, type: widget.type));
-      });
     } else {
-      if (!mounted) return;
       ToastUtil().showSnackBar(
         context: context,
-        message: result['message'] ?? "Something went wrong",
+        message: 'Please choose a valid Amount to be Paid by Status',
         isError: true,
       );
     }
@@ -1999,7 +2120,7 @@ class _UpdateGroupPaymentDetailsScreenState
         paymentCollectionDate: _dateCollectionInput.text,
         paymentMode: selectedPaymentModeIDValue,
         paymentStatus: selectedPaymentStatusIDValue,
-        amountType: _amountToBePaidController.text,
+        amountType: "",
         cusDetails: grpCusDetaList,
       );
 
