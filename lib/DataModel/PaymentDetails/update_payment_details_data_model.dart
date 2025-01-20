@@ -32,6 +32,8 @@ class Data {
   String? date;
   String? due;
   String? amtToBePaidBy;
+  bool? showAmtToPaidBy;
+  String? type; /* 1 - Weekly & Daily | 2 - Monthly */
 
   Data({
     this.id,
@@ -43,6 +45,9 @@ class Data {
     this.date,
     this.due,
     this.amtToBePaidBy,
+    this.showAmtToPaidBy,
+    this.type,
+    /* 1 - Weekly & Daily | 2 - Monthly */
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -55,6 +60,8 @@ class Data {
     date = json['date'];
     due = json['due'];
     amtToBePaidBy = json['amount_type'];
+    showAmtToPaidBy = json['showAmtToPaidBy'] ?? false;
+    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +75,8 @@ class Data {
     data['date'] = date;
     data['due'] = due;
     data['amount_type'] = amtToBePaidBy;
+    data['showAmtToPaidBy'] = showAmtToPaidBy;
+    data['type'] = type;
     return data;
   }
 }

@@ -97,18 +97,22 @@ class _UpdateGroupPaymentDetailsScreenState
     {"id": "4", "title": 'PAYTM'}
   ];
 
-  String? selectedPaymentStatusIDValue;
-  List<Map<String, dynamic>> paymentStatusOptions = [
-    {"id": "0", "title": 'Select Payment Status'},
-    {"id": "1", "title": 'PAID'},
-    {"id": "2", "title": 'DUE'},
-    {"id": "3", "title": 'FAILED'}
-  ];
+  // String? selectedPaymentStatusIDValue;
+  // List<Map<String, dynamic>> paymentStatusOptions = [
+  //   {"id": "0", "title": 'Select Payment Status'},
+  //   {"id": "1", "title": 'PAID'},
+  //   {"id": "2", "title": 'DUE'},
+  //   {"id": "3", "title": 'FAILED'}
+  // ];
 
-  List<Map<String, dynamic>> amtModeOptions = [
+  List<Map<String, dynamic>> amtModeOptions1 = [
     {"id": "0", "title": 'Select Amount to be Paid By'},
     {"id": "1", "title": 'EMI'},
     {"id": "2", "title": 'PENALTY'},
+  ];
+  List<Map<String, dynamic>> amtModeOptions2 = [
+    {"id": "0", "title": 'Select Amount to be Paid By'},
+    {"id": "1", "title": 'EMI'},
     {"id": "3", "title": 'INTEREST'},
   ];
   ValueNotifier<bool> refreshAmtStatusInputFields = ValueNotifier<bool>(false);
@@ -184,6 +188,9 @@ class _UpdateGroupPaymentDetailsScreenState
     required String? cusName,
     required String? cusAmount,
     required String? cusAmtType,
+    required bool? showAmtToBePaidBy,
+    required String? type,
+    /* 1 - Weekly & Daily | 2 - Monthly */
   }) {
     String? selectedAmtPaidByModeIDValue = cusAmtType;
     showModalBottomSheet(
@@ -269,119 +276,245 @@ class _UpdateGroupPaymentDetailsScreenState
                 /* Amount Paid Input Field */
 
                 /* Amount To be Paid Input Field */
-                Text(
-                  updateGroupPaymentDetailsBloc.amtTobePaidText,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    color: ColorConstants.lightBlackColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                ValueListenableBuilder(
-                    valueListenable: refreshAmtStatusInputFields,
-                    builder: (context, vals, _) {
-                      return DropdownButtonFormField<String>(
-                        value: selectedAmtPaidByModeIDValue,
-                        focusNode: _amtToBePaidFocusNode,
-                        hint: Text(
-                          updateGroupPaymentDetailsBloc
-                              .amtTobePaidPlaceholderText,
-                          style: TextStyle(
-                            color: ColorConstants.blackColor,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 10.sp,
-                          ),
-                        ),
-                        onChanged: (String? newValue) {
-                          selectedAmtPaidByModeIDValue = newValue;
-                          refreshAmtStatusInputFields.value =
-                              !refreshAmtStatusInputFields.value;
-                        },
-                        onSaved: (String? newValue) {
-                          selectedAmtPaidByModeIDValue = newValue;
-                        },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty || value == "0") {
-                            return 'Please choose a valid Amount to be Paid by Status';
-                          }
-                          return null;
-                        },
-                        items: amtModeOptions
-                            .map<DropdownMenuItem<String>>((option) {
-                          return DropdownMenuItem<String>(
-                            value: option['id'], // Using the id as the value
-                            child: Text(
-                              option['title'],
-                              style: TextStyle(
-                                color: ColorConstants.blackColor,
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 10.sp,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          errorStyle: TextStyle(
-                            color: ColorConstants.redColor,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 10.sp,
-                          ),
-                          filled: true,
-                          fillColor: ColorConstants.whiteColor,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp)),
-                            borderSide: BorderSide(
-                              width: 1.sp,
-                              color: ColorConstants.lightShadeBlueColor,
+                (showAmtToBePaidBy != null && showAmtToBePaidBy == true)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            updateGroupPaymentDetailsBloc.amtTobePaidText,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ColorConstants.lightBlackColor,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          disabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp)),
-                            borderSide: BorderSide(
-                              width: 1.sp,
-                              color: ColorConstants.lightShadeBlueColor,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp)),
-                            borderSide: BorderSide(
-                              width: 1.sp,
-                              color: ColorConstants.lightShadeBlueColor,
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp)),
-                            borderSide: BorderSide(
-                              width: 1.sp,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp)),
-                            borderSide: BorderSide(
-                              width: 1.sp,
-                              color: ColorConstants.redColor,
-                            ),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp)),
-                            borderSide: BorderSide(
-                              width: 1.sp,
-                              color: ColorConstants.redColor,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
+                          (type != null && type == "1")
+                              ? ValueListenableBuilder(
+                                  valueListenable: refreshAmtStatusInputFields,
+                                  builder: (context, vals, _) {
+                                    return DropdownButtonFormField<String>(
+                                      value: selectedAmtPaidByModeIDValue,
+                                      focusNode: _amtToBePaidFocusNode,
+                                      hint: Text(
+                                        updateGroupPaymentDetailsBloc
+                                            .amtTobePaidPlaceholderText,
+                                        style: TextStyle(
+                                          color: ColorConstants.blackColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                      ),
+                                      onChanged: (String? newValue) {
+                                        selectedAmtPaidByModeIDValue = newValue;
+                                        refreshAmtStatusInputFields.value =
+                                            !refreshAmtStatusInputFields.value;
+                                      },
+                                      onSaved: (String? newValue) {
+                                        selectedAmtPaidByModeIDValue = newValue;
+                                      },
+                                      validator: (String? value) {
+                                        if (value == null ||
+                                            value.isEmpty ||
+                                            value == "0") {
+                                          return 'Please choose a valid Amount to be Paid by Status';
+                                        }
+                                        return null;
+                                      },
+                                      items: amtModeOptions1
+                                          .map<DropdownMenuItem<String>>(
+                                              (option) {
+                                        return DropdownMenuItem<String>(
+                                          value: option[
+                                              'id'], // Using the id as the value
+                                          child: Text(
+                                            option['title'],
+                                            style: TextStyle(
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w600,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: ColorConstants.redColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                        filled: true,
+                                        fillColor: ColorConstants.whiteColor,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                          ),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  })
+                              : ValueListenableBuilder(
+                                  valueListenable: refreshAmtStatusInputFields,
+                                  builder: (context, vals, _) {
+                                    return DropdownButtonFormField<String>(
+                                      value: selectedAmtPaidByModeIDValue,
+                                      focusNode: _amtToBePaidFocusNode,
+                                      hint: Text(
+                                        updateGroupPaymentDetailsBloc
+                                            .amtTobePaidPlaceholderText,
+                                        style: TextStyle(
+                                          color: ColorConstants.blackColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                      ),
+                                      onChanged: (String? newValue) {
+                                        selectedAmtPaidByModeIDValue = newValue;
+                                        refreshAmtStatusInputFields.value =
+                                            !refreshAmtStatusInputFields.value;
+                                      },
+                                      onSaved: (String? newValue) {
+                                        selectedAmtPaidByModeIDValue = newValue;
+                                      },
+                                      validator: (String? value) {
+                                        if (value == null ||
+                                            value.isEmpty ||
+                                            value == "0") {
+                                          return 'Please choose a valid Amount to be Paid by Status';
+                                        }
+                                        return null;
+                                      },
+                                      items: amtModeOptions2
+                                          .map<DropdownMenuItem<String>>(
+                                              (option) {
+                                        return DropdownMenuItem<String>(
+                                          value: option[
+                                              'id'], // Using the id as the value
+                                          child: Text(
+                                            option['title'],
+                                            style: TextStyle(
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w600,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: ColorConstants.redColor,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 10.sp,
+                                        ),
+                                        filled: true,
+                                        fillColor: ColorConstants.whiteColor,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants
+                                                .lightShadeBlueColor,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                          ),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8.sp)),
+                                          borderSide: BorderSide(
+                                            width: 1.sp,
+                                            color: ColorConstants.redColor,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
                 /* Amount To be Paid Input Field */
 
                 buttonWidgetHelperUtil(
@@ -1421,146 +1554,146 @@ class _UpdateGroupPaymentDetailsScreenState
                                         }),
                                     /* Payment Mode Input Field */
 
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
+                                    // SizedBox(
+                                    //   height: 16.sp,
+                                    // ),
 
-                                    /* Payment Status Input Field */
-                                    Text(
-                                      updateGroupPaymentDetailsBloc
-                                          .paymentStatusText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    ValueListenableBuilder(
-                                        valueListenable:
-                                            refreshPaymentStatusInputFields,
-                                        builder: (context, vals, _) {
-                                          return DropdownButtonFormField<
-                                              String>(
-                                            value: selectedPaymentStatusIDValue,
-                                            focusNode: _paymentStatusFocusNode,
-                                            hint: Text(
-                                              updateGroupPaymentDetailsBloc
-                                                  .paymentStatusPlaceholderText,
-                                              style: TextStyle(
-                                                color:
-                                                    ColorConstants.blackColor,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 10.sp,
-                                              ),
-                                            ),
-                                            onChanged: (String? newValue) {
-                                              selectedPaymentStatusIDValue =
-                                                  newValue;
-                                              refreshPaymentStatusInputFields
-                                                      .value =
-                                                  !refreshPaymentStatusInputFields
-                                                      .value;
-                                            },
-                                            onSaved: (String? newValue) {
-                                              selectedPaymentStatusIDValue =
-                                                  newValue;
-                                            },
-                                            validator: (String? value) {
-                                              if (value == null ||
-                                                  value.isEmpty ||
-                                                  value == "0") {
-                                                return 'Please choose a valid Payment Status';
-                                              }
-                                              return null;
-                                            },
-                                            items: paymentStatusOptions
-                                                .map<DropdownMenuItem<String>>(
-                                                    (option) {
-                                              return DropdownMenuItem<String>(
-                                                value: option[
-                                                    'id'], // Using the id as the value
-                                                child: Text(
-                                                  option['title'],
-                                                  style: TextStyle(
-                                                    color: ColorConstants
-                                                        .blackColor,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle: FontStyle.normal,
-                                                    fontSize: 10.sp,
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                            decoration: InputDecoration(
-                                              errorStyle: TextStyle(
-                                                color: ColorConstants.redColor,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 10.sp,
-                                              ),
-                                              filled: true,
-                                              fillColor:
-                                                  ColorConstants.whiteColor,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color: ColorConstants
-                                                      .lightShadeBlueColor,
-                                                ),
-                                              ),
-                                              disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color: ColorConstants
-                                                      .lightShadeBlueColor,
-                                                ),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color: ColorConstants
-                                                      .lightShadeBlueColor,
-                                                ),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                ),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color:
-                                                      ColorConstants.redColor,
-                                                ),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color:
-                                                      ColorConstants.redColor,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                    /* Payment Status Input Field */
+                                    // /* Payment Status Input Field */
+                                    // Text(
+                                    //   updateGroupPaymentDetailsBloc
+                                    //       .paymentStatusText,
+                                    //   textAlign: TextAlign.center,
+                                    //   style: TextStyle(
+                                    //     fontSize: 10.sp,
+                                    //     color: ColorConstants.lightBlackColor,
+                                    //     fontWeight: FontWeight.w500,
+                                    //   ),
+                                    // ),
+                                    // ValueListenableBuilder(
+                                    //     valueListenable:
+                                    //         refreshPaymentStatusInputFields,
+                                    //     builder: (context, vals, _) {
+                                    //       return DropdownButtonFormField<
+                                    //           String>(
+                                    //         value: selectedPaymentStatusIDValue,
+                                    //         focusNode: _paymentStatusFocusNode,
+                                    //         hint: Text(
+                                    //           updateGroupPaymentDetailsBloc
+                                    //               .paymentStatusPlaceholderText,
+                                    //           style: TextStyle(
+                                    //             color:
+                                    //                 ColorConstants.blackColor,
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontStyle: FontStyle.normal,
+                                    //             fontSize: 10.sp,
+                                    //           ),
+                                    //         ),
+                                    //         onChanged: (String? newValue) {
+                                    //           selectedPaymentStatusIDValue =
+                                    //               newValue;
+                                    //           refreshPaymentStatusInputFields
+                                    //                   .value =
+                                    //               !refreshPaymentStatusInputFields
+                                    //                   .value;
+                                    //         },
+                                    //         onSaved: (String? newValue) {
+                                    //           selectedPaymentStatusIDValue =
+                                    //               newValue;
+                                    //         },
+                                    //         validator: (String? value) {
+                                    //           if (value == null ||
+                                    //               value.isEmpty ||
+                                    //               value == "0") {
+                                    //             return 'Please choose a valid Payment Status';
+                                    //           }
+                                    //           return null;
+                                    //         },
+                                    //         items: paymentStatusOptions
+                                    //             .map<DropdownMenuItem<String>>(
+                                    //                 (option) {
+                                    //           return DropdownMenuItem<String>(
+                                    //             value: option[
+                                    //                 'id'], // Using the id as the value
+                                    //             child: Text(
+                                    //               option['title'],
+                                    //               style: TextStyle(
+                                    //                 color: ColorConstants
+                                    //                     .blackColor,
+                                    //                 fontWeight: FontWeight.w600,
+                                    //                 fontStyle: FontStyle.normal,
+                                    //                 fontSize: 10.sp,
+                                    //               ),
+                                    //             ),
+                                    //           );
+                                    //         }).toList(),
+                                    //         decoration: InputDecoration(
+                                    //           errorStyle: TextStyle(
+                                    //             color: ColorConstants.redColor,
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontStyle: FontStyle.normal,
+                                    //             fontSize: 10.sp,
+                                    //           ),
+                                    //           filled: true,
+                                    //           fillColor:
+                                    //               ColorConstants.whiteColor,
+                                    //           focusedBorder: OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.all(
+                                    //                 Radius.circular(8.sp)),
+                                    //             borderSide: BorderSide(
+                                    //               width: 1.sp,
+                                    //               color: ColorConstants
+                                    //                   .lightShadeBlueColor,
+                                    //             ),
+                                    //           ),
+                                    //           disabledBorder:
+                                    //               OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.all(
+                                    //                 Radius.circular(8.sp)),
+                                    //             borderSide: BorderSide(
+                                    //               width: 1.sp,
+                                    //               color: ColorConstants
+                                    //                   .lightShadeBlueColor,
+                                    //             ),
+                                    //           ),
+                                    //           enabledBorder: OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.all(
+                                    //                 Radius.circular(8.sp)),
+                                    //             borderSide: BorderSide(
+                                    //               width: 1.sp,
+                                    //               color: ColorConstants
+                                    //                   .lightShadeBlueColor,
+                                    //             ),
+                                    //           ),
+                                    //           border: OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.all(
+                                    //                 Radius.circular(8.sp)),
+                                    //             borderSide: BorderSide(
+                                    //               width: 1.sp,
+                                    //             ),
+                                    //           ),
+                                    //           errorBorder: OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.all(
+                                    //                 Radius.circular(8.sp)),
+                                    //             borderSide: BorderSide(
+                                    //               width: 1.sp,
+                                    //               color:
+                                    //                   ColorConstants.redColor,
+                                    //             ),
+                                    //           ),
+                                    //           focusedErrorBorder:
+                                    //               OutlineInputBorder(
+                                    //             borderRadius: BorderRadius.all(
+                                    //                 Radius.circular(8.sp)),
+                                    //             borderSide: BorderSide(
+                                    //               width: 1.sp,
+                                    //               color:
+                                    //                   ColorConstants.redColor,
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //       );
+                                    //     }),
+                                    // /* Payment Status Input Field */
 
                                     SizedBox(
                                       height: 16.sp,
@@ -1644,8 +1777,8 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                 .text,
                                                         paymentMode:
                                                             selectedPaymentModeIDValue,
-                                                        paymentStatus:
-                                                            selectedPaymentStatusIDValue,
+                                                        // paymentStatus:
+                                                        //     selectedPaymentStatusIDValue,
                                                         amountType: "",
                                                         cusDetails:
                                                             grpCusDetaList,
@@ -1915,33 +2048,57 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                       String?
                                                                           cusAmtType =
                                                                           "EMI";
-                                                                      if (updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy ==
-                                                                              null ||
-                                                                          updateGroupPaymentDetailsBloc
-                                                                              .userData!
-                                                                              .amtToBePaidBy!
-                                                                              .isEmpty) {
-                                                                        // Set the corresponding ID for 'EMI'
-                                                                        cusAmtType = amtModeOptions.firstWhere((option) =>
-                                                                            option['title'] ==
-                                                                            'EMI')['id'] as String?;
+                                                                      if (updateGroupPaymentDetailsBloc.userData!.customersList![index].type !=
+                                                                              null &&
+                                                                          updateGroupPaymentDetailsBloc.userData!.customersList![index].type ==
+                                                                              "1") {
+                                                                        if (updateGroupPaymentDetailsBloc.userData!.customersList![index].amtToBePaidBy ==
+                                                                                null ||
+                                                                            updateGroupPaymentDetailsBloc.userData!.customersList![index].amtToBePaidBy!.isEmpty) {
+                                                                          // Set the corresponding ID for 'EMI'
+                                                                          cusAmtType = amtModeOptions1.firstWhere((option) =>
+                                                                              option['title'] ==
+                                                                              'EMI')['id'] as String?;
+                                                                          refreshAmtStatusInputFields.value =
+                                                                              !refreshAmtStatusInputFields.value;
+                                                                        } else {
+                                                                          // Find the corresponding ID for the userData value
+                                                                          cusAmtType = amtModeOptions1.firstWhere((option) => option['title'] == updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy,
+                                                                              orElse: () => {
+                                                                                    "id": "0"
+                                                                                  })['id'] as String?;
+                                                                        }
                                                                         refreshAmtStatusInputFields.value =
                                                                             !refreshAmtStatusInputFields.value;
                                                                       } else {
-                                                                        // Find the corresponding ID for the userData value
-                                                                        cusAmtType = amtModeOptions.firstWhere(
-                                                                            (option) =>
-                                                                                option['title'] ==
-                                                                                updateGroupPaymentDetailsBloc
-                                                                                    .userData?.amtToBePaidBy,
-                                                                            orElse: () =>
-                                                                                {
-                                                                                  "id": "0"
-                                                                                })['id'] as String?;
+                                                                        if (updateGroupPaymentDetailsBloc.userData!.customersList![index].amtToBePaidBy ==
+                                                                                null ||
+                                                                            updateGroupPaymentDetailsBloc.userData!.customersList![index].amtToBePaidBy!.isEmpty) {
+                                                                          // Set the corresponding ID for 'EMI'
+                                                                          cusAmtType = amtModeOptions2.firstWhere((option) =>
+                                                                              option['title'] ==
+                                                                              'EMI')['id'] as String?;
+                                                                          refreshAmtStatusInputFields.value =
+                                                                              !refreshAmtStatusInputFields.value;
+                                                                        } else {
+                                                                          // Find the corresponding ID for the userData value
+                                                                          cusAmtType = amtModeOptions2.firstWhere((option) => option['title'] == updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy,
+                                                                              orElse: () => {
+                                                                                    "id": "0"
+                                                                                  })['id'] as String?;
+                                                                        }
                                                                         refreshAmtStatusInputFields.value =
                                                                             !refreshAmtStatusInputFields.value;
                                                                       }
                                                                       showEditSheet(
+                                                                        showAmtToBePaidBy: updateGroupPaymentDetailsBloc
+                                                                            .userData!
+                                                                            .customersList![index]
+                                                                            .showAmtToPaidBy,
+                                                                        type: updateGroupPaymentDetailsBloc
+                                                                            .userData!
+                                                                            .customersList![index]
+                                                                            .type,
                                                                         cusAmount:
                                                                             updateGroupPaymentDetailsBloc.userData!.customersList![index].cusAmt ??
                                                                                 "",
@@ -2119,7 +2276,7 @@ class _UpdateGroupPaymentDetailsScreenState
         date: _dateInput.text,
         paymentCollectionDate: _dateCollectionInput.text,
         paymentMode: selectedPaymentModeIDValue,
-        paymentStatus: selectedPaymentStatusIDValue,
+        // paymentStatus: selectedPaymentStatusIDValue,
         amountType: "",
         cusDetails: grpCusDetaList,
       );
@@ -2177,12 +2334,13 @@ class _UpdateGroupPaymentDetailsScreenState
           selectedPaymentModeIDValue == "0") {
         _showErrorAndFocus(
             _paymentModeFocusNode, "Please select vaild Payment Mode");
-      } else if (selectedPaymentStatusIDValue == null ||
-          selectedPaymentStatusIDValue!.isEmpty ||
-          selectedPaymentStatusIDValue == "0") {
-        _showErrorAndFocus(
-            _paymentStatusFocusNode, "Please select vaild Payment Status");
       }
+      // else if (selectedPaymentStatusIDValue == null ||
+      //     selectedPaymentStatusIDValue!.isEmpty ||
+      //     selectedPaymentStatusIDValue == "0") {
+      //   _showErrorAndFocus(
+      //       _paymentStatusFocusNode, "Please select vaild Payment Status");
+      // }
       // else if (amtTypeError != null) {
       //   _showErrorAndFocus(_amtToBePaidFocusNode, amtTypeError);
       // }

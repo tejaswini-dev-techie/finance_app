@@ -89,6 +89,8 @@ class CustomersList {
   bool? isEditable;
   bool? isSelected;
   String? amtToBePaidBy;
+  bool? showAmtToPaidBy;
+  String? type; /* 1 - Weekly & Daily | 2 - Monthly */
 
   CustomersList({
     this.cusId,
@@ -97,6 +99,9 @@ class CustomersList {
     this.isEditable,
     this.isSelected,
     this.amtToBePaidBy,
+    this.showAmtToPaidBy,
+    this.type,
+    /* 1 - Weekly & Daily | 2 - Monthly */
   });
 
   CustomersList.fromJson(Map<String, dynamic> json) {
@@ -106,6 +111,8 @@ class CustomersList {
     isEditable = json['is_editable'];
     isSelected = json['is_selected'];
     amtToBePaidBy = json['amount_type'];
+    showAmtToPaidBy = json['showAmtToPaidBy'] ?? false;
+    type = json['type']; /* 1 - Weekly & Daily | 2 - Monthly */
   }
 
   Map<String, dynamic> toJson() {
@@ -116,6 +123,8 @@ class CustomersList {
     data['is_editable'] = isEditable;
     data['is_selected'] = isSelected;
     data['amount_type'] = amtToBePaidBy;
+    data['showAmtToPaidBy'] = showAmtToPaidBy;
+    data['type'] = type; /* 1 - Weekly & Daily | 2 - Monthly */
     return data;
   }
 }

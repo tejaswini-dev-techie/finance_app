@@ -1497,7 +1497,7 @@ class NetworkService {
     required String? date,
     required String? paymentCollectionDate,
     required String? paymentMode,
-    required String? paymentStatus,
+    // required String? paymentStatus,
     required String? amountType,
     required String? id,
     required String? type,
@@ -1516,7 +1516,7 @@ class NetworkService {
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
-        paramsKeyVal['paymentStatus'] = paymentStatus;
+        // paramsKeyVal['paymentStatus'] = paymentStatus;
         paramsKeyVal['amountType'] = amountType;
         paramsKeyVal['cusDetails'] = json.encode(cusDetails);
         return _network
@@ -1550,7 +1550,7 @@ class NetworkService {
     required String? date,
     required String? paymentCollectionDate,
     required String? paymentMode,
-    required String? paymentStatus,
+    // required String? paymentStatus,
     required String? amountType,
     required String? id,
     required String? type,
@@ -1568,7 +1568,7 @@ class NetworkService {
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
-        paramsKeyVal['paymentStatus'] = paymentStatus;
+        // paramsKeyVal['paymentStatus'] = paymentStatus;
         paramsKeyVal['amountType'] = amountType;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updatePaymentDetailsURL,
@@ -1594,7 +1594,7 @@ class NetworkService {
     required String? date,
     required String? paymentCollectionDate,
     required String? paymentMode,
-    required String? paymentStatus,
+    // required String? paymentStatus,
     required String? amountType,
     required String? id,
     required String? type,
@@ -1613,7 +1613,7 @@ class NetworkService {
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
-        paramsKeyVal['paymentStatus'] = paymentStatus;
+        // paramsKeyVal['paymentStatus'] = paymentStatus;
         paramsKeyVal['amountType'] = amountType;
         paramsKeyVal['cusDetails'] = json.encode(cusDetails);
         return _network
