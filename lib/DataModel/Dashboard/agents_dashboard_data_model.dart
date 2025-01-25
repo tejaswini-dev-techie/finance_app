@@ -36,6 +36,7 @@ class Data {
   String? registerIndividualCustomer;
   String? createPigmyBtnText;
   String? filterText;
+  String? accFeeText;
 
   Data({
     this.agentMenusList,
@@ -48,6 +49,7 @@ class Data {
     this.registerIndividualCustomer,
     this.createPigmyBtnText,
     this.filterText,
+    this.accFeeText,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -67,6 +69,7 @@ class Data {
         "Register Individual Customer Account";
     createPigmyBtnText = json['create_pigmy_text'] ?? "Open PIGMY Account";
     filterText = json['filterText'] ?? "Filter";
+    accFeeText = json['acc_fee_text'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -83,6 +86,7 @@ class Data {
     data['add_group_customer'] = addGrpCustomer;
     data['register_individual_customer'] = registerIndividualCustomer;
     data['filterText'] = filterText;
+    data['acc_fee_text'] = accFeeText;
     return data;
   }
 }

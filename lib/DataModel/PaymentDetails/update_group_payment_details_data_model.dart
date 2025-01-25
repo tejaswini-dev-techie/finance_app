@@ -110,7 +110,7 @@ class CustomersList {
     cusAmt = json['cus_amt'];
     isEditable = json['is_editable'];
     isSelected = json['is_selected'];
-    amtToBePaidBy = json['amount_type'];
+    amtToBePaidBy = json['amtType'];
     showAmtToPaidBy = json['showAmtToPaidBy'] ?? false;
     type = json['type']; /* 1 - Weekly & Daily | 2 - Monthly */
   }
@@ -122,7 +122,7 @@ class CustomersList {
     data['cus_amt'] = cusAmt;
     data['is_editable'] = isEditable;
     data['is_selected'] = isSelected;
-    data['amount_type'] = amtToBePaidBy;
+    data['amtType'] = amtToBePaidBy;
     data['showAmtToPaidBy'] = showAmtToPaidBy;
     data['type'] = type; /* 1 - Weekly & Daily | 2 - Monthly */
     return data;

@@ -8,6 +8,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/widgets/add_doc_image_placeholder.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
@@ -150,6 +151,15 @@ class _VerifyCustomersDetailsScreenState
   final FocusNode _referenceNumFocusNode = FocusNode();
   final FocusNode _reasonFocusNode = FocusNode();
   final FocusNode _docTypeFocusNode = FocusNode();
+
+  final FocusNode _guarantorNameFocusNode = FocusNode();
+  final FocusNode _guarantorPhNumFocusNode = FocusNode();
+  final FocusNode _guarantorAltPhNumFocusNode = FocusNode();
+  final FocusNode _guarantorEmailFocusNode = FocusNode();
+  final FocusNode _guarantorAddressFocusNode = FocusNode();
+  final FocusNode _guarantorChequeNumFocusNode = FocusNode();
+  final FocusNode _guarantorAadhaarNumFocusNode = FocusNode();
+  final FocusNode _guarantorPanNumFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -268,6 +278,25 @@ class _VerifyCustomersDetailsScreenState
   bool? isRejected = false;
   /* Verified/Rejected */
 
+  
+
+  final TextEditingController _guarantorNameController =
+      TextEditingController();
+  final TextEditingController _guarantorPhNumController =
+      TextEditingController();
+  final TextEditingController _guarantorAltPhNumController =
+      TextEditingController();
+  final TextEditingController _guarantorEmailController =
+      TextEditingController();
+  final TextEditingController _guarantorAddressController =
+      TextEditingController();
+  final TextEditingController _guarantorChequeNumController =
+      TextEditingController();
+  final TextEditingController _guarantorAadhaarNumController =
+      TextEditingController();
+  final TextEditingController _guarantorPanNumController =
+      TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -296,6 +325,14 @@ class _VerifyCustomersDetailsScreenState
     _referenceNumController.addListener(_validateFields);
     _reasonController.addListener(_validateFields);
     _agentNameController.addListener(_validateFields);
+    _guarantorNameController.addListener(_validateFields);
+    _guarantorPhNumController.addListener(_validateFields);
+    _guarantorAltPhNumController.addListener(_validateFields);
+    _guarantorEmailController.addListener(_validateFields);
+    _guarantorAddressController.addListener(_validateFields);
+    _guarantorChequeNumController.addListener(_validateFields);
+    _guarantorAadhaarNumController.addListener(_validateFields);
+    _guarantorPanNumController.addListener(_validateFields);
   }
 
   @override
@@ -328,6 +365,14 @@ class _VerifyCustomersDetailsScreenState
     _agentNameController.dispose();
     _locationLinkController.dispose();
     _workLocationLinkController.dispose();
+    _guarantorNameController.dispose();
+    _guarantorPhNumController.dispose();
+    _guarantorAltPhNumController.dispose();
+    _guarantorEmailController.dispose();
+    _guarantorAddressController.dispose();
+    _guarantorChequeNumController.dispose();
+    _guarantorAadhaarNumController.dispose();
+    _guarantorPanNumController.dispose();
 
     _nameFocusNode.dispose();
     _phNumFocusNode.dispose();
@@ -354,6 +399,14 @@ class _VerifyCustomersDetailsScreenState
     _reasonFocusNode.dispose();
     _agentNameFocusNode.dispose();
     _docTypeFocusNode.dispose();
+    _guarantorNameFocusNode.dispose();
+    _guarantorPhNumFocusNode.dispose();
+    _guarantorAltPhNumFocusNode.dispose();
+    _guarantorEmailFocusNode.dispose();
+    _guarantorAddressFocusNode.dispose();
+    _guarantorChequeNumFocusNode.dispose();
+    _guarantorAadhaarNumFocusNode.dispose();
+    _guarantorPanNumFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -379,6 +432,14 @@ class _VerifyCustomersDetailsScreenState
     _referenceNumController.removeListener(_validateFields);
     _reasonController.removeListener(_validateFields);
     _agentNameController.removeListener(_validateFields);
+    _guarantorNameController.removeListener(_validateFields);
+    _guarantorPhNumController.removeListener(_validateFields);
+    _guarantorAltPhNumController.removeListener(_validateFields);
+    _guarantorEmailController.removeListener(_validateFields);
+    _guarantorAddressController.removeListener(_validateFields);
+    _guarantorChequeNumController.removeListener(_validateFields);
+    _guarantorAadhaarNumController.removeListener(_validateFields);
+    _guarantorPanNumController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -432,6 +493,7 @@ class _VerifyCustomersDetailsScreenState
     );
 
     if (response != null && response['data'] != null) {
+      accFeeText = response['data']['acc_fee_text'] ?? "";
       _nameController.text = response['data']['name'] ?? "";
       _phNumController.text = response['data']['mob_num'] ?? "";
       _altPhNumController.text = response['data']['alt_mob_num'] ?? "";
@@ -458,7 +520,6 @@ class _VerifyCustomersDetailsScreenState
       photoImagePath = response['data']['profile_img'] ?? "";
       aadhaarImagePath = response['data']['aadhaar_img'] ?? "";
       panImagePath = response['data']['pan_img'] ?? "";
-      // chequeImagePath = response['data']['cheque_img'] ?? "";
       rcHOLDERImagePath = response['data']['rc_img'] ?? "";
       propertyDocImagePath = response['data']['property_img'] ?? "";
       passBookImagePath = response['data']['pass_book_img'] ?? "";
@@ -590,10 +651,26 @@ class _VerifyCustomersDetailsScreenState
             body: SingleChildScrollView(
               controller: _scrollController,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     height: 16.sp,
                   ),
+                  (accFeeText != null && accFeeText!.isNotEmpty)
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8.sp, horizontal: 16.sp),
+                          child: Text(
+                            accFeeText ?? "",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: ColorConstants.darkBlueColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.sp),
                     child: ValueListenableBuilder(
@@ -3920,6 +3997,393 @@ class _VerifyCustomersDetailsScreenState
                               ),
                               /* Location Link */
 
+                              /* Guarantor Details */
+                              (widget.type == "0")
+                                  ? const SizedBox.shrink()
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+                                        /* Guarantor Name Input Field*/
+                                        Text(
+                                          "Gurantor's Name",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _guarantorNameFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.person_pin_circle_rounded,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: namePlaceHolderText,
+                                          textEditingController:
+                                              _guarantorNameController,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateGuarantorName(value);
+                                          },
+                                        ),
+                                        /* Name Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Mobile Number Input Field */
+                                        Text(
+                                          "Gurantor's Mobile Number",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _guarantorPhNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.phone_locked,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: phNumPlaceholderText,
+                                          textEditingController:
+                                              _guarantorPhNumController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[6-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateGuarantorMobileNumber(
+                                                    value);
+                                          },
+                                        ),
+                                        /* Mobile Number Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Alternate Mobile Number Input Field */
+                                        Text(
+                                          "Gurantor's Alternate Mobile Number",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes:
+                                              _guarantorAltPhNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.phone_locked,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: phNumPlaceholderText,
+                                          textEditingController:
+                                              _guarantorAltPhNumController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[6-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateGuarantorAltMobileNumber(
+                                              value,
+                                              _guarantorPhNumController.text,
+                                            );
+                                          },
+                                        ),
+                                        /* Alternate Mobile Number Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Email Address Input Field */
+                                        Text(
+                                          "Gurantor's Email Address",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _guarantorEmailFocusNode,
+                                          textcapitalization:
+                                              TextCapitalization.none,
+                                          suffixWidget: const Icon(
+                                            Icons.email,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: emailPlaceholderText,
+                                          textEditingController:
+                                              _guarantorEmailController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype:
+                                              TextInputType.emailAddress,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateGuarantorEmailAddress(
+                                                    value);
+                                          },
+                                        ),
+                                        /* Email Address Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Permanent Address Input Field*/
+                                        Text(
+                                          "Guarantor's Address",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes:
+                                              _guarantorAddressFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.location_on,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText: "Address",
+                                          textEditingController:
+                                              _guarantorAddressController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateLocation(value, 6);
+                                          },
+                                        ),
+                                        /* Permanent Address Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Aadhaar Input Field */
+                                        Text(
+                                          "Guarantor's AADHAAR Number",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes:
+                                              _guarantorAadhaarNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.assignment_ind_sharp,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText:
+                                              aadhaarNumPlaceholderText,
+                                          textEditingController:
+                                              _guarantorAadhaarNumController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                12),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[1-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateGuarantorAadhaar(
+                                              value,
+                                            );
+                                          },
+                                        ),
+                                        /* Aadhaar Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* PAN Input Field */
+                                        Text(
+                                          "Guarantor's PAN Number",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes: _guarantorPanNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.inventory_rounded,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText:
+                                              panNumPlaceholderText,
+                                          textEditingController:
+                                              _guarantorPanNumController,
+                                          textcapitalization:
+                                              TextCapitalization.characters,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(
+                                                  r'^[A-Z]{0,5}[0-9]{0,4}[A-Z]?$'),
+                                            ),
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.text,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateGuarantorPAN(
+                                              value,
+                                            );
+                                          },
+                                        ),
+                                        /* PAN Input Field */
+
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Cheque Number Field */
+                                        Text(
+                                          "Guarantor's Cheque Number",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color:
+                                                ColorConstants.lightBlackColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        TextInputField(
+                                          focusnodes:
+                                              _guarantorChequeNumFocusNode,
+                                          suffixWidget: const Icon(
+                                            Icons.money,
+                                            color: ColorConstants.darkBlueColor,
+                                          ),
+                                          placeholderText:
+                                              chequeNumberPlaceHolderText,
+                                          textEditingController:
+                                              _guarantorChequeNumController,
+                                          textcapitalization:
+                                              TextCapitalization.characters,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(
+                                                  r'^[0-9]*$'), // Allows only digits
+                                            ),
+                                            LengthLimitingTextInputFormatter(
+                                                10), // Limits input to 10 characters (adjust if needed)
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r"\s\s"), // Prevents multiple spaces (though likely unnecessary for digits only)
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'), // Blocks certain unicode characters (emojis, special symbols)
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
+                                          validationFunc: (value) {
+                                            return ValidationUtil
+                                                .validateChequeNumber(
+                                              value,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                              /* Guarantor Details */
+
                               SizedBox(
                                 height: 32.sp,
                               ),
@@ -4003,6 +4467,24 @@ class _VerifyCustomersDetailsScreenState
     String? reasonError =
         ValidationUtil.validateWithdrawReason(_reasonController.text);
 
+    String? guarantorNameError =
+        ValidationUtil.validateGuarantorName(_guarantorNameController.text);
+    String? guarantorMobileError = ValidationUtil.validateGuarantorMobileNumber(
+        _guarantorPhNumController.text);
+    String? guarantorAltMobileError =
+        ValidationUtil.validateGuarantorAltMobileNumber(
+            _guarantorAltPhNumController.text, _guarantorPhNumController.text);
+    String? guarantorEmailError = ValidationUtil.validateGuarantorEmailAddress(
+        _guarantorEmailController.text);
+    String? guarantorPermanentAddressError =
+        ValidationUtil.validateLocation(_guarantorAddressController.text, 6);
+    String? guarantorAadhaarError = ValidationUtil.validateGuarantorAadhaar(
+        _guarantorAadhaarNumController.text);
+    String? guarantorPanError =
+        ValidationUtil.validateGuarantorPAN(_guarantorPanNumController.text);
+    String? guarantorChequeNumError =
+        ValidationUtil.validateChequeNumber(_guarantorChequeNumController.text);
+
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
@@ -4073,6 +4555,14 @@ class _VerifyCustomersDetailsScreenState
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
             workLocationLink: _workLocationLinkController.text,
+            guarantorName: _guarantorNameController.text,
+            guarantorMobNum: _guarantorPhNumController.text,
+            guarantorAltMobNum: _guarantorAltPhNumController.text,
+            guarantorEmailAddress: _guarantorEmailController.text,
+            guarantorAddress: _guarantorAddressController.text,
+            guarantorAadhaar: _guarantorAadhaarNumController.text,
+            guarantorPan: _guarantorPanNumController.text,
+            guarantorChequeNum: _guarantorChequeNumController.text,
           );
         } else if (widget.type == "2") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
@@ -4116,6 +4606,14 @@ class _VerifyCustomersDetailsScreenState
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
             workLocationLink: _workLocationLinkController.text,
+            guarantorName: _guarantorNameController.text,
+            guarantorMobNum: _guarantorPhNumController.text,
+            guarantorAltMobNum: _guarantorAltPhNumController.text,
+            guarantorEmailAddress: _guarantorEmailController.text,
+            guarantorAddress: _guarantorAddressController.text,
+            guarantorAadhaar: _guarantorAadhaarNumController.text,
+            guarantorPan: _guarantorPanNumController.text,
+            guarantorChequeNum: _guarantorChequeNumController.text,
           );
         } else if (widget.type == "3") {
           result = await NetworkService().updateKYCDetails(
@@ -4165,6 +4663,14 @@ class _VerifyCustomersDetailsScreenState
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
             workLocationLink: _workLocationLinkController.text,
+            guarantorName: _guarantorNameController.text,
+            guarantorMobNum: _guarantorPhNumController.text,
+            guarantorAltMobNum: _guarantorAltPhNumController.text,
+            guarantorEmailAddress: _guarantorEmailController.text,
+            guarantorAddress: _guarantorAddressController.text,
+            guarantorAadhaar: _guarantorAadhaarNumController.text,
+            guarantorPan: _guarantorPanNumController.text,
+            guarantorChequeNum: _guarantorChequeNumController.text,
           );
         } else {
           result = await NetworkService().updateKYCDetails(
@@ -4413,6 +4919,28 @@ class _VerifyCustomersDetailsScreenState
           message: propertyImageError,
           isError: true,
         );
+      } else if (widget.type != "0") {
+        if (guarantorNameError != null) {
+          _showErrorAndFocus(_guarantorNameFocusNode, guarantorNameError);
+        } else if (guarantorMobileError != null) {
+          _showErrorAndFocus(_guarantorPhNumFocusNode, guarantorMobileError);
+        } else if (guarantorAltMobileError != null) {
+          _showErrorAndFocus(
+              _guarantorAltPhNumFocusNode, guarantorAltMobileError);
+        } else if (guarantorEmailError != null) {
+          _showErrorAndFocus(_guarantorEmailFocusNode, guarantorEmailError);
+        } else if (guarantorPermanentAddressError != null) {
+          _showErrorAndFocus(
+              _guarantorAddressFocusNode, guarantorPermanentAddressError);
+        } else if (guarantorAadhaarError != null) {
+          _showErrorAndFocus(
+              _guarantorAadhaarNumFocusNode, guarantorAadhaarError);
+        } else if (guarantorPanError != null) {
+          _showErrorAndFocus(_guarantorPanNumFocusNode, guarantorPanError);
+        } else if (guarantorChequeNumError != null) {
+          _showErrorAndFocus(
+              _guarantorChequeNumFocusNode, guarantorChequeNumError);
+        }
       }
     }
   }

@@ -8,6 +8,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/VerfifyCustomers/widgets/add_doc_image_placeholder.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
@@ -554,6 +555,21 @@ class _CreatePigmySavingsAccountScreenState
                   SizedBox(
                     height: 10.sp,
                   ),
+                  (accFeeText != null && accFeeText!.isNotEmpty)
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8.sp, horizontal: 16.sp),
+                          child: Text(
+                            accFeeText ?? "",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: ColorConstants.darkBlueColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.sp),
                     child: ValueListenableBuilder(

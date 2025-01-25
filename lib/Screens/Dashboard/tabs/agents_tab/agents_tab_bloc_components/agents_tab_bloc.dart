@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hp_finance/DataModel/Dashboard/agents_dashboard_data_model.dart';
 import 'package:hp_finance/Network/network_service.dart';
+import 'package:hp_finance/Screens/Dashboard/tabs/agents_tab/agents_tab.dart';
 import 'package:hp_finance/Utils/app_language_util.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
 
@@ -39,6 +40,7 @@ class AgentsTabBloc extends Bloc<AgentsTabEvent, AgentsTabState> {
             .then((AgentsDashboardDataModel? respObj) {
           if (respObj != null && respObj.data != null) {
             userData = respObj.data;
+            accFeeText = respObj.data?.accFeeText ?? "";
             return userData;
           }
         });

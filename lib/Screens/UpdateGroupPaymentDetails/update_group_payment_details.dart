@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
+import 'package:hp_finance/DataModel/PaymentDetails/update_group_payment_details_data_model.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/UpdateGroupPaymentDetails/bloc/update_group_payment_details_bloc.dart';
@@ -193,6 +194,7 @@ class _UpdateGroupPaymentDetailsScreenState
     /* 1 - Weekly & Daily | 2 - Monthly */
   }) {
     String? selectedAmtPaidByModeIDValue = cusAmtType;
+    _userAmountInput.text = cusAmount ?? "";
     showModalBottomSheet(
       isScrollControlled: true,
       clipBehavior: Clip.none,
@@ -204,7 +206,6 @@ class _UpdateGroupPaymentDetailsScreenState
         ),
       ),
       builder: (BuildContext context) {
-        _userAmountInput.text = cusAmount ?? "";
         return Padding(
           padding: EdgeInsets.only(
             left: 16.0,
@@ -270,6 +271,7 @@ class _UpdateGroupPaymentDetailsScreenState
                   ],
                   keyboardtype: TextInputType.number,
                   validationFunc: (value) {
+                    _userAmountInput.text = value;
                     return ValidationUtil.validateDepositAmount(value);
                   },
                 ),
@@ -2192,6 +2194,7 @@ class _UpdateGroupPaymentDetailsScreenState
         cusAmount: _userAmountInput.text,
         cusID: cusID,
         amtType: selectedAmtPaidByModeIDValue,
+        groupID: updateGroupPaymentDetailsBloc.userData?.id,
       );
 
       if (result != null && result['status'] == true) {
@@ -2251,7 +2254,7 @@ class _UpdateGroupPaymentDetailsScreenState
     if (form?.validate() ?? false) {
       isDisabled.value = false;
 
-      List grpCusDetaList = [];
+      List<CustomersList> grpCusDetaList = [];
 
       for (int i = 0;
           i < updateGroupPaymentDetailsBloc.userData!.customersList!.length;
@@ -2276,9 +2279,8 @@ class _UpdateGroupPaymentDetailsScreenState
         date: _dateInput.text,
         paymentCollectionDate: _dateCollectionInput.text,
         paymentMode: selectedPaymentModeIDValue,
-        // paymentStatus: selectedPaymentStatusIDValue,
-        amountType: "",
         cusDetails: grpCusDetaList,
+        groupID: updateGroupPaymentDetailsBloc.userData?.id,
       );
 
       if (result != null && result['status'] == true) {

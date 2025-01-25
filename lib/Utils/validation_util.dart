@@ -114,7 +114,7 @@ class ValidationUtil {
 
   /* location */
   static String? validateLocation(String? value, int type) {
-    /* type 1 - Street Address | 2 - State | 3 - City | 4 - Country */
+    /* type 1 - Street Address | 2 - State | 3 - City | 4 - Country | 5 - Permanent Address | 6 - Guarantor's location */
     if (value == null || value.isEmpty) {
       return (type == 1)
           ? 'Please enter Current Address'
@@ -126,7 +126,9 @@ class ValidationUtil {
                       ? 'Please enter Country'
                       : (type == 5)
                           ? "Please enter Permanent Address"
-                          : "Please enter location details";
+                          : (type == 6)
+                              ? "Please enter Guarantor's location details"
+                              : "Please enter location details";
     }
     return null;
   }
@@ -232,6 +234,19 @@ class ValidationUtil {
   }
   /* Aadhaar Validation */
 
+  /* Guarantor Aadhaar Validation */
+  static String? validateGuarantorAadhaar(String? value) {
+    final aadhaarPattern =
+        RegExp(r"^[2-9]{1}[0-9]{11}$"); // Aadhaar regex pattern
+    if (value == null || value.isEmpty) {
+      return 'Please enter Guarantor\'s Aadhaar number';
+    } else if (!aadhaarPattern.hasMatch(value)) {
+      return 'Please enter a valid 12-digit Aadhaar number';
+    }
+    return null;
+  }
+  /* Guarantor Aadhaar Validation */
+
   /* PAN Validation */
   static String? validatePAN(String? value) {
     // PAN regex pattern: 5 uppercase letters, 4 digits, and 1 uppercase letter
@@ -244,6 +259,19 @@ class ValidationUtil {
     return null;
   }
   /* PAN Validation */
+
+  /* Guarantor PAN Validation */
+  static String? validateGuarantorPAN(String? value) {
+    // PAN regex pattern: 5 uppercase letters, 4 digits, and 1 uppercase letter
+    final panPattern = RegExp(r"^[A-Z]{5}[0-9]{4}[A-Z]{1}$");
+    if (value == null || value.isEmpty) {
+      return 'Please enter Guarantor\'s PAN number';
+    } else if (!panPattern.hasMatch(value)) {
+      return 'Please enter a valid 10-character Guarantor\'s PAN number';
+    }
+    return null;
+  }
+  /* Guarantor PAN Validation */
 
   /* CODE or ID Validation */
   static String? validateCode(String? value) {
@@ -478,4 +506,59 @@ class ValidationUtil {
     return null;
   }
   /* Frequency Validation */
+
+  /* Guarantor Name Validation */
+  static String? validateGuarantorName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Guarantor name';
+    } else if (value.length < 3) {
+      return 'Guarantor Name must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+      return 'Guarantor Name should not contain numbers or special characters';
+    }
+    return null;
+  }
+  /* Name Validation */
+
+  /* Guarantor Mobile Number Validation */
+  static String? validateGuarantorMobileNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Guarantor Mobile number cannot be empty';
+    } else if (value.length != 10) {
+      return 'Guarantor Mobile number must be exactly 10 digits';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Guarantor Mobile number can only contain digits';
+    }
+    return null;
+  }
+  /* Guarantor Mobile Number Validation */
+
+  /* Guarantor Alternate Mobile Number Validation */
+  static String? validateGuarantorAltMobileNumber(
+      String? value, String? primaryMobileNumber) {
+    if (value == null || value.isEmpty) {
+      // Return null because validation should only occur if there's a value
+      return null;
+    } else if (value.length != 10) {
+      return 'Guarantor Mobile number must be exactly 10 digits';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Guarantor Mobile number can only contain digits';
+    } else if (primaryMobileNumber != null && primaryMobileNumber == value) {
+      return 'Guarantor Mobile number and alternate mobile number cannot be the same';
+    }
+    return null;
+  }
+  /* Guarantor Alternate Mobile Number Validation */
+
+  /* Guarantor Email Address Validation */
+  static String? validateGuarantorEmailAddress(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Guarantor Email address cannot be empty';
+    } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        .hasMatch(value)) {
+      return 'Please enter a valid Guarantor email address';
+    }
+    return null;
+  }
+  /* Guarantor Email Address Validation */
 }

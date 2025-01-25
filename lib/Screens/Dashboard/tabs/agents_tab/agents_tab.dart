@@ -12,6 +12,8 @@ import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
+String? accFeeText = "";
+
 class AgentsTab extends StatefulWidget {
   const AgentsTab({super.key});
 

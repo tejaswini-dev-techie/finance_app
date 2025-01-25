@@ -650,6 +650,14 @@ class NetworkService {
     required String? photoImagePath,
     required String? locLink,
     required String? workLocationLink,
+    String? guarantorName,
+    String? guarantorMobNum,
+    String? guarantorAltMobNum,
+    String? guarantorEmailAddress,
+    String? guarantorAddress,
+    String? guarantorAadhaar,
+    String? guarantorPan,
+    String? guarantorChequeNum,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -699,6 +707,14 @@ class NetworkService {
         paramsKeyVal['photoImagePath'] = photoImagePath;
         paramsKeyVal['locLink'] = locLink;
         paramsKeyVal['workLocLink'] = workLocationLink;
+        paramsKeyVal['guarantorName'] = guarantorName;
+        paramsKeyVal['guarantorMobNum'] = guarantorMobNum;
+        paramsKeyVal['guarantorAltMobNum'] = guarantorAltMobNum;
+        paramsKeyVal['guarantorEmailAddress'] = guarantorEmailAddress;
+        paramsKeyVal['guarantorAddress'] = guarantorAddress;
+        paramsKeyVal['guarantorAadhaar'] = guarantorAadhaar;
+        paramsKeyVal['guarantorPan'] = guarantorPan;
+        paramsKeyVal['guarantorChequeNum'] = guarantorChequeNum;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -1458,6 +1474,7 @@ class NetworkService {
     required String? cusID,
     required String? cusAmount,
     required String? amtType,
+    required String? groupID,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -1466,9 +1483,10 @@ class NetworkService {
         paramsKeyVal['customer_id'] = "$cusID";
         paramsKeyVal['customer_amt'] = "$cusAmount";
         paramsKeyVal['amtType'] = "$amtType";
+        paramsKeyVal['groupID'] = groupID;
         return _network
-            .httpGetQuery(apiHitTimeout, APIURLs.updateGroupEditPayURL,
-                queryParams: paramsKeyVal)
+            .httpPost(apiHitTimeout, APIURLs.updateGroupEditPayURL,
+                body: paramsKeyVal)
             .then(
           (dynamic res) {
             return res;
@@ -1584,22 +1602,20 @@ class NetworkService {
   /* Update Payment Details */
 
   /* Update Group Payment Details */
-  Future<dynamic> updateGrpPaymentDetails({
-    required String? userName,
-    required String? mobNum,
-    required String? code,
-    required String? agent,
-    required String? amtPaid,
-    required String? amtDue,
-    required String? date,
-    required String? paymentCollectionDate,
-    required String? paymentMode,
-    // required String? paymentStatus,
-    required String? amountType,
-    required String? id,
-    required String? type,
-    required List? cusDetails,
-  }) {
+  Future<dynamic> updateGrpPaymentDetails(
+      {required String? userName,
+      required String? mobNum,
+      required String? code,
+      required String? agent,
+      required String? amtPaid,
+      required String? amtDue,
+      required String? date,
+      required String? paymentCollectionDate,
+      required String? paymentMode,
+      required String? id,
+      required String? type,
+      required List<CustomersList>? cusDetails,
+      required String? groupID}) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['id'] = "$id";
@@ -1613,9 +1629,8 @@ class NetworkService {
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
-        // paramsKeyVal['paymentStatus'] = paymentStatus;
-        paramsKeyVal['amountType'] = amountType;
-        paramsKeyVal['cusDetails'] = json.encode(cusDetails);
+        paramsKeyVal['cusDetails'] = jsonEncode(cusDetails);
+        paramsKeyVal['groupID'] = groupID;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateGroupPaymentDetailsURL,
                 body: paramsKeyVal)
@@ -2018,6 +2033,14 @@ class NetworkService {
     required String? photoImagePath,
     required String? locLink,
     required String? workLocationLink,
+    required String? guarantorName,
+    required String? guarantorMobNum,
+    required String? guarantorAltMobNum,
+    required String? guarantorEmailAddress,
+    required String? guarantorAddress,
+    required String? guarantorAadhaar,
+    required String? guarantorPan,
+    required String? guarantorChequeNum,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -2063,6 +2086,14 @@ class NetworkService {
         paramsKeyVal['photoImagePath'] = photoImagePath;
         paramsKeyVal['locLink'] = locLink;
         paramsKeyVal['workLocLink'] = workLocationLink;
+        paramsKeyVal['guarantorName'] = guarantorName;
+        paramsKeyVal['guarantorMobNum'] = guarantorMobNum;
+        paramsKeyVal['guarantorAltMobNum'] = guarantorAltMobNum;
+        paramsKeyVal['guarantorEmailAddress'] = guarantorEmailAddress;
+        paramsKeyVal['guarantorAddress'] = guarantorAddress;
+        paramsKeyVal['guarantorAadhaar'] = guarantorAadhaar;
+        paramsKeyVal['guarantorPan'] = guarantorPan;
+        paramsKeyVal['guarantorChequeNum'] = guarantorChequeNum;
         return _network
             .httpPost(
           apiHitTimeout,
