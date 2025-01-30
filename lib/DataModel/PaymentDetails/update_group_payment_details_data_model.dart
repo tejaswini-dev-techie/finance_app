@@ -33,18 +33,31 @@ class Data {
   String? due;
   String? amtToBePaidBy;
   List<CustomersList>? customersList;
+  bool? isReadonlyName;
+  bool? isReadonlyMobNum;
+  bool? isReadonlyLoanCode;
+  bool? isReadonlyAgentCode;
+  bool? isReadonlyAmtPaid;
+  bool? isReadonlyAmtDue;
 
-  Data(
-      {this.id,
-      this.name,
-      this.mobNum,
-      this.codeId,
-      this.agent,
-      this.amtToBePaid,
-      this.date,
-      this.due,
-      this.amtToBePaidBy,
-      this.customersList});
+  Data({
+    this.id,
+    this.name,
+    this.mobNum,
+    this.codeId,
+    this.agent,
+    this.amtToBePaid,
+    this.date,
+    this.due,
+    this.amtToBePaidBy,
+    this.customersList,
+    this.isReadonlyName,
+    this.isReadonlyMobNum,
+    this.isReadonlyLoanCode,
+    this.isReadonlyAgentCode,
+    this.isReadonlyAmtPaid,
+    this.isReadonlyAmtDue,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -56,6 +69,12 @@ class Data {
     date = json['date'];
     due = json['due'];
     amtToBePaidBy = json['amount_type'];
+    isReadonlyName = json['is_read_only_name'] ?? false;
+    isReadonlyMobNum = json['is_read_only_ph'] ?? false;
+    isReadonlyLoanCode = json['is_read_only_loan_code'] ?? false;
+    isReadonlyAgentCode = json['is_read_only_agent_code'] ?? false;
+    isReadonlyAmtPaid = json['is_read_only_amt_paid'] ?? false;
+    isReadonlyAmtDue = json['is_read_only_amt_due'] ?? false;
     if (json['customers_list'] != null) {
       customersList = <CustomersList>[];
       json['customers_list'].forEach((v) {
@@ -75,6 +94,12 @@ class Data {
     data['date'] = date;
     data['due'] = due;
     data['amount_type'] = amtToBePaidBy;
+    data['is_read_only_name'] = isReadonlyName;
+    data['is_read_only_ph'] = isReadonlyMobNum;
+    data['is_read_only_loan_code'] = isReadonlyLoanCode;
+    data['is_read_only_agent_code'] = isReadonlyAgentCode;
+    data['is_read_only_amt_paid'] = isReadonlyAmtPaid;
+    data['is_read_only_amt_due'] = isReadonlyAmtDue;
     if (customersList != null) {
       data['customers_list'] = customersList!.map((v) => v.toJson()).toList();
     }
@@ -91,6 +116,7 @@ class CustomersList {
   String? amtToBePaidBy;
   bool? showAmtToPaidBy;
   String? type; /* 1 - Weekly & Daily | 2 - Monthly */
+  bool? isReadOnlyAmtEdit;
 
   CustomersList({
     this.cusId,
@@ -102,6 +128,7 @@ class CustomersList {
     this.showAmtToPaidBy,
     this.type,
     /* 1 - Weekly & Daily | 2 - Monthly */
+    this.isReadOnlyAmtEdit,
   });
 
   CustomersList.fromJson(Map<String, dynamic> json) {
@@ -113,6 +140,7 @@ class CustomersList {
     amtToBePaidBy = json['amtType'];
     showAmtToPaidBy = json['showAmtToPaidBy'] ?? false;
     type = json['type']; /* 1 - Weekly & Daily | 2 - Monthly */
+    isReadOnlyAmtEdit = json['is_read_only_amt_edit'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -125,6 +153,7 @@ class CustomersList {
     data['amtType'] = amtToBePaidBy;
     data['showAmtToPaidBy'] = showAmtToPaidBy;
     data['type'] = type; /* 1 - Weekly & Daily | 2 - Monthly */
+    data['is_read_only_amt_edit'] = isReadOnlyAmtEdit;
     return data;
   }
 }

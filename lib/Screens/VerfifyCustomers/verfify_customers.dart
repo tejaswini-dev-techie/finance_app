@@ -278,8 +278,6 @@ class _VerifyCustomersDetailsScreenState
   bool? isRejected = false;
   /* Verified/Rejected */
 
-  
-
   final TextEditingController _guarantorNameController =
       TextEditingController();
   final TextEditingController _guarantorPhNumController =
@@ -4489,7 +4487,7 @@ class _VerifyCustomersDetailsScreenState
 
     if (form?.validate() ?? false) {
       isDisabled.value = false;
-      print("Data Enter");
+
       if (photoImagePath != null &&
               photoImagePath!.isNotEmpty &&
               aadhaarImagePath != null &&
@@ -4731,7 +4729,7 @@ class _VerifyCustomersDetailsScreenState
             // All validations passed, navigate to the next screen
             Map<String, dynamic> data = {};
             data = {
-              "tab_index": 1,
+              "tab_index": 0,
             };
             Navigator.pushReplacementNamed(
               context,

@@ -208,7 +208,8 @@ class _CreatePigmySavingsAccountScreenState
   ValueNotifier<bool> refreshStartDate = ValueNotifier<bool>(true);
 
   List<String> pigmyOptions = ["Select PIGMY plans", "6", "12", "24", "36"];
-  ValueNotifier<String?> selectedPigmyPlanValue = ValueNotifier<String>("6");
+  ValueNotifier<String?> selectedPigmyPlanValue =
+      ValueNotifier<String>("Select PIGMY plans");
 
   @override
   void initState() {

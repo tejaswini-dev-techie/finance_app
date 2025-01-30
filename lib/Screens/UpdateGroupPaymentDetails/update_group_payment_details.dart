@@ -45,7 +45,7 @@ class _UpdateGroupPaymentDetailsScreenState
   final TextEditingController _loanCodeController = TextEditingController();
   final TextEditingController _agentCodeController = TextEditingController();
   final TextEditingController _amtPaidCodeController = TextEditingController();
-  final TextEditingController _amtDueCodeController = TextEditingController();
+  // final TextEditingController _amtDueCodeController = TextEditingController();
   final TextEditingController _dateInput = TextEditingController();
 
   final TextEditingController _dateCollectionInput = TextEditingController();
@@ -134,7 +134,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _loanCodeController.addListener(_validateFields);
     _agentCodeController.addListener(_validateFields);
     _amtPaidCodeController.addListener(_validateFields);
-    _amtDueCodeController.addListener(_validateFields);
+    // _amtDueCodeController.addListener(_validateFields);
     _dateInput.addListener(_validateFields);
 
     _dateCollectionInput.addListener(_validateFields);
@@ -150,7 +150,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _loanCodeController.dispose();
     _agentCodeController.dispose();
     _amtPaidCodeController.dispose();
-    _amtDueCodeController.dispose();
+    // _amtDueCodeController.dispose();
     _dateInput.dispose();
 
     _dateCollectionInput.dispose();
@@ -174,7 +174,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _loanCodeController.removeListener(_validateFields);
     _agentCodeController.removeListener(_validateFields);
     _amtPaidCodeController.removeListener(_validateFields);
-    _amtDueCodeController.removeListener(_validateFields);
+    // _amtDueCodeController.removeListener(_validateFields);
     _dateInput.removeListener(_validateFields);
 
     _dateCollectionInput.removeListener(_validateFields);
@@ -192,6 +192,7 @@ class _UpdateGroupPaymentDetailsScreenState
     required bool? showAmtToBePaidBy,
     required String? type,
     /* 1 - Weekly & Daily | 2 - Monthly */
+    required bool? isReadOnlyEditAmt,
   }) {
     String? selectedAmtPaidByModeIDValue = cusAmtType;
     _userAmountInput.text = cusAmount ?? "";
@@ -245,6 +246,7 @@ class _UpdateGroupPaymentDetailsScreenState
                   ],
                 ),
                 TextInputField(
+                  readOnlyValue: isReadOnlyEditAmt ?? false,
                   focusnodes: _userAmountFocusNode,
                   suffixWidget: const Icon(
                     Icons.attach_money_outlined,
@@ -691,8 +693,8 @@ class _UpdateGroupPaymentDetailsScreenState
                       updateGroupPaymentDetailsBloc.userData?.agent ?? "";
                   _amtPaidCodeController.text =
                       updateGroupPaymentDetailsBloc.userData?.amtToBePaid ?? "";
-                  _amtDueCodeController.text =
-                      updateGroupPaymentDetailsBloc.userData?.due ?? "";
+                  // _amtDueCodeController.text =
+                  //     updateGroupPaymentDetailsBloc.userData?.due ?? "";
                   _dateInput.text =
                       updateGroupPaymentDetailsBloc.userData?.date ?? "";
                   _dateCollectionInput.text =
@@ -740,7 +742,10 @@ class _UpdateGroupPaymentDetailsScreenState
                                       ),
                                     ),
                                     TextInputField(
-                                      // key: _formFieldKeys[0],
+                                      readOnlyValue:
+                                          updateGroupPaymentDetailsBloc
+                                                  .userData?.isReadonlyName ??
+                                              false,
                                       inputFormattersList: [
                                         FilteringTextInputFormatter.allow(
                                             RegExp(r"[a-zA-Z0-9]+|\s")),
@@ -780,6 +785,10 @@ class _UpdateGroupPaymentDetailsScreenState
                                       ),
                                     ),
                                     TextInputField(
+                                      readOnlyValue:
+                                          updateGroupPaymentDetailsBloc
+                                                  .userData?.isReadonlyMobNum ??
+                                              false,
                                       focusnodes: _phNumFocusNode,
                                       suffixWidget: const Icon(
                                         Icons.phone_locked,
@@ -827,6 +836,10 @@ class _UpdateGroupPaymentDetailsScreenState
                                       ),
                                     ),
                                     TextInputField(
+                                      readOnlyValue:
+                                          updateGroupPaymentDetailsBloc.userData
+                                                  ?.isReadonlyLoanCode ??
+                                              false,
                                       focusnodes: _loanCodeFocusNode,
                                       suffixWidget: const Icon(
                                         Icons.contacts_rounded,
@@ -870,6 +883,10 @@ class _UpdateGroupPaymentDetailsScreenState
                                       ),
                                     ),
                                     TextInputField(
+                                      readOnlyValue:
+                                          updateGroupPaymentDetailsBloc.userData
+                                                  ?.isReadonlyAgentCode ??
+                                              false,
                                       focusnodes: _agentCodeFocusNode,
                                       suffixWidget: const Icon(
                                         Icons.contacts_rounded,
@@ -912,6 +929,10 @@ class _UpdateGroupPaymentDetailsScreenState
                                       ),
                                     ),
                                     TextInputField(
+                                      readOnlyValue:
+                                          updateGroupPaymentDetailsBloc.userData
+                                                  ?.isReadonlyAmtPaid ??
+                                              false,
                                       focusnodes: _amtPaidFocusNode,
                                       suffixWidget: const Icon(
                                         Icons.attach_money_outlined,
@@ -966,70 +987,70 @@ class _UpdateGroupPaymentDetailsScreenState
                                       height: 16.sp,
                                     ),
 
-                                    /* Amount Due Input Field */
-                                    Text(
-                                      updateGroupPaymentDetailsBloc.amtDueText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      focusnodes: _amtDueFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.attach_money_outlined,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText:
-                                          updateGroupPaymentDetailsBloc
-                                              .amtDuePlaceholderText,
-                                      textEditingController:
-                                          _amtDueCodeController,
-                                      // inputFormattersList: <TextInputFormatter>[
-                                      //   FilteringTextInputFormatter.digitsOnly,
-                                      //   LengthLimitingTextInputFormatter(15),
-                                      //   FilteringTextInputFormatter.allow(
-                                      //     RegExp(r'^[1-9][0-9]*$'),
-                                      //   ),
-                                      //   FilteringTextInputFormatter.deny(
-                                      //     RegExp(r"\s\s"),
-                                      //   ),
-                                      //   FilteringTextInputFormatter.deny(
-                                      //     RegExp(
-                                      //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                      //   ),
-                                      // ],
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(
-                                              r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
-                                        ),
-                                        LengthLimitingTextInputFormatter(
-                                            15), // Limits input length to 15 characters
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r"\s\s"), // Denies consecutive spaces
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                            r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
-                                          ),
-                                        ),
-                                      ],
+                                    // /* Amount Due Input Field */
+                                    // Text(
+                                    //   updateGroupPaymentDetailsBloc.amtDueText,
+                                    //   textAlign: TextAlign.center,
+                                    //   style: TextStyle(
+                                    //     fontSize: 10.sp,
+                                    //     color: ColorConstants.lightBlackColor,
+                                    //     fontWeight: FontWeight.w500,
+                                    //   ),
+                                    // ),
+                                    // TextInputField(
+                                    //   focusnodes: _amtDueFocusNode,
+                                    //   suffixWidget: const Icon(
+                                    //     Icons.attach_money_outlined,
+                                    //     color: ColorConstants.darkBlueColor,
+                                    //   ),
+                                    //   placeholderText:
+                                    //       updateGroupPaymentDetailsBloc
+                                    //           .amtDuePlaceholderText,
+                                    //   textEditingController:
+                                    //       _amtDueCodeController,
+                                    //   // inputFormattersList: <TextInputFormatter>[
+                                    //   //   FilteringTextInputFormatter.digitsOnly,
+                                    //   //   LengthLimitingTextInputFormatter(15),
+                                    //   //   FilteringTextInputFormatter.allow(
+                                    //   //     RegExp(r'^[1-9][0-9]*$'),
+                                    //   //   ),
+                                    //   //   FilteringTextInputFormatter.deny(
+                                    //   //     RegExp(r"\s\s"),
+                                    //   //   ),
+                                    //   //   FilteringTextInputFormatter.deny(
+                                    //   //     RegExp(
+                                    //   //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                    //   //   ),
+                                    //   // ],
+                                    //   inputFormattersList: <TextInputFormatter>[
+                                    //     FilteringTextInputFormatter.allow(
+                                    //       RegExp(
+                                    //           r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
+                                    //     ),
+                                    //     LengthLimitingTextInputFormatter(
+                                    //         15), // Limits input length to 15 characters
+                                    //     FilteringTextInputFormatter.deny(
+                                    //       RegExp(
+                                    //           r"\s\s"), // Denies consecutive spaces
+                                    //     ),
+                                    //     FilteringTextInputFormatter.deny(
+                                    //       RegExp(
+                                    //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
+                                    //       ),
+                                    //     ),
+                                    //   ],
 
-                                      keyboardtype: TextInputType.number,
-                                      validationFunc: (value) {
-                                        return ValidationUtil
-                                            .validateDepositAmount(value);
-                                      },
-                                    ),
-                                    /* Amount Due Input Field */
+                                    //   keyboardtype: TextInputType.number,
+                                    //   validationFunc: (value) {
+                                    //     return ValidationUtil
+                                    //         .validateDepositAmount(value);
+                                    //   },
+                                    // ),
+                                    // /* Amount Due Input Field */
 
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
+                                    // SizedBox(
+                                    //   height: 16.sp,
+                                    // ),
 
                                     /* Amount Paid Date Input Field */
                                     Text(
@@ -1770,9 +1791,9 @@ class _UpdateGroupPaymentDetailsScreenState
                                                         amtPaid:
                                                             _amtPaidCodeController
                                                                 .text,
-                                                        amtDue:
-                                                            _amtDueCodeController
-                                                                .text,
+                                                        // amtDue:
+                                                        //     _amtDueCodeController
+                                                        //         .text,
                                                         date: _dateInput.text,
                                                         paymentCollectionDate:
                                                             _dateCollectionInput
@@ -2093,6 +2114,10 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                             !refreshAmtStatusInputFields.value;
                                                                       }
                                                                       showEditSheet(
+                                                                        isReadOnlyEditAmt: updateGroupPaymentDetailsBloc
+                                                                            .userData!
+                                                                            .customersList![index]
+                                                                            .isReadOnlyAmtEdit,
                                                                         showAmtToBePaidBy: updateGroupPaymentDetailsBloc
                                                                             .userData!
                                                                             .customersList![index]
@@ -2244,8 +2269,8 @@ class _UpdateGroupPaymentDetailsScreenState
         ValidationUtil.validateCode(_agentCodeController.text);
     String? amtPaidError =
         ValidationUtil.validateCode(_amtPaidCodeController.text);
-    String? amtDueError =
-        ValidationUtil.validateCode(_amtDueCodeController.text);
+    // String? amtDueError =
+    //     ValidationUtil.validateCode(_amtDueCodeController.text);
     // String? amtTypeError =
     //     ValidationUtil.validateAmtToBePaid(_amountToBePaidController.text);
 
@@ -2275,7 +2300,7 @@ class _UpdateGroupPaymentDetailsScreenState
         code: _loanCodeController.text,
         agent: _agentCodeController.text,
         amtPaid: _amtPaidCodeController.text,
-        amtDue: _amtDueCodeController.text,
+        // amtDue: _amtDueCodeController.text,
         date: _dateInput.text,
         paymentCollectionDate: _dateCollectionInput.text,
         paymentMode: selectedPaymentModeIDValue,
@@ -2324,9 +2349,11 @@ class _UpdateGroupPaymentDetailsScreenState
         _showErrorAndFocus(_agentCodeFocusNode, agentCodeError);
       } else if (amtPaidError != null) {
         _showErrorAndFocus(_amtPaidFocusNode, amtPaidError);
-      } else if (amtDueError != null) {
-        _showErrorAndFocus(_amtDueFocusNode, amtDueError);
-      } else if (_dateInput.text.isEmpty) {
+      }
+      // else if (amtDueError != null) {
+      //   _showErrorAndFocus(_amtDueFocusNode, amtDueError);
+      // }
+      else if (_dateInput.text.isEmpty) {
         _showErrorAndFocus(_dateInputFocusNode, "Please select Payment Date");
       } else if (_dateCollectionInput.text.isEmpty) {
         _showErrorAndFocus(

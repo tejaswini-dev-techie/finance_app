@@ -1511,7 +1511,7 @@ class NetworkService {
     required String? code,
     required String? agent,
     required String? amtPaid,
-    required String? amtDue,
+    // required String? amtDue,
     required String? date,
     required String? paymentCollectionDate,
     required String? paymentMode,
@@ -1530,7 +1530,7 @@ class NetworkService {
         paramsKeyVal['codeID'] = code;
         paramsKeyVal['agent'] = agent;
         paramsKeyVal['amountPaid'] = amtPaid;
-        paramsKeyVal['due'] = amtDue;
+        // paramsKeyVal['due'] = amtDue;
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
@@ -1564,7 +1564,7 @@ class NetworkService {
     required String? code,
     required String? agent,
     required String? amtPaid,
-    required String? amtDue,
+    // required String? amtDue,
     required String? date,
     required String? paymentCollectionDate,
     required String? paymentMode,
@@ -1582,7 +1582,7 @@ class NetworkService {
         paramsKeyVal['codeID'] = code;
         paramsKeyVal['agent'] = agent;
         paramsKeyVal['amountPaid'] = amtPaid;
-        paramsKeyVal['due'] = amtDue;
+        // paramsKeyVal['due'] = amtDue;
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
@@ -1608,7 +1608,7 @@ class NetworkService {
       required String? code,
       required String? agent,
       required String? amtPaid,
-      required String? amtDue,
+      // required String? amtDue,
       required String? date,
       required String? paymentCollectionDate,
       required String? paymentMode,
@@ -1625,7 +1625,7 @@ class NetworkService {
         paramsKeyVal['codeID'] = code;
         paramsKeyVal['agent'] = agent;
         paramsKeyVal['amountPaid'] = amtPaid;
-        paramsKeyVal['due'] = amtDue;
+        // paramsKeyVal['due'] = amtDue;
         paramsKeyVal['date'] = date;
         paramsKeyVal['paymentCollectionDate'] = paymentCollectionDate;
         paramsKeyVal['paymentMode'] = paymentMode;
