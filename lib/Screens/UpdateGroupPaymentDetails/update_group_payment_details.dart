@@ -2086,7 +2086,7 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                               !refreshAmtStatusInputFields.value;
                                                                         } else {
                                                                           // Find the corresponding ID for the userData value
-                                                                          cusAmtType = amtModeOptions1.firstWhere((option) => option['title'] == updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy,
+                                                                          cusAmtType = amtModeOptions1.firstWhere((option) => option['title'] == updateGroupPaymentDetailsBloc.userData!.customersList![index].amtToBePaidBy,
                                                                               orElse: () => {
                                                                                     "id": "0"
                                                                                   })['id'] as String?;
@@ -2105,7 +2105,7 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                               !refreshAmtStatusInputFields.value;
                                                                         } else {
                                                                           // Find the corresponding ID for the userData value
-                                                                          cusAmtType = amtModeOptions2.firstWhere((option) => option['title'] == updateGroupPaymentDetailsBloc.userData?.amtToBePaidBy,
+                                                                          cusAmtType = amtModeOptions2.firstWhere((option) => option['title'] == updateGroupPaymentDetailsBloc.userData!.customersList![index].amtToBePaidBy,
                                                                               orElse: () => {
                                                                                     "id": "0"
                                                                                   })['id'] as String?;
@@ -2210,7 +2210,8 @@ class _UpdateGroupPaymentDetailsScreenState
     required String? cusID,
     required String? selectedAmtPaidByModeIDValue,
   }) async {
-    if (selectedAmtPaidByModeIDValue != null) {
+    if (selectedAmtPaidByModeIDValue != null &&
+        selectedAmtPaidByModeIDValue != "0") {
       Navigator.pop(context);
 
       var result = await NetworkService().updateGroupEditAmountPayService(

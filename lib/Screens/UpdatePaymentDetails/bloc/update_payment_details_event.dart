@@ -12,7 +12,7 @@ class GetPaymentDetailsEvent extends UpdatePaymentDetailsEvent {
   GetPaymentDetailsEvent({
     required this.cusID,
     required this.type,
-    this.amtType = "EMI",
+    this.amtType = "1",
     this.showLoader = false,
   });
 }
