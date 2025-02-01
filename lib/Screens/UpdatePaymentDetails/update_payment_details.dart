@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,11 +8,13 @@ import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Network/network_service.dart';
 import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Screens/UpdatePaymentDetails/bloc/update_payment_details_bloc.dart';
+import 'package:hp_finance/Utils/loading_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/validation_util.dart';
 import 'package:hp_finance/Utils/widgets_util/button_widget_util.dart';
 import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sizer/sizer.dart';
 
 class UpdateCustomersPaymentDetailsScreen extends StatefulWidget {
@@ -115,6 +119,11 @@ class _UpdateCustomersPaymentDetailsScreenState
   ];
   /* 1 - Weekly & Daily | 2 - Monthly */
 
+  // Progress indicator
+  final _loadingController = StreamController<bool>.broadcast();
+  Stream<bool> get loadingStream => _loadingController.stream;
+  void setIsLoading(bool loading) => _loadingController.add(loading);
+
   @override
   void initState() {
     super.initState();
@@ -170,6 +179,7 @@ class _UpdateCustomersPaymentDetailsScreenState
 
     _scrollController.dispose();
     updatePaymentDetailsBloc.close();
+    _loadingController.close();
   }
 
   void _validateFields() {
@@ -188,961 +198,581 @@ class _UpdateCustomersPaymentDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        backAction();
-        return Future<bool>.value(false);
-      },
-      child: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            /* Hide Keyboard */
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Scaffold(
-            backgroundColor: ColorConstants.whiteColor,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(70.sp),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.sp),
-                width: SizerUtil.width,
-                height: 50.sp,
-                decoration: BoxDecoration(
-                  color: ColorConstants.whiteColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorConstants.shadowBlackColor,
-                      blurRadius: 8.sp,
-                      offset: const Offset(0, 4),
-                      spreadRadius: 4.sp,
-                    )
-                  ],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () => backAction(),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_sharp,
-                        size: 16.sp,
-                        color: ColorConstants.darkBlueColor,
+    return StreamBuilder<bool>(
+      stream: loadingStream.asBroadcastStream(),
+      initialData: false,
+      builder: (context, snapshot) {
+        final isLoader = snapshot.data;
+        return ModalProgressHUD(
+          progressIndicator: LoadingUtil.ballRotate(context),
+          dismissible: false,
+          inAsyncCall: isLoader!,
+          child: WillPopScope(
+            onWillPop: () {
+              backAction();
+              return Future<bool>.value(false);
+            },
+            child: SafeArea(
+              child: GestureDetector(
+                onTap: () {
+                  /* Hide Keyboard */
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                child: Scaffold(
+                  backgroundColor: ColorConstants.whiteColor,
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(70.sp),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.sp),
+                      width: SizerUtil.width,
+                      height: 50.sp,
+                      decoration: BoxDecoration(
+                        color: ColorConstants.whiteColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: ColorConstants.shadowBlackColor,
+                            blurRadius: 8.sp,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 4.sp,
+                          )
+                        ],
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: () => backAction(),
+                            child: Icon(
+                              Icons.arrow_back_ios_new_sharp,
+                              size: 16.sp,
+                              color: ColorConstants.darkBlueColor,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10.sp,
+                          ),
+                          // const Spacer(),
+                          Expanded(
+                            child: Text(
+                              widget.title ??
+                                  updatePaymentDetailsBloc
+                                      .updatePaymentDetailsText,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: ColorConstants.blackColor,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          // const Spacer(),
+                          SizedBox(
+                            width: 4.sp,
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      width: 10.sp,
-                    ),
-                    // const Spacer(),
-                    Expanded(
-                      child: Text(
-                        widget.title ??
-                            updatePaymentDetailsBloc.updatePaymentDetailsText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: ColorConstants.blackColor,
-                          fontWeight: FontWeight.w700,
-                        ),
+                  ),
+                  bottomNavigationBar: SingleChildScrollView(
+                    child: /* Withdraw Now CTA */
+                        Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 16.sp,
+                        horizontal: 16.sp,
                       ),
-                    ),
-                    // const Spacer(),
-                    SizedBox(
-                      width: 4.sp,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            bottomNavigationBar: SingleChildScrollView(
-              child: /* Withdraw Now CTA */
-                  Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 16.sp,
-                  horizontal: 16.sp,
-                ),
-                decoration: BoxDecoration(
-                  color: ColorConstants.whiteColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorConstants.shadowBlackColor,
-                      blurRadius: 8.sp,
-                      offset: const Offset(0, 4),
-                      spreadRadius: 4.sp,
-                    )
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: isDisabled,
-                      builder: (context, bool values, _) {
-                        return buttonWidgetHelperUtil(
-                          isDisabled: false,
-                          buttonText: updatePaymentDetailsBloc.updateText,
-                          onButtonTap: () => onSubmitAction(),
-                          context: context,
-                          internetAlert: updatePaymentDetailsBloc.internetAlert,
-                          borderradius: 8.sp,
-                          toastError: () => onSubmitAction(),
+                      decoration: BoxDecoration(
+                        color: ColorConstants.whiteColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: ColorConstants.shadowBlackColor,
+                            blurRadius: 8.sp,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 4.sp,
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: isDisabled,
+                            builder: (context, bool values, _) {
+                              return buttonWidgetHelperUtil(
+                                isDisabled: false,
+                                buttonText: updatePaymentDetailsBloc.updateText,
+                                onButtonTap: () => onSubmitAction(),
+                                context: context,
+                                internetAlert:
+                                    updatePaymentDetailsBloc.internetAlert,
+                                borderradius: 8.sp,
+                                toastError: () => onSubmitAction(),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ), /* Withdraw Now CTA */
+                  ),
+                  body: BlocBuilder<UpdatePaymentDetailsBloc,
+                      UpdatePaymentDetailsState>(
+                    bloc: updatePaymentDetailsBloc,
+                    builder: (context, state) {
+                      if (state is UpdatePaymentDetailsLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: ColorConstants.darkBlueColor,
+                          ),
                         );
-                      },
-                    ),
-                  ],
-                ),
-              ), /* Withdraw Now CTA */
-            ),
-            body: BlocBuilder<UpdatePaymentDetailsBloc,
-                UpdatePaymentDetailsState>(
-              bloc: updatePaymentDetailsBloc,
-              builder: (context, state) {
-                if (state is UpdatePaymentDetailsLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: ColorConstants.darkBlueColor,
-                    ),
-                  );
-                } else if (state is UpdatePaymentDetailsLoaded) {
-                  _nameController.text =
-                      updatePaymentDetailsBloc.userData?.name ?? "";
-                  _phNumController.text =
-                      updatePaymentDetailsBloc.userData?.mobNum ?? "";
-                  _loanCodeController.text =
-                      updatePaymentDetailsBloc.userData?.codeId ?? "";
-                  _agentCodeController.text =
-                      updatePaymentDetailsBloc.userData?.agent ?? "";
-                  _amtPaidCodeController.text =
-                      updatePaymentDetailsBloc.userData?.amtToBePaid ?? "";
-                  // _amtDueCodeController.text =
-                  //     updatePaymentDetailsBloc.userData?.due ?? "";
-                  _dateInput.text =
-                      updatePaymentDetailsBloc.userData?.date ?? "";
-                  _dateCollectionInput.text =
-                      DateFormat('dd/MM/yyyy').format(DateTime.now());
+                      } else if (state is UpdatePaymentDetailsLoaded) {
+                        _nameController.text =
+                            updatePaymentDetailsBloc.userData?.name ?? "";
+                        _phNumController.text =
+                            updatePaymentDetailsBloc.userData?.mobNum ?? "";
+                        _loanCodeController.text =
+                            updatePaymentDetailsBloc.userData?.codeId ?? "";
+                        _agentCodeController.text =
+                            updatePaymentDetailsBloc.userData?.agent ?? "";
+                        _amtPaidCodeController.text =
+                            updatePaymentDetailsBloc.userData?.amtToBePaid ??
+                                "";
+                        // _amtDueCodeController.text =
+                        //     updatePaymentDetailsBloc.userData?.due ?? "";
+                        _dateInput.text =
+                            updatePaymentDetailsBloc.userData?.date ?? "";
+                        _dateCollectionInput.text =
+                            DateFormat('dd/MM/yyyy').format(DateTime.now());
 
-                  /* 1 - Weekly & Daily | 2 - Monthly */
-                  if (updatePaymentDetailsBloc.userData?.type != null &&
-                      updatePaymentDetailsBloc.userData?.type == "1") {
-                    if (updatePaymentDetailsBloc.userData?.amtToBePaidBy ==
-                            null ||
-                        updatePaymentDetailsBloc
-                            .userData!.amtToBePaidBy!.isEmpty) {
-                      // Set the corresponding ID for 'EMI'
-                      selectedAmtPaidByModeIDValue = amtModeOptions1.firstWhere(
-                              (option) => option['title'] == 'EMI')['id']
-                          as String?;
-                      refreshAmtStatusInputFields.value =
-                          !refreshAmtStatusInputFields.value;
-                    } else {
-                      // Find the corresponding ID for the userData value
-                      selectedAmtPaidByModeIDValue = amtModeOptions1.firstWhere(
-                          (option) =>
-                              option['title'] ==
-                              updatePaymentDetailsBloc.userData?.amtToBePaidBy,
-                          orElse: () => {"id": "0"})['id'] as String?;
-                      refreshAmtStatusInputFields.value =
-                          !refreshAmtStatusInputFields.value;
-                    }
-                  } else {
-                    if (updatePaymentDetailsBloc.userData?.amtToBePaidBy ==
-                            null ||
-                        updatePaymentDetailsBloc
-                            .userData!.amtToBePaidBy!.isEmpty) {
-                      // Set the corresponding ID for 'EMI'
-                      selectedAmtPaidByModeIDValue = amtModeOptions2.firstWhere(
-                              (option) => option['title'] == 'EMI')['id']
-                          as String?;
-                      refreshAmtStatusInputFields.value =
-                          !refreshAmtStatusInputFields.value;
-                    } else {
-                      // Find the corresponding ID for the userData value
-                      selectedAmtPaidByModeIDValue = amtModeOptions2.firstWhere(
-                          (option) =>
-                              option['title'] ==
-                              updatePaymentDetailsBloc.userData?.amtToBePaidBy,
-                          orElse: () => {"id": "0"})['id'] as String?;
-                      refreshAmtStatusInputFields.value =
-                          !refreshAmtStatusInputFields.value;
-                    }
-                  }
-                  /* 1 - Weekly & Daily | 2 - Monthly */
+                        /* 1 - Weekly & Daily | 2 - Monthly */
+                        if (updatePaymentDetailsBloc.userData?.type != null &&
+                            updatePaymentDetailsBloc.userData?.type == "1") {
+                          if (updatePaymentDetailsBloc
+                                      .userData?.amtToBePaidBy ==
+                                  null ||
+                              updatePaymentDetailsBloc
+                                  .userData!.amtToBePaidBy!.isEmpty) {
+                            // Set the corresponding ID for 'EMI'
+                            selectedAmtPaidByModeIDValue =
+                                amtModeOptions1.firstWhere((option) =>
+                                    option['title'] == 'EMI')['id'] as String?;
+                            refreshAmtStatusInputFields.value =
+                                !refreshAmtStatusInputFields.value;
+                          } else {
+                            // Find the corresponding ID for the userData value
+                            selectedAmtPaidByModeIDValue =
+                                amtModeOptions1.firstWhere(
+                                    (option) =>
+                                        option['title'] ==
+                                        updatePaymentDetailsBloc
+                                            .userData?.amtToBePaidBy,
+                                    orElse: () => {"id": "0"})['id'] as String?;
+                            refreshAmtStatusInputFields.value =
+                                !refreshAmtStatusInputFields.value;
+                          }
+                        } else {
+                          if (updatePaymentDetailsBloc
+                                      .userData?.amtToBePaidBy ==
+                                  null ||
+                              updatePaymentDetailsBloc
+                                  .userData!.amtToBePaidBy!.isEmpty) {
+                            // Set the corresponding ID for 'EMI'
+                            selectedAmtPaidByModeIDValue =
+                                amtModeOptions2.firstWhere((option) =>
+                                    option['title'] == 'EMI')['id'] as String?;
+                            refreshAmtStatusInputFields.value =
+                                !refreshAmtStatusInputFields.value;
+                          } else {
+                            // Find the corresponding ID for the userData value
+                            selectedAmtPaidByModeIDValue =
+                                amtModeOptions2.firstWhere(
+                                    (option) =>
+                                        option['title'] ==
+                                        updatePaymentDetailsBloc
+                                            .userData?.amtToBePaidBy,
+                                    orElse: () => {"id": "0"})['id'] as String?;
+                            refreshAmtStatusInputFields.value =
+                                !refreshAmtStatusInputFields.value;
+                          }
+                        }
+                        /* 1 - Weekly & Daily | 2 - Monthly */
 
-                  return SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 16.sp,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.sp),
-                          child: ValueListenableBuilder(
-                            valueListenable: refreshInputFields,
-                            builder: (context, bool vals, _) {
-                              return Form(
-                                key: _formKey,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    /* Name Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.nameText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      readOnlyValue: updatePaymentDetailsBloc
-                                              .userData?.isReadonlyName ??
-                                          false,
-                                      focusnodes: _nameFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.person_pin_circle_rounded,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .namePlaceHolderText,
-                                      textEditingController: _nameController,
-                                      validationFunc: (value) {
-                                        return ValidationUtil.validateName(
-                                            value);
-                                      },
-                                    ),
-                                    /* Name Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    /* Mobile Number Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.phNumText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      readOnlyValue: updatePaymentDetailsBloc
-                                              .userData?.isReadonlyMobNum ??
-                                          false,
-                                      focusnodes: _phNumFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.phone_locked,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .phNumPlaceholderText,
-                                      textEditingController: _phNumController,
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(10),
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(r'^[6-9][0-9]*$'),
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(r"\s\s"),
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                        ),
-                                      ],
-                                      keyboardtype: TextInputType.number,
-                                      validationFunc: (value) {
-                                        return ValidationUtil
-                                            .validateMobileNumber(value);
-                                      },
-                                    ),
-                                    /* Mobile Number Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    /* Loan Code Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.loanCodeText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      readOnlyValue: updatePaymentDetailsBloc
-                                              .userData?.isReadonlyLoanCode ??
-                                          false,
-                                      focusnodes: _loanCodeFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.contacts_rounded,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .loanCodePlaceholderText,
-                                      textEditingController:
-                                          _loanCodeController,
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(r"\s\s"),
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                        ),
-                                      ],
-                                      keyboardtype: TextInputType.text,
-                                      validationFunc: (value) {
-                                        return ValidationUtil.validateCode(
-                                            value);
-                                      },
-                                    ),
-                                    /* Loan Code Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    /* Agent Code Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.agentCodeText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      readOnlyValue: updatePaymentDetailsBloc
-                                              .userData?.isReadonlyAgentCode ??
-                                          false,
-                                      focusnodes: _agentCodeFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.contacts_rounded,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .agentCodePlaceholderText,
-                                      textEditingController:
-                                          _agentCodeController,
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(r"\s\s"),
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                        ),
-                                      ],
-                                      keyboardtype: TextInputType.text,
-                                      validationFunc: (value) {
-                                        return ValidationUtil.validateCode(
-                                            value);
-                                      },
-                                    ),
-                                    /* Agent Code Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    /* Amount Paid Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.amtPaidText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextInputField(
-                                      readOnlyValue: updatePaymentDetailsBloc
-                                              .userData?.isReadonlyAmtPaid ??
-                                          false,
-                                      focusnodes: _amtPaidFocusNode,
-                                      suffixWidget: const Icon(
-                                        Icons.attach_money_outlined,
-                                        color: ColorConstants.darkBlueColor,
-                                      ),
-                                      placeholderText: updatePaymentDetailsBloc
-                                          .amtPaidPlaceholderText,
-                                      textEditingController:
-                                          _amtPaidCodeController,
-                                      // inputFormattersList: <TextInputFormatter>[
-                                      //   FilteringTextInputFormatter.digitsOnly,
-                                      //   LengthLimitingTextInputFormatter(15),
-                                      //   FilteringTextInputFormatter.allow(
-                                      //     RegExp(r'^[1-9][0-9]*$'),
-                                      //   ),
-                                      //   FilteringTextInputFormatter.deny(
-                                      //     RegExp(r"\s\s"),
-                                      //   ),
-                                      //   FilteringTextInputFormatter.deny(
-                                      //     RegExp(
-                                      //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                      //   ),
-                                      // ],
-                                      inputFormattersList: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(
-                                              r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
-                                        ),
-                                        LengthLimitingTextInputFormatter(
-                                            15), // Limits input length to 15 characters
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                              r"\s\s"), // Denies consecutive spaces
-                                        ),
-                                        FilteringTextInputFormatter.deny(
-                                          RegExp(
-                                            r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
+                        return SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+                              Padding(
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 16.sp),
+                                child: ValueListenableBuilder(
+                                  valueListenable: refreshInputFields,
+                                  builder: (context, bool vals, _) {
+                                    return Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          /* Name Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc.nameText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-
-                                      keyboardtype: TextInputType.number,
-                                      validationFunc: (value) {
-                                        return ValidationUtil
-                                            .validateDepositAmount(value);
-                                      },
-                                    ),
-                                    /* Amount Paid Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    // /* Amount Due Input Field */
-                                    // Text(
-                                    //   updatePaymentDetailsBloc.amtDueText,
-                                    //   textAlign: TextAlign.center,
-                                    //   style: TextStyle(
-                                    //     fontSize: 10.sp,
-                                    //     color: ColorConstants.lightBlackColor,
-                                    //     fontWeight: FontWeight.w500,
-                                    //   ),
-                                    // ),
-                                    // TextInputField(
-                                    //   readOnlyValue: updatePaymentDetailsBloc
-                                    //           .userData?.isReadonlyAmtDue ??
-                                    //       false,
-                                    //   focusnodes: _amtDueFocusNode,
-                                    //   suffixWidget: const Icon(
-                                    //     Icons.attach_money_outlined,
-                                    //     color: ColorConstants.darkBlueColor,
-                                    //   ),
-                                    //   placeholderText: updatePaymentDetailsBloc
-                                    //       .amtDuePlaceholderText,
-                                    //   textEditingController:
-                                    //       _amtDueCodeController,
-                                    //   // inputFormattersList: <TextInputFormatter>[
-                                    //   //   FilteringTextInputFormatter.digitsOnly,
-                                    //   //   LengthLimitingTextInputFormatter(15),
-                                    //   //   FilteringTextInputFormatter.allow(
-                                    //   //     RegExp(r'^[1-9][0-9]*$'),
-                                    //   //   ),
-                                    //   //   FilteringTextInputFormatter.deny(
-                                    //   //     RegExp(r"\s\s"),
-                                    //   //   ),
-                                    //   //   FilteringTextInputFormatter.deny(
-                                    //   //     RegExp(
-                                    //   //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
-                                    //   //   ),
-                                    //   // ],
-                                    //   inputFormattersList: <TextInputFormatter>[
-                                    //     FilteringTextInputFormatter.allow(
-                                    //       RegExp(
-                                    //           r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
-                                    //     ),
-                                    //     LengthLimitingTextInputFormatter(
-                                    //         15), // Limits input length to 15 characters
-                                    //     FilteringTextInputFormatter.deny(
-                                    //       RegExp(
-                                    //           r"\s\s"), // Denies consecutive spaces
-                                    //     ),
-                                    //     FilteringTextInputFormatter.deny(
-                                    //       RegExp(
-                                    //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
-                                    //       ),
-                                    //     ),
-                                    //   ],
-
-                                    //   keyboardtype: TextInputType.number,
-                                    //   validationFunc: (value) {
-                                    //     return ValidationUtil
-                                    //         .validateDepositAmount(value);
-                                    //   },
-                                    // ),
-                                    // /* Amount Due Input Field */
-
-                                    // SizedBox(
-                                    //   height: 16.sp,
-                                    // ),
-
-                                    /* Amount Paid Date Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.paymentDateText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _dateInput,
-                                      //editing controller of this TextField
-
-                                      decoration: InputDecoration(
-                                        suffixIcon: const Icon(
-                                          Icons.calendar_month,
-                                          color: ColorConstants.darkBlueColor,
-                                        ),
-                                        errorStyle: TextStyle(
-                                          color: ColorConstants.redColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 10.sp,
-                                        ),
-                                        filled: true,
-                                        fillColor: ColorConstants.whiteColor,
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.sp)),
-                                          borderSide: BorderSide(
-                                            width: 1.sp,
-                                            color: ColorConstants
-                                                .lightShadeBlueColor,
+                                          TextInputField(
+                                            readOnlyValue:
+                                                updatePaymentDetailsBloc
+                                                        .userData
+                                                        ?.isReadonlyName ??
+                                                    false,
+                                            focusnodes: _nameFocusNode,
+                                            suffixWidget: const Icon(
+                                              Icons.person_pin_circle_rounded,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
+                                            placeholderText:
+                                                updatePaymentDetailsBloc
+                                                    .namePlaceHolderText,
+                                            textEditingController:
+                                                _nameController,
+                                            validationFunc: (value) {
+                                              return ValidationUtil
+                                                  .validateName(value);
+                                            },
                                           ),
-                                        ),
-                                        disabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.sp)),
-                                          borderSide: BorderSide(
-                                            width: 1.sp,
-                                            color: ColorConstants
-                                                .lightShadeBlueColor,
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.sp)),
-                                          borderSide: BorderSide(
-                                            width: 1.sp,
-                                            color: ColorConstants
-                                                .lightShadeBlueColor,
-                                          ),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.sp)),
-                                          borderSide: BorderSide(
-                                            width: 1.sp,
-                                          ),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.sp)),
-                                          borderSide: BorderSide(
-                                            width: 1.sp,
-                                            color: ColorConstants.redColor,
-                                          ),
-                                        ),
-                                        focusedErrorBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8.sp)),
-                                          borderSide: BorderSide(
-                                            width: 1.sp,
-                                            color: ColorConstants.redColor,
-                                          ),
-                                        ),
-                                        hintText: updatePaymentDetailsBloc
-                                            .paymentDatePlaceholderText,
-                                        hintStyle: TextStyle(
-                                          color: ColorConstants.blackColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 10.sp,
-                                        ),
-                                      ),
-                                      readOnly: true,
-                                      focusNode: _dateInputFocusNode,
-                                      style: TextStyle(
-                                        color: ColorConstants.blackColor,
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 10.sp,
-                                      ),
-                                      //set it true, so that user will not able to edit text
-                                      onTap: () async {
-                                        // DateTime? pickedDate =
-                                        //     await showDatePicker(
-                                        //   context: context,
-                                        //   initialDate: DateTime.now(),
-                                        //   firstDate: DateTime(2010),
-                                        //   //DateTime.now() - not to allow to choose before today.
-                                        //   lastDate: DateTime.now(),
-                                        // );
+                                          /* Name Input Field */
 
-                                        // if (pickedDate != null) {
-                                        //   //pickedDate output format => 2021-03-10 00:00:00.000
-                                        //   String formattedDate =
-                                        //       DateFormat('dd/MM/yyyy')
-                                        //           .format(pickedDate);
-                                        //   //formatted date output using intl package =>  2021-03-16
-                                        //   setState(
-                                        //     () {
-                                        //       _dateInput.text =
-                                        //           formattedDate; //set output date to TextField value.
-                                        //     },
-                                        //   );
-                                        // }
-                                      },
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please select a payment date';
-                                        }
-                                        // You can add more complex validation if needed, such as checking date ranges.
-                                        return null;
-                                      },
-                                    ),
-                                    /* Amount Paid Date Input Field */
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
 
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
+                                          /* Mobile Number Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc.phNumText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          TextInputField(
+                                            readOnlyValue:
+                                                updatePaymentDetailsBloc
+                                                        .userData
+                                                        ?.isReadonlyMobNum ??
+                                                    false,
+                                            focusnodes: _phNumFocusNode,
+                                            suffixWidget: const Icon(
+                                              Icons.phone_locked,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
+                                            placeholderText:
+                                                updatePaymentDetailsBloc
+                                                    .phNumPlaceholderText,
+                                            textEditingController:
+                                                _phNumController,
+                                            inputFormattersList: <TextInputFormatter>[
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                  10),
+                                              FilteringTextInputFormatter.allow(
+                                                RegExp(r'^[6-9][0-9]*$'),
+                                              ),
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(r"\s\s"),
+                                              ),
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(
+                                                    r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                              ),
+                                            ],
+                                            keyboardtype: TextInputType.number,
+                                            validationFunc: (value) {
+                                              return ValidationUtil
+                                                  .validateMobileNumber(value);
+                                            },
+                                          ),
+                                          /* Mobile Number Input Field */
 
-                                    // /* Payment Type Input Field */
-                                    // Text(
-                                    //   updatePaymentDetailsBloc.paymentTypeText,
-                                    //   textAlign: TextAlign.center,
-                                    //   style: TextStyle(
-                                    //     fontSize: 10.sp,
-                                    //     color: ColorConstants.lightBlackColor,
-                                    //     fontWeight: FontWeight.w500,
-                                    //   ),
-                                    // ),
-                                    // DropdownButtonFormField<String>(
-                                    //   value: selectedPaymentTypeIDValue,
-                                    //   focusNode: _paymentTypeFocusNode,
-                                    //   hint: Text(
-                                    //     updatePaymentDetailsBloc
-                                    //         .paymentTypePlaceholderText,
-                                    //     style: TextStyle(
-                                    //       color: ColorConstants.blackColor,
-                                    //       fontWeight: FontWeight.w400,
-                                    //       fontStyle: FontStyle.normal,
-                                    //       fontSize: 10.sp,
-                                    //     ),
-                                    //   ),
-                                    //   onChanged: (String? newValue) {
-                                    //     setState(() {
-                                    //       selectedPaymentTypeIDValue = newValue;
-                                    //     });
-                                    //   },
-                                    //   onSaved: (String? newValue) {
-                                    //     selectedPaymentTypeIDValue = newValue;
-                                    //   },
-                                    //   validator: (String? value) {
-                                    //     if (value == null ||
-                                    //         value.isEmpty ||
-                                    //         value == "0") {
-                                    //       return 'Please choose a valid Payment Type';
-                                    //     }
-                                    //     return null;
-                                    //   },
-                                    //   items: paymentTypeOptions
-                                    //       .map<DropdownMenuItem<String>>(
-                                    //           (option) {
-                                    //     return DropdownMenuItem<String>(
-                                    //       value: option[
-                                    //           'id'], // Using the id as the value
-                                    //       child: Text(
-                                    //         option['title'],
-                                    //         style: TextStyle(
-                                    //           color: ColorConstants.blackColor,
-                                    //           fontWeight: FontWeight.w600,
-                                    //           fontStyle: FontStyle.normal,
-                                    //           fontSize: 10.sp,
-                                    //         ),
-                                    //       ),
-                                    //     );
-                                    //   }).toList(),
-                                    //   decoration: InputDecoration(
-                                    //     errorStyle: TextStyle(
-                                    //       color: ColorConstants.redColor,
-                                    //       fontWeight: FontWeight.w400,
-                                    //       fontStyle: FontStyle.normal,
-                                    //       fontSize: 10.sp,
-                                    //     ),
-                                    //     filled: true,
-                                    //     fillColor: ColorConstants.whiteColor,
-                                    //     focusedBorder: OutlineInputBorder(
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(8.sp)),
-                                    //       borderSide: BorderSide(
-                                    //         width: 1.sp,
-                                    //         color: ColorConstants
-                                    //             .lightShadeBlueColor,
-                                    //       ),
-                                    //     ),
-                                    //     disabledBorder: OutlineInputBorder(
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(8.sp)),
-                                    //       borderSide: BorderSide(
-                                    //         width: 1.sp,
-                                    //         color: ColorConstants
-                                    //             .lightShadeBlueColor,
-                                    //       ),
-                                    //     ),
-                                    //     enabledBorder: OutlineInputBorder(
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(8.sp)),
-                                    //       borderSide: BorderSide(
-                                    //         width: 1.sp,
-                                    //         color: ColorConstants
-                                    //             .lightShadeBlueColor,
-                                    //       ),
-                                    //     ),
-                                    //     border: OutlineInputBorder(
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(8.sp)),
-                                    //       borderSide: BorderSide(
-                                    //         width: 1.sp,
-                                    //       ),
-                                    //     ),
-                                    //     errorBorder: OutlineInputBorder(
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(8.sp)),
-                                    //       borderSide: BorderSide(
-                                    //         width: 1.sp,
-                                    //         color: ColorConstants.redColor,
-                                    //       ),
-                                    //     ),
-                                    //     focusedErrorBorder: OutlineInputBorder(
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(8.sp)),
-                                    //       borderSide: BorderSide(
-                                    //         width: 1.sp,
-                                    //         color: ColorConstants.redColor,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    // /* Payment Type Input Field */
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
 
-                                    /* Payment Collection Date */
-                                    Text(
-                                      "Payment Collection Date",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: Colors.grey[800],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    ValueListenableBuilder(
-                                        valueListenable:
-                                            refreshDateCollectionInputFields,
-                                        builder: (context, val, _) {
-                                          return TextFormField(
-                                            controller: _dateCollectionInput,
+                                          /* Loan Code Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc
+                                                .loanCodeText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          TextInputField(
+                                            readOnlyValue:
+                                                updatePaymentDetailsBloc
+                                                        .userData
+                                                        ?.isReadonlyLoanCode ??
+                                                    false,
+                                            focusnodes: _loanCodeFocusNode,
+                                            suffixWidget: const Icon(
+                                              Icons.contacts_rounded,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
+                                            placeholderText:
+                                                updatePaymentDetailsBloc
+                                                    .loanCodePlaceholderText,
+                                            textEditingController:
+                                                _loanCodeController,
+                                            inputFormattersList: <TextInputFormatter>[
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(r"\s\s"),
+                                              ),
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(
+                                                    r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                              ),
+                                            ],
+                                            keyboardtype: TextInputType.text,
+                                            validationFunc: (value) {
+                                              return ValidationUtil
+                                                  .validateCode(value);
+                                            },
+                                          ),
+                                          /* Loan Code Input Field */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          /* Agent Code Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc
+                                                .agentCodeText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          TextInputField(
+                                            readOnlyValue:
+                                                updatePaymentDetailsBloc
+                                                        .userData
+                                                        ?.isReadonlyAgentCode ??
+                                                    false,
+                                            focusnodes: _agentCodeFocusNode,
+                                            suffixWidget: const Icon(
+                                              Icons.contacts_rounded,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
+                                            placeholderText:
+                                                updatePaymentDetailsBloc
+                                                    .agentCodePlaceholderText,
+                                            textEditingController:
+                                                _agentCodeController,
+                                            inputFormattersList: <TextInputFormatter>[
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(r"\s\s"),
+                                              ),
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(
+                                                    r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                              ),
+                                            ],
+                                            keyboardtype: TextInputType.text,
+                                            validationFunc: (value) {
+                                              return ValidationUtil
+                                                  .validateCode(value);
+                                            },
+                                          ),
+                                          /* Agent Code Input Field */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          /* Amount Paid Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc
+                                                .amtPaidText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          TextInputField(
+                                            readOnlyValue:
+                                                updatePaymentDetailsBloc
+                                                        .userData
+                                                        ?.isReadonlyAmtPaid ??
+                                                    false,
+                                            focusnodes: _amtPaidFocusNode,
+                                            suffixWidget: const Icon(
+                                              Icons.attach_money_outlined,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
+                                            placeholderText:
+                                                updatePaymentDetailsBloc
+                                                    .amtPaidPlaceholderText,
+                                            textEditingController:
+                                                _amtPaidCodeController,
+                                            // inputFormattersList: <TextInputFormatter>[
+                                            //   FilteringTextInputFormatter.digitsOnly,
+                                            //   LengthLimitingTextInputFormatter(15),
+                                            //   FilteringTextInputFormatter.allow(
+                                            //     RegExp(r'^[1-9][0-9]*$'),
+                                            //   ),
+                                            //   FilteringTextInputFormatter.deny(
+                                            //     RegExp(r"\s\s"),
+                                            //   ),
+                                            //   FilteringTextInputFormatter.deny(
+                                            //     RegExp(
+                                            //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            //   ),
+                                            // ],
+                                            inputFormattersList: <TextInputFormatter>[
+                                              FilteringTextInputFormatter.allow(
+                                                RegExp(
+                                                    r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
+                                              ),
+                                              LengthLimitingTextInputFormatter(
+                                                  15), // Limits input length to 15 characters
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(
+                                                    r"\s\s"), // Denies consecutive spaces
+                                              ),
+                                              FilteringTextInputFormatter.deny(
+                                                RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
+                                                ),
+                                              ),
+                                            ],
+
+                                            keyboardtype: TextInputType.number,
+                                            validationFunc: (value) {
+                                              return ValidationUtil
+                                                  .validateDepositAmount(value);
+                                            },
+                                          ),
+                                          /* Amount Paid Input Field */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          // /* Amount Due Input Field */
+                                          // Text(
+                                          //   updatePaymentDetailsBloc.amtDueText,
+                                          //   textAlign: TextAlign.center,
+                                          //   style: TextStyle(
+                                          //     fontSize: 10.sp,
+                                          //     color: ColorConstants.lightBlackColor,
+                                          //     fontWeight: FontWeight.w500,
+                                          //   ),
+                                          // ),
+                                          // TextInputField(
+                                          //   readOnlyValue: updatePaymentDetailsBloc
+                                          //           .userData?.isReadonlyAmtDue ??
+                                          //       false,
+                                          //   focusnodes: _amtDueFocusNode,
+                                          //   suffixWidget: const Icon(
+                                          //     Icons.attach_money_outlined,
+                                          //     color: ColorConstants.darkBlueColor,
+                                          //   ),
+                                          //   placeholderText: updatePaymentDetailsBloc
+                                          //       .amtDuePlaceholderText,
+                                          //   textEditingController:
+                                          //       _amtDueCodeController,
+                                          //   // inputFormattersList: <TextInputFormatter>[
+                                          //   //   FilteringTextInputFormatter.digitsOnly,
+                                          //   //   LengthLimitingTextInputFormatter(15),
+                                          //   //   FilteringTextInputFormatter.allow(
+                                          //   //     RegExp(r'^[1-9][0-9]*$'),
+                                          //   //   ),
+                                          //   //   FilteringTextInputFormatter.deny(
+                                          //   //     RegExp(r"\s\s"),
+                                          //   //   ),
+                                          //   //   FilteringTextInputFormatter.deny(
+                                          //   //     RegExp(
+                                          //   //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                          //   //   ),
+                                          //   // ],
+                                          //   inputFormattersList: <TextInputFormatter>[
+                                          //     FilteringTextInputFormatter.allow(
+                                          //       RegExp(
+                                          //           r'^\d*\.?\d*$'), // Allows digits and one optional decimal point
+                                          //     ),
+                                          //     LengthLimitingTextInputFormatter(
+                                          //         15), // Limits input length to 15 characters
+                                          //     FilteringTextInputFormatter.deny(
+                                          //       RegExp(
+                                          //           r"\s\s"), // Denies consecutive spaces
+                                          //     ),
+                                          //     FilteringTextInputFormatter.deny(
+                                          //       RegExp(
+                                          //         r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])', // Denies specific Unicode symbols (e.g., emojis)
+                                          //       ),
+                                          //     ),
+                                          //   ],
+
+                                          //   keyboardtype: TextInputType.number,
+                                          //   validationFunc: (value) {
+                                          //     return ValidationUtil
+                                          //         .validateDepositAmount(value);
+                                          //   },
+                                          // ),
+                                          // /* Amount Due Input Field */
+
+                                          // SizedBox(
+                                          //   height: 16.sp,
+                                          // ),
+
+                                          /* Amount Paid Date Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc
+                                                .paymentDateText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          TextFormField(
+                                            controller: _dateInput,
+                                            //editing controller of this TextField
+
                                             decoration: InputDecoration(
                                               suffixIcon: const Icon(
                                                 Icons.calendar_month,
                                                 color: ColorConstants
                                                     .darkBlueColor,
                                               ),
-                                              errorStyle: TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 10.sp,
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color: ColorConstants
-                                                      .lightShadeBlueColor,
-                                                ),
-                                              ),
-                                              disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color: ColorConstants
-                                                      .lightShadeBlueColor,
-                                                ),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color: ColorConstants
-                                                      .lightShadeBlueColor,
-                                                ),
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                ),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color:
-                                                      ColorConstants.redColor,
-                                                ),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8.sp)),
-                                                borderSide: BorderSide(
-                                                  width: 1.sp,
-                                                  color:
-                                                      ColorConstants.redColor,
-                                                ),
-                                              ),
-                                              hintText: "Select a date",
-                                              hintStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 10.sp,
-                                              ),
-                                            ),
-                                            readOnly:
-                                                false, // Prevent manual text input
-                                            focusNode: _dateCollectionFocusNode,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 10.sp,
-                                            ),
-                                            onTap: () async {
-                                              DateTime? pickedDate =
-                                                  await showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now(),
-                                                firstDate: DateTime(2010),
-                                                lastDate: DateTime.now(),
-                                              );
-
-                                              if (pickedDate != null) {
-                                                String formattedDate =
-                                                    DateFormat('dd/MM/yyyy')
-                                                        .format(pickedDate);
-
-                                                _dateCollectionInput.text =
-                                                    formattedDate;
-                                                refreshDateCollectionInputFields
-                                                        .value =
-                                                    !refreshDateCollectionInputFields
-                                                        .value;
-                                              }
-                                            },
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Please select a payment collection date';
-                                              }
-                                              return null;
-                                            },
-                                          );
-                                        }),
-                                    /* Payment Collection Date */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    /* Payment Mode Input Field */
-                                    Text(
-                                      updatePaymentDetailsBloc.paymentModeText,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: ColorConstants.lightBlackColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    ValueListenableBuilder(
-                                        valueListenable:
-                                            refreshPaymentModeInputFields,
-                                        builder: (context, vals, _) {
-                                          return DropdownButtonFormField<
-                                              String>(
-                                            value: selectedPaymentModeIDValue,
-                                            focusNode: _paymentModeFocusNode,
-                                            hint: Text(
-                                              updatePaymentDetailsBloc
-                                                  .paymentModePlaceholderText,
-                                              style: TextStyle(
-                                                color:
-                                                    ColorConstants.blackColor,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 10.sp,
-                                              ),
-                                            ),
-                                            onChanged: (String? newValue) {
-                                              selectedPaymentModeIDValue =
-                                                  newValue;
-                                              refreshPaymentModeInputFields
-                                                      .value =
-                                                  !refreshPaymentModeInputFields
-                                                      .value;
-                                            },
-                                            onSaved: (String? newValue) {
-                                              selectedPaymentModeIDValue =
-                                                  newValue;
-                                            },
-                                            validator: (String? value) {
-                                              if (value == null ||
-                                                  value.isEmpty ||
-                                                  value == "0") {
-                                                return 'Please choose a valid Payment Mode';
-                                              }
-                                              return null;
-                                            },
-                                            items: paymentModeOptions
-                                                .map<DropdownMenuItem<String>>(
-                                                    (option) {
-                                              return DropdownMenuItem<String>(
-                                                value: option[
-                                                    'id'], // Using the id as the value
-                                                child: Text(
-                                                  option['title'],
-                                                  style: TextStyle(
-                                                    color: ColorConstants
-                                                        .blackColor,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle: FontStyle.normal,
-                                                    fontSize: 10.sp,
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                            decoration: InputDecoration(
                                               errorStyle: TextStyle(
                                                 color: ColorConstants.redColor,
                                                 fontWeight: FontWeight.w400,
@@ -1206,599 +836,1108 @@ class _UpdateCustomersPaymentDetailsScreenState
                                                       ColorConstants.redColor,
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        }),
-                                    /* Payment Mode Input Field */
-
-                                    // SizedBox(
-                                    //   height: 16.sp,
-                                    // ),
-
-                                    // /* Payment Status Input Field */
-                                    // Text(
-                                    //   updatePaymentDetailsBloc
-                                    //       .paymentStatusText,
-                                    //   textAlign: TextAlign.center,
-                                    //   style: TextStyle(
-                                    //     fontSize: 10.sp,
-                                    //     color: ColorConstants.lightBlackColor,
-                                    //     fontWeight: FontWeight.w500,
-                                    //   ),
-                                    // ),
-                                    // ValueListenableBuilder(
-                                    //     valueListenable:
-                                    //         refreshPaymentStatusInputFields,
-                                    //     builder: (context, vals, _) {
-                                    //       return DropdownButtonFormField<
-                                    //           String>(
-                                    //         value: selectedPaymentStatusIDValue,
-                                    //         focusNode: _paymentStatusFocusNode,
-                                    //         hint: Text(
-                                    //           updatePaymentDetailsBloc
-                                    //               .paymentStatusPlaceholderText,
-                                    //           style: TextStyle(
-                                    //             color:
-                                    //                 ColorConstants.blackColor,
-                                    //             fontWeight: FontWeight.w400,
-                                    //             fontStyle: FontStyle.normal,
-                                    //             fontSize: 10.sp,
-                                    //           ),
-                                    //         ),
-                                    //         onChanged: (String? newValue) {
-                                    //           selectedPaymentStatusIDValue =
-                                    //               newValue;
-                                    //           refreshPaymentStatusInputFields
-                                    //                   .value =
-                                    //               !refreshPaymentStatusInputFields
-                                    //                   .value;
-                                    //         },
-                                    //         onSaved: (String? newValue) {
-                                    //           selectedPaymentStatusIDValue =
-                                    //               newValue;
-                                    //         },
-                                    //         validator: (String? value) {
-                                    //           if (value == null ||
-                                    //               value.isEmpty ||
-                                    //               value == "0") {
-                                    //             return 'Please choose a valid Payment Status';
-                                    //           }
-                                    //           return null;
-                                    //         },
-                                    //         items: paymentStatusOptions
-                                    //             .map<DropdownMenuItem<String>>(
-                                    //                 (option) {
-                                    //           return DropdownMenuItem<String>(
-                                    //             value: option[
-                                    //                 'id'], // Using the id as the value
-                                    //             child: Text(
-                                    //               option['title'],
-                                    //               style: TextStyle(
-                                    //                 color: ColorConstants
-                                    //                     .blackColor,
-                                    //                 fontWeight: FontWeight.w600,
-                                    //                 fontStyle: FontStyle.normal,
-                                    //                 fontSize: 10.sp,
-                                    //               ),
-                                    //             ),
-                                    //           );
-                                    //         }).toList(),
-                                    //         decoration: InputDecoration(
-                                    //           errorStyle: TextStyle(
-                                    //             color: ColorConstants.redColor,
-                                    //             fontWeight: FontWeight.w400,
-                                    //             fontStyle: FontStyle.normal,
-                                    //             fontSize: 10.sp,
-                                    //           ),
-                                    //           filled: true,
-                                    //           fillColor:
-                                    //               ColorConstants.whiteColor,
-                                    //           focusedBorder: OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.all(
-                                    //                 Radius.circular(8.sp)),
-                                    //             borderSide: BorderSide(
-                                    //               width: 1.sp,
-                                    //               color: ColorConstants
-                                    //                   .lightShadeBlueColor,
-                                    //             ),
-                                    //           ),
-                                    //           disabledBorder:
-                                    //               OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.all(
-                                    //                 Radius.circular(8.sp)),
-                                    //             borderSide: BorderSide(
-                                    //               width: 1.sp,
-                                    //               color: ColorConstants
-                                    //                   .lightShadeBlueColor,
-                                    //             ),
-                                    //           ),
-                                    //           enabledBorder: OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.all(
-                                    //                 Radius.circular(8.sp)),
-                                    //             borderSide: BorderSide(
-                                    //               width: 1.sp,
-                                    //               color: ColorConstants
-                                    //                   .lightShadeBlueColor,
-                                    //             ),
-                                    //           ),
-                                    //           border: OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.all(
-                                    //                 Radius.circular(8.sp)),
-                                    //             borderSide: BorderSide(
-                                    //               width: 1.sp,
-                                    //             ),
-                                    //           ),
-                                    //           errorBorder: OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.all(
-                                    //                 Radius.circular(8.sp)),
-                                    //             borderSide: BorderSide(
-                                    //               width: 1.sp,
-                                    //               color:
-                                    //                   ColorConstants.redColor,
-                                    //             ),
-                                    //           ),
-                                    //           focusedErrorBorder:
-                                    //               OutlineInputBorder(
-                                    //             borderRadius: BorderRadius.all(
-                                    //                 Radius.circular(8.sp)),
-                                    //             borderSide: BorderSide(
-                                    //               width: 1.sp,
-                                    //               color:
-                                    //                   ColorConstants.redColor,
-                                    //             ),
-                                    //           ),
-                                    //         ),
-                                    //       );
-                                    //     }),
-                                    // /* Payment Status Input Field */
-
-                                    SizedBox(
-                                      height: 16.sp,
-                                    ),
-
-                                    /* Amount To be Paid Input Field */
-                                    (updatePaymentDetailsBloc.userData
-                                                    ?.showAmtToPaidBy !=
-                                                null &&
-                                            updatePaymentDetailsBloc.userData
-                                                    ?.showAmtToPaidBy ==
-                                                true)
-                                        ? Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                updatePaymentDetailsBloc
-                                                    .amtTobePaidText,
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 10.sp,
-                                                  color: ColorConstants
-                                                      .lightBlackColor,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
+                                              hintText: updatePaymentDetailsBloc
+                                                  .paymentDatePlaceholderText,
+                                              hintStyle: TextStyle(
+                                                color:
+                                                    ColorConstants.blackColor,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.normal,
+                                                fontSize: 10.sp,
                                               ),
-                                              (updatePaymentDetailsBloc
-                                                              .userData?.type !=
-                                                          null &&
-                                                      updatePaymentDetailsBloc
-                                                              .userData?.type ==
-                                                          "1")
-                                                  ? ValueListenableBuilder(
-                                                      valueListenable:
-                                                          refreshAmtStatusInputFields,
-                                                      builder:
-                                                          (context, vals, _) {
-                                                        return DropdownButtonFormField<
-                                                            String>(
-                                                          value:
-                                                              selectedAmtPaidByModeIDValue,
-                                                          focusNode:
-                                                              _amtPaidBYStatusFocusNode,
-                                                          hint: Text(
-                                                            updatePaymentDetailsBloc
-                                                                .amtTobePaidPlaceholderText,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  ColorConstants
-                                                                      .blackColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 10.sp,
-                                                            ),
-                                                          ),
-                                                          onChanged: (String?
-                                                              newValue) {
-                                                            selectedAmtPaidByModeIDValue =
-                                                                newValue;
-                                                            refreshAmtStatusInputFields
-                                                                    .value =
-                                                                !refreshAmtStatusInputFields
-                                                                    .value;
-                                                            updatePaymentDetailsBloc
-                                                                .add(
-                                                                    GetPaymentDetailsEvent(
-                                                              cusID: widget
-                                                                  .customerID,
-                                                              type: widget.type,
-                                                              amtType:
-                                                                  selectedAmtPaidByModeIDValue,
-                                                              showLoader: true,
-                                                            ));
-                                                          },
-                                                          onSaved: (String?
-                                                              newValue) {
-                                                            selectedAmtPaidByModeIDValue =
-                                                                newValue;
-                                                          },
-                                                          validator:
-                                                              (String? value) {
-                                                            if (value == null ||
-                                                                value.isEmpty ||
-                                                                value == "0") {
-                                                              return 'Please choose a valid Amount to be Paid by Status';
-                                                            }
-                                                            return null;
-                                                          },
-                                                          items: amtModeOptions1.map<
-                                                                  DropdownMenuItem<
-                                                                      String>>(
-                                                              (option) {
-                                                            return DropdownMenuItem<
-                                                                String>(
-                                                              value: option[
-                                                                  'id'], // Using the id as the value
-                                                              child: Text(
-                                                                option['title'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: ColorConstants
-                                                                      .blackColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontStyle:
-                                                                      FontStyle
-                                                                          .normal,
-                                                                  fontSize:
-                                                                      10.sp,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          }).toList(),
-                                                          decoration:
-                                                              InputDecoration(
-                                                            errorStyle:
-                                                                TextStyle(
-                                                              color:
-                                                                  ColorConstants
-                                                                      .redColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 10.sp,
-                                                            ),
-                                                            filled: true,
-                                                            fillColor:
-                                                                ColorConstants
-                                                                    .whiteColor,
-                                                            focusedBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color: ColorConstants
-                                                                    .lightShadeBlueColor,
-                                                              ),
-                                                            ),
-                                                            disabledBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color: ColorConstants
-                                                                    .lightShadeBlueColor,
-                                                              ),
-                                                            ),
-                                                            enabledBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color: ColorConstants
-                                                                    .lightShadeBlueColor,
-                                                              ),
-                                                            ),
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                              ),
-                                                            ),
-                                                            errorBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color:
-                                                                    ColorConstants
-                                                                        .redColor,
-                                                              ),
-                                                            ),
-                                                            focusedErrorBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color:
-                                                                    ColorConstants
-                                                                        .redColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      })
-                                                  : ValueListenableBuilder(
-                                                      valueListenable:
-                                                          refreshAmtStatusInputFields,
-                                                      builder:
-                                                          (context, vals, _) {
-                                                        return DropdownButtonFormField<
-                                                            String>(
-                                                          value:
-                                                              selectedAmtPaidByModeIDValue,
-                                                          focusNode:
-                                                              _amtPaidBYStatusFocusNode,
-                                                          hint: Text(
-                                                            updatePaymentDetailsBloc
-                                                                .amtTobePaidPlaceholderText,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  ColorConstants
-                                                                      .blackColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 10.sp,
-                                                            ),
-                                                          ),
-                                                          onChanged: (String?
-                                                              newValue) {
-                                                            selectedAmtPaidByModeIDValue =
-                                                                newValue;
-                                                            refreshAmtStatusInputFields
-                                                                    .value =
-                                                                !refreshAmtStatusInputFields
-                                                                    .value;
-                                                            updatePaymentDetailsBloc
-                                                                .add(
-                                                                    GetPaymentDetailsEvent(
-                                                              cusID: widget
-                                                                  .customerID,
-                                                              type: widget.type,
-                                                              amtType:
-                                                                  selectedAmtPaidByModeIDValue,
-                                                              showLoader: true,
-                                                            ));
-                                                          },
-                                                          onSaved: (String?
-                                                              newValue) {
-                                                            selectedAmtPaidByModeIDValue =
-                                                                newValue;
-                                                          },
-                                                          validator:
-                                                              (String? value) {
-                                                            if (value == null ||
-                                                                value.isEmpty ||
-                                                                value == "0") {
-                                                              return 'Please choose a valid Amount to be Paid by Status';
-                                                            }
-                                                            return null;
-                                                          },
-                                                          items: amtModeOptions2.map<
-                                                                  DropdownMenuItem<
-                                                                      String>>(
-                                                              (option) {
-                                                            return DropdownMenuItem<
-                                                                String>(
-                                                              value: option[
-                                                                  'id'], // Using the id as the value
-                                                              child: Text(
-                                                                option['title'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: ColorConstants
-                                                                      .blackColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontStyle:
-                                                                      FontStyle
-                                                                          .normal,
-                                                                  fontSize:
-                                                                      10.sp,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          }).toList(),
-                                                          decoration:
-                                                              InputDecoration(
-                                                            errorStyle:
-                                                                TextStyle(
-                                                              color:
-                                                                  ColorConstants
-                                                                      .redColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 10.sp,
-                                                            ),
-                                                            filled: true,
-                                                            fillColor:
-                                                                ColorConstants
-                                                                    .whiteColor,
-                                                            focusedBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color: ColorConstants
-                                                                    .lightShadeBlueColor,
-                                                              ),
-                                                            ),
-                                                            disabledBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color: ColorConstants
-                                                                    .lightShadeBlueColor,
-                                                              ),
-                                                            ),
-                                                            enabledBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color: ColorConstants
-                                                                    .lightShadeBlueColor,
-                                                              ),
-                                                            ),
-                                                            border:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                              ),
-                                                            ),
-                                                            errorBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color:
-                                                                    ColorConstants
-                                                                        .redColor,
-                                                              ),
-                                                            ),
-                                                            focusedErrorBorder:
-                                                                OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8.sp)),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1.sp,
-                                                                color:
-                                                                    ColorConstants
-                                                                        .redColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }),
-                                            ],
-                                          )
-                                        : const SizedBox.shrink(),
-                                    /* Amount To be Paid Input Field */
+                                            ),
+                                            readOnly: true,
+                                            focusNode: _dateInputFocusNode,
+                                            style: TextStyle(
+                                              color: ColorConstants.blackColor,
+                                              fontWeight: FontWeight.w600,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 10.sp,
+                                            ),
+                                            //set it true, so that user will not able to edit text
+                                            onTap: () async {
+                                              // DateTime? pickedDate =
+                                              //     await showDatePicker(
+                                              //   context: context,
+                                              //   initialDate: DateTime.now(),
+                                              //   firstDate: DateTime(2010),
+                                              //   //DateTime.now() - not to allow to choose before today.
+                                              //   lastDate: DateTime.now(),
+                                              // );
 
-                                    SizedBox(
-                                      height: 32.sp,
-                                    ),
-                                  ],
+                                              // if (pickedDate != null) {
+                                              //   //pickedDate output format => 2021-03-10 00:00:00.000
+                                              //   String formattedDate =
+                                              //       DateFormat('dd/MM/yyyy')
+                                              //           .format(pickedDate);
+                                              //   //formatted date output using intl package =>  2021-03-16
+                                              //   setState(
+                                              //     () {
+                                              //       _dateInput.text =
+                                              //           formattedDate; //set output date to TextField value.
+                                              //     },
+                                              //   );
+                                              // }
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Please select a payment date';
+                                              }
+                                              // You can add more complex validation if needed, such as checking date ranges.
+                                              return null;
+                                            },
+                                          ),
+                                          /* Amount Paid Date Input Field */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          // /* Payment Type Input Field */
+                                          // Text(
+                                          //   updatePaymentDetailsBloc.paymentTypeText,
+                                          //   textAlign: TextAlign.center,
+                                          //   style: TextStyle(
+                                          //     fontSize: 10.sp,
+                                          //     color: ColorConstants.lightBlackColor,
+                                          //     fontWeight: FontWeight.w500,
+                                          //   ),
+                                          // ),
+                                          // DropdownButtonFormField<String>(
+                                          //   value: selectedPaymentTypeIDValue,
+                                          //   focusNode: _paymentTypeFocusNode,
+                                          //   hint: Text(
+                                          //     updatePaymentDetailsBloc
+                                          //         .paymentTypePlaceholderText,
+                                          //     style: TextStyle(
+                                          //       color: ColorConstants.blackColor,
+                                          //       fontWeight: FontWeight.w400,
+                                          //       fontStyle: FontStyle.normal,
+                                          //       fontSize: 10.sp,
+                                          //     ),
+                                          //   ),
+                                          //   onChanged: (String? newValue) {
+                                          //     setState(() {
+                                          //       selectedPaymentTypeIDValue = newValue;
+                                          //     });
+                                          //   },
+                                          //   onSaved: (String? newValue) {
+                                          //     selectedPaymentTypeIDValue = newValue;
+                                          //   },
+                                          //   validator: (String? value) {
+                                          //     if (value == null ||
+                                          //         value.isEmpty ||
+                                          //         value == "0") {
+                                          //       return 'Please choose a valid Payment Type';
+                                          //     }
+                                          //     return null;
+                                          //   },
+                                          //   items: paymentTypeOptions
+                                          //       .map<DropdownMenuItem<String>>(
+                                          //           (option) {
+                                          //     return DropdownMenuItem<String>(
+                                          //       value: option[
+                                          //           'id'], // Using the id as the value
+                                          //       child: Text(
+                                          //         option['title'],
+                                          //         style: TextStyle(
+                                          //           color: ColorConstants.blackColor,
+                                          //           fontWeight: FontWeight.w600,
+                                          //           fontStyle: FontStyle.normal,
+                                          //           fontSize: 10.sp,
+                                          //         ),
+                                          //       ),
+                                          //     );
+                                          //   }).toList(),
+                                          //   decoration: InputDecoration(
+                                          //     errorStyle: TextStyle(
+                                          //       color: ColorConstants.redColor,
+                                          //       fontWeight: FontWeight.w400,
+                                          //       fontStyle: FontStyle.normal,
+                                          //       fontSize: 10.sp,
+                                          //     ),
+                                          //     filled: true,
+                                          //     fillColor: ColorConstants.whiteColor,
+                                          //     focusedBorder: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8.sp)),
+                                          //       borderSide: BorderSide(
+                                          //         width: 1.sp,
+                                          //         color: ColorConstants
+                                          //             .lightShadeBlueColor,
+                                          //       ),
+                                          //     ),
+                                          //     disabledBorder: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8.sp)),
+                                          //       borderSide: BorderSide(
+                                          //         width: 1.sp,
+                                          //         color: ColorConstants
+                                          //             .lightShadeBlueColor,
+                                          //       ),
+                                          //     ),
+                                          //     enabledBorder: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8.sp)),
+                                          //       borderSide: BorderSide(
+                                          //         width: 1.sp,
+                                          //         color: ColorConstants
+                                          //             .lightShadeBlueColor,
+                                          //       ),
+                                          //     ),
+                                          //     border: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8.sp)),
+                                          //       borderSide: BorderSide(
+                                          //         width: 1.sp,
+                                          //       ),
+                                          //     ),
+                                          //     errorBorder: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8.sp)),
+                                          //       borderSide: BorderSide(
+                                          //         width: 1.sp,
+                                          //         color: ColorConstants.redColor,
+                                          //       ),
+                                          //     ),
+                                          //     focusedErrorBorder: OutlineInputBorder(
+                                          //       borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8.sp)),
+                                          //       borderSide: BorderSide(
+                                          //         width: 1.sp,
+                                          //         color: ColorConstants.redColor,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                          // /* Payment Type Input Field */
+
+                                          /* Payment Collection Date */
+                                          Text(
+                                            "Payment Collection Date",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: Colors.grey[800],
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          ValueListenableBuilder(
+                                              valueListenable:
+                                                  refreshDateCollectionInputFields,
+                                              builder: (context, val, _) {
+                                                return TextFormField(
+                                                  controller:
+                                                      _dateCollectionInput,
+                                                  decoration: InputDecoration(
+                                                    suffixIcon: const Icon(
+                                                      Icons.calendar_month,
+                                                      color: ColorConstants
+                                                          .darkBlueColor,
+                                                    ),
+                                                    errorStyle: TextStyle(
+                                                      color: Colors.red,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 10.sp,
+                                                    ),
+                                                    filled: true,
+                                                    fillColor: Colors.white,
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .lightShadeBlueColor,
+                                                      ),
+                                                    ),
+                                                    disabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .lightShadeBlueColor,
+                                                      ),
+                                                    ),
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .lightShadeBlueColor,
+                                                      ),
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                      ),
+                                                    ),
+                                                    errorBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .redColor,
+                                                      ),
+                                                    ),
+                                                    focusedErrorBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .redColor,
+                                                      ),
+                                                    ),
+                                                    hintText: "Select a date",
+                                                    hintStyle: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 10.sp,
+                                                    ),
+                                                  ),
+                                                  readOnly:
+                                                      false, // Prevent manual text input
+                                                  focusNode:
+                                                      _dateCollectionFocusNode,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 10.sp,
+                                                  ),
+                                                  onTap: () async {
+                                                    DateTime? pickedDate =
+                                                        await showDatePicker(
+                                                      context: context,
+                                                      initialDate:
+                                                          DateTime.now(),
+                                                      firstDate: DateTime(2010),
+                                                      lastDate: DateTime.now(),
+                                                    );
+
+                                                    if (pickedDate != null) {
+                                                      String formattedDate =
+                                                          DateFormat(
+                                                                  'dd/MM/yyyy')
+                                                              .format(
+                                                                  pickedDate);
+
+                                                      _dateCollectionInput
+                                                          .text = formattedDate;
+                                                      refreshDateCollectionInputFields
+                                                              .value =
+                                                          !refreshDateCollectionInputFields
+                                                              .value;
+                                                    }
+                                                  },
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please select a payment collection date';
+                                                    }
+                                                    return null;
+                                                  },
+                                                );
+                                              }),
+                                          /* Payment Collection Date */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          /* Payment Mode Input Field */
+                                          Text(
+                                            updatePaymentDetailsBloc
+                                                .paymentModeText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          ValueListenableBuilder(
+                                              valueListenable:
+                                                  refreshPaymentModeInputFields,
+                                              builder: (context, vals, _) {
+                                                return DropdownButtonFormField<
+                                                    String>(
+                                                  value:
+                                                      selectedPaymentModeIDValue,
+                                                  focusNode:
+                                                      _paymentModeFocusNode,
+                                                  hint: Text(
+                                                    updatePaymentDetailsBloc
+                                                        .paymentModePlaceholderText,
+                                                    style: TextStyle(
+                                                      color: ColorConstants
+                                                          .blackColor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 10.sp,
+                                                    ),
+                                                  ),
+                                                  onChanged:
+                                                      (String? newValue) {
+                                                    selectedPaymentModeIDValue =
+                                                        newValue;
+                                                    refreshPaymentModeInputFields
+                                                            .value =
+                                                        !refreshPaymentModeInputFields
+                                                            .value;
+                                                  },
+                                                  onSaved: (String? newValue) {
+                                                    selectedPaymentModeIDValue =
+                                                        newValue;
+                                                  },
+                                                  validator: (String? value) {
+                                                    if (value == null ||
+                                                        value.isEmpty ||
+                                                        value == "0") {
+                                                      return 'Please choose a valid Payment Mode';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  items: paymentModeOptions.map<
+                                                      DropdownMenuItem<
+                                                          String>>((option) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: option[
+                                                          'id'], // Using the id as the value
+                                                      child: Text(
+                                                        option['title'],
+                                                        style: TextStyle(
+                                                          color: ColorConstants
+                                                              .blackColor,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontStyle:
+                                                              FontStyle.normal,
+                                                          fontSize: 10.sp,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  decoration: InputDecoration(
+                                                    errorStyle: TextStyle(
+                                                      color: ColorConstants
+                                                          .redColor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 10.sp,
+                                                    ),
+                                                    filled: true,
+                                                    fillColor: ColorConstants
+                                                        .whiteColor,
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .lightShadeBlueColor,
+                                                      ),
+                                                    ),
+                                                    disabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .lightShadeBlueColor,
+                                                      ),
+                                                    ),
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .lightShadeBlueColor,
+                                                      ),
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                      ),
+                                                    ),
+                                                    errorBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .redColor,
+                                                      ),
+                                                    ),
+                                                    focusedErrorBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.sp)),
+                                                      borderSide: BorderSide(
+                                                        width: 1.sp,
+                                                        color: ColorConstants
+                                                            .redColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                          /* Payment Mode Input Field */
+
+                                          // SizedBox(
+                                          //   height: 16.sp,
+                                          // ),
+
+                                          // /* Payment Status Input Field */
+                                          // Text(
+                                          //   updatePaymentDetailsBloc
+                                          //       .paymentStatusText,
+                                          //   textAlign: TextAlign.center,
+                                          //   style: TextStyle(
+                                          //     fontSize: 10.sp,
+                                          //     color: ColorConstants.lightBlackColor,
+                                          //     fontWeight: FontWeight.w500,
+                                          //   ),
+                                          // ),
+                                          // ValueListenableBuilder(
+                                          //     valueListenable:
+                                          //         refreshPaymentStatusInputFields,
+                                          //     builder: (context, vals, _) {
+                                          //       return DropdownButtonFormField<
+                                          //           String>(
+                                          //         value: selectedPaymentStatusIDValue,
+                                          //         focusNode: _paymentStatusFocusNode,
+                                          //         hint: Text(
+                                          //           updatePaymentDetailsBloc
+                                          //               .paymentStatusPlaceholderText,
+                                          //           style: TextStyle(
+                                          //             color:
+                                          //                 ColorConstants.blackColor,
+                                          //             fontWeight: FontWeight.w400,
+                                          //             fontStyle: FontStyle.normal,
+                                          //             fontSize: 10.sp,
+                                          //           ),
+                                          //         ),
+                                          //         onChanged: (String? newValue) {
+                                          //           selectedPaymentStatusIDValue =
+                                          //               newValue;
+                                          //           refreshPaymentStatusInputFields
+                                          //                   .value =
+                                          //               !refreshPaymentStatusInputFields
+                                          //                   .value;
+                                          //         },
+                                          //         onSaved: (String? newValue) {
+                                          //           selectedPaymentStatusIDValue =
+                                          //               newValue;
+                                          //         },
+                                          //         validator: (String? value) {
+                                          //           if (value == null ||
+                                          //               value.isEmpty ||
+                                          //               value == "0") {
+                                          //             return 'Please choose a valid Payment Status';
+                                          //           }
+                                          //           return null;
+                                          //         },
+                                          //         items: paymentStatusOptions
+                                          //             .map<DropdownMenuItem<String>>(
+                                          //                 (option) {
+                                          //           return DropdownMenuItem<String>(
+                                          //             value: option[
+                                          //                 'id'], // Using the id as the value
+                                          //             child: Text(
+                                          //               option['title'],
+                                          //               style: TextStyle(
+                                          //                 color: ColorConstants
+                                          //                     .blackColor,
+                                          //                 fontWeight: FontWeight.w600,
+                                          //                 fontStyle: FontStyle.normal,
+                                          //                 fontSize: 10.sp,
+                                          //               ),
+                                          //             ),
+                                          //           );
+                                          //         }).toList(),
+                                          //         decoration: InputDecoration(
+                                          //           errorStyle: TextStyle(
+                                          //             color: ColorConstants.redColor,
+                                          //             fontWeight: FontWeight.w400,
+                                          //             fontStyle: FontStyle.normal,
+                                          //             fontSize: 10.sp,
+                                          //           ),
+                                          //           filled: true,
+                                          //           fillColor:
+                                          //               ColorConstants.whiteColor,
+                                          //           focusedBorder: OutlineInputBorder(
+                                          //             borderRadius: BorderRadius.all(
+                                          //                 Radius.circular(8.sp)),
+                                          //             borderSide: BorderSide(
+                                          //               width: 1.sp,
+                                          //               color: ColorConstants
+                                          //                   .lightShadeBlueColor,
+                                          //             ),
+                                          //           ),
+                                          //           disabledBorder:
+                                          //               OutlineInputBorder(
+                                          //             borderRadius: BorderRadius.all(
+                                          //                 Radius.circular(8.sp)),
+                                          //             borderSide: BorderSide(
+                                          //               width: 1.sp,
+                                          //               color: ColorConstants
+                                          //                   .lightShadeBlueColor,
+                                          //             ),
+                                          //           ),
+                                          //           enabledBorder: OutlineInputBorder(
+                                          //             borderRadius: BorderRadius.all(
+                                          //                 Radius.circular(8.sp)),
+                                          //             borderSide: BorderSide(
+                                          //               width: 1.sp,
+                                          //               color: ColorConstants
+                                          //                   .lightShadeBlueColor,
+                                          //             ),
+                                          //           ),
+                                          //           border: OutlineInputBorder(
+                                          //             borderRadius: BorderRadius.all(
+                                          //                 Radius.circular(8.sp)),
+                                          //             borderSide: BorderSide(
+                                          //               width: 1.sp,
+                                          //             ),
+                                          //           ),
+                                          //           errorBorder: OutlineInputBorder(
+                                          //             borderRadius: BorderRadius.all(
+                                          //                 Radius.circular(8.sp)),
+                                          //             borderSide: BorderSide(
+                                          //               width: 1.sp,
+                                          //               color:
+                                          //                   ColorConstants.redColor,
+                                          //             ),
+                                          //           ),
+                                          //           focusedErrorBorder:
+                                          //               OutlineInputBorder(
+                                          //             borderRadius: BorderRadius.all(
+                                          //                 Radius.circular(8.sp)),
+                                          //             borderSide: BorderSide(
+                                          //               width: 1.sp,
+                                          //               color:
+                                          //                   ColorConstants.redColor,
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       );
+                                          //     }),
+                                          // /* Payment Status Input Field */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          /* Amount To be Paid Input Field */
+                                          (updatePaymentDetailsBloc.userData
+                                                          ?.showAmtToPaidBy !=
+                                                      null &&
+                                                  updatePaymentDetailsBloc
+                                                          .userData
+                                                          ?.showAmtToPaidBy ==
+                                                      true)
+                                              ? Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      updatePaymentDetailsBloc
+                                                          .amtTobePaidText,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 10.sp,
+                                                        color: ColorConstants
+                                                            .lightBlackColor,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    (updatePaymentDetailsBloc
+                                                                    .userData
+                                                                    ?.type !=
+                                                                null &&
+                                                            updatePaymentDetailsBloc
+                                                                    .userData
+                                                                    ?.type ==
+                                                                "1")
+                                                        ? ValueListenableBuilder(
+                                                            valueListenable:
+                                                                refreshAmtStatusInputFields,
+                                                            builder: (context,
+                                                                vals, _) {
+                                                              return DropdownButtonFormField<
+                                                                  String>(
+                                                                value:
+                                                                    selectedAmtPaidByModeIDValue,
+                                                                focusNode:
+                                                                    _amtPaidBYStatusFocusNode,
+                                                                hint: Text(
+                                                                  updatePaymentDetailsBloc
+                                                                      .amtTobePaidPlaceholderText,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: ColorConstants
+                                                                        .blackColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        10.sp,
+                                                                  ),
+                                                                ),
+                                                                onChanged: (String?
+                                                                    newValue) {
+                                                                  selectedAmtPaidByModeIDValue =
+                                                                      newValue;
+                                                                  refreshAmtStatusInputFields
+                                                                          .value =
+                                                                      !refreshAmtStatusInputFields
+                                                                          .value;
+                                                                  updatePaymentDetailsBloc
+                                                                      .add(
+                                                                          GetPaymentDetailsEvent(
+                                                                    cusID: widget
+                                                                        .customerID,
+                                                                    type: widget
+                                                                        .type,
+                                                                    amtType:
+                                                                        selectedAmtPaidByModeIDValue,
+                                                                    showLoader:
+                                                                        true,
+                                                                  ));
+                                                                },
+                                                                onSaved: (String?
+                                                                    newValue) {
+                                                                  selectedAmtPaidByModeIDValue =
+                                                                      newValue;
+                                                                },
+                                                                validator:
+                                                                    (String?
+                                                                        value) {
+                                                                  if (value ==
+                                                                          null ||
+                                                                      value
+                                                                          .isEmpty ||
+                                                                      value ==
+                                                                          "0") {
+                                                                    return 'Please choose a valid Amount to be Paid by Status';
+                                                                  }
+                                                                  return null;
+                                                                },
+                                                                items: amtModeOptions1.map<
+                                                                        DropdownMenuItem<
+                                                                            String>>(
+                                                                    (option) {
+                                                                  return DropdownMenuItem<
+                                                                      String>(
+                                                                    value: option[
+                                                                        'id'], // Using the id as the value
+                                                                    child: Text(
+                                                                      option[
+                                                                          'title'],
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: ColorConstants
+                                                                            .blackColor,
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                        fontStyle:
+                                                                            FontStyle.normal,
+                                                                        fontSize:
+                                                                            10.sp,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  errorStyle:
+                                                                      TextStyle(
+                                                                    color: ColorConstants
+                                                                        .redColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        10.sp,
+                                                                  ),
+                                                                  filled: true,
+                                                                  fillColor:
+                                                                      ColorConstants
+                                                                          .whiteColor,
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .lightShadeBlueColor,
+                                                                    ),
+                                                                  ),
+                                                                  disabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .lightShadeBlueColor,
+                                                                    ),
+                                                                  ),
+                                                                  enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .lightShadeBlueColor,
+                                                                    ),
+                                                                  ),
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                    ),
+                                                                  ),
+                                                                  errorBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .redColor,
+                                                                    ),
+                                                                  ),
+                                                                  focusedErrorBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .redColor,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            })
+                                                        : ValueListenableBuilder(
+                                                            valueListenable:
+                                                                refreshAmtStatusInputFields,
+                                                            builder: (context,
+                                                                vals, _) {
+                                                              return DropdownButtonFormField<
+                                                                  String>(
+                                                                value:
+                                                                    selectedAmtPaidByModeIDValue,
+                                                                focusNode:
+                                                                    _amtPaidBYStatusFocusNode,
+                                                                hint: Text(
+                                                                  updatePaymentDetailsBloc
+                                                                      .amtTobePaidPlaceholderText,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: ColorConstants
+                                                                        .blackColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        10.sp,
+                                                                  ),
+                                                                ),
+                                                                onChanged: (String?
+                                                                    newValue) {
+                                                                  selectedAmtPaidByModeIDValue =
+                                                                      newValue;
+                                                                  refreshAmtStatusInputFields
+                                                                          .value =
+                                                                      !refreshAmtStatusInputFields
+                                                                          .value;
+                                                                  updatePaymentDetailsBloc
+                                                                      .add(
+                                                                          GetPaymentDetailsEvent(
+                                                                    cusID: widget
+                                                                        .customerID,
+                                                                    type: widget
+                                                                        .type,
+                                                                    amtType:
+                                                                        selectedAmtPaidByModeIDValue,
+                                                                    showLoader:
+                                                                        true,
+                                                                  ));
+                                                                },
+                                                                onSaved: (String?
+                                                                    newValue) {
+                                                                  selectedAmtPaidByModeIDValue =
+                                                                      newValue;
+                                                                },
+                                                                validator:
+                                                                    (String?
+                                                                        value) {
+                                                                  if (value ==
+                                                                          null ||
+                                                                      value
+                                                                          .isEmpty ||
+                                                                      value ==
+                                                                          "0") {
+                                                                    return 'Please choose a valid Amount to be Paid by Status';
+                                                                  }
+                                                                  return null;
+                                                                },
+                                                                items: amtModeOptions2.map<
+                                                                        DropdownMenuItem<
+                                                                            String>>(
+                                                                    (option) {
+                                                                  return DropdownMenuItem<
+                                                                      String>(
+                                                                    value: option[
+                                                                        'id'], // Using the id as the value
+                                                                    child: Text(
+                                                                      option[
+                                                                          'title'],
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: ColorConstants
+                                                                            .blackColor,
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                        fontStyle:
+                                                                            FontStyle.normal,
+                                                                        fontSize:
+                                                                            10.sp,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  errorStyle:
+                                                                      TextStyle(
+                                                                    color: ColorConstants
+                                                                        .redColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        10.sp,
+                                                                  ),
+                                                                  filled: true,
+                                                                  fillColor:
+                                                                      ColorConstants
+                                                                          .whiteColor,
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .lightShadeBlueColor,
+                                                                    ),
+                                                                  ),
+                                                                  disabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .lightShadeBlueColor,
+                                                                    ),
+                                                                  ),
+                                                                  enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .lightShadeBlueColor,
+                                                                    ),
+                                                                  ),
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                    ),
+                                                                  ),
+                                                                  errorBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .redColor,
+                                                                    ),
+                                                                  ),
+                                                                  focusedErrorBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(8.sp)),
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width:
+                                                                          1.sp,
+                                                                      color: ColorConstants
+                                                                          .redColor,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }),
+                                                  ],
+                                                )
+                                              : const SizedBox.shrink(),
+                                          /* Amount To be Paid Input Field */
+
+                                          SizedBox(
+                                            height: 32.sp,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (state is UpdatePaymentDetailsNoInternet) {
-                  return noInternetWidget(
-                    context: context,
-                    retryAction: () =>
-                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
-                      cusID: widget.customerID,
-                      type: widget.type,
-                    )),
-                    state: 1,
-                  );
-                } else {
-                  return noInternetWidget(
-                    context: context,
-                    retryAction: () =>
-                        updatePaymentDetailsBloc.add(GetPaymentDetailsEvent(
-                      cusID: widget.customerID,
-                      type: widget.type,
-                    )),
-                    state: 2,
-                  );
-                }
-              },
+                        );
+                      } else if (state is UpdatePaymentDetailsNoInternet) {
+                        return noInternetWidget(
+                          context: context,
+                          retryAction: () => updatePaymentDetailsBloc
+                              .add(GetPaymentDetailsEvent(
+                            cusID: widget.customerID,
+                            type: widget.type,
+                          )),
+                          state: 1,
+                        );
+                      } else {
+                        return noInternetWidget(
+                          context: context,
+                          retryAction: () => updatePaymentDetailsBloc
+                              .add(GetPaymentDetailsEvent(
+                            cusID: widget.customerID,
+                            type: widget.type,
+                          )),
+                          state: 2,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -1819,6 +1958,7 @@ class _UpdateCustomersPaymentDetailsScreenState
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
+      setIsLoading(true);
       isDisabled.value = false;
 
       var result = await NetworkService().updatePaymentDetails(
@@ -1846,8 +1986,9 @@ class _UpdateCustomersPaymentDetailsScreenState
             isError: false,
           );
         }
+
         // All validations passed, navigate to the next screen
-        Future.delayed(const Duration(seconds: 1)).then((value) {
+        await Future.delayed(const Duration(seconds: 1)).then((value) {
           Map<String, dynamic> data = {};
           data = {
             "tab_index": 0,
@@ -1857,8 +1998,10 @@ class _UpdateCustomersPaymentDetailsScreenState
             RoutingConstants.routeDashboardScreen,
             arguments: {"data": data},
           );
+          setIsLoading(false);
         });
       } else {
+        setIsLoading(false);
         if (!mounted) return;
         ToastUtil().showSnackBar(
           context: context,
@@ -1878,10 +2021,10 @@ class _UpdateCustomersPaymentDetailsScreenState
         _showErrorAndFocus(_agentCodeFocusNode, agentCodeError);
       } else if (amtPaidError != null) {
         _showErrorAndFocus(_amtPaidFocusNode, amtPaidError);
-      } 
+      }
       // else if (amtDueError != null) {
       //   _showErrorAndFocus(_amtDueFocusNode, amtDueError);
-      // } 
+      // }
       else if (_dateInput.text.isEmpty) {
         _showErrorAndFocus(_dateInputFocusNode, "Please select Payment Date");
       } else if (_dateCollectionInput.text.isEmpty) {
