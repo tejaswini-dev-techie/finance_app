@@ -48,6 +48,7 @@ class CustomerProfileVerificationBloc extends Bloc<
         await NetworkService()
             .verifyCustomerDetailsListService(
           page: event.page,
+          searchKey: event.searchKey ?? "",
         )
             .then((VerifyInformationDetailsDataModel? responseObj) {
           if (responseObj != null && responseObj.status == true) {

@@ -1913,10 +1913,12 @@ class NetworkService {
   };
   Future<VerifyInformationDetailsDataModel> verifyCustomerDetailsListService({
     required int? page,
+    required String? searchKey,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['page'] = "$page";
+        paramsKeyVal['search_key'] = "$searchKey";
         return _network
             .httpGetQuery(
           apiHitTimeout,

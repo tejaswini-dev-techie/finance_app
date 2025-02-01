@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hp_finance/Constants/color_constants.dart';
 import 'package:hp_finance/Constants/image_constants.dart';
 import 'package:hp_finance/Constants/routing_constants.dart';
 import 'package:hp_finance/Screens/CustomerProfileVerification/bloc/customer_profile_verification_bloc.dart';
+import 'package:hp_finance/Screens/LoginScreen/text_input_field.dart';
 import 'package:hp_finance/Utils/internet_util.dart';
 import 'package:hp_finance/Utils/toast_util.dart';
 import 'package:hp_finance/Utils/widgets_util/no_internet_widget.dart';
@@ -23,18 +27,35 @@ class _CustomerProfileVerificationState
   final CustomerProfileVerificationBloc customerProfileVerificationBloc =
       CustomerProfileVerificationBloc();
 
+  String searchText = "Search Name, Phone Number";
+
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+
   /* Controllers */
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  Timer? searchOnStoppedTyping;
+
   @override
   void initState() {
-    customerProfileVerificationBloc.add(GetCustomerVerificationDetails());
+    customerProfileVerificationBloc.add(GetCustomerVerificationDetails(
+      searchKey: _searchController.text.trim(),
+      showLoading: true,
+      page: 1,
+    ));
     super.initState();
   }
 
   @override
   void dispose() {
+    searchOnStoppedTyping?.cancel();
+    if (searchOnStoppedTyping != null) {
+      searchOnStoppedTyping!.cancel();
+    }
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     customerProfileVerificationBloc.close();
     _refreshController.dispose();
     super.dispose();
@@ -86,23 +107,120 @@ class _CustomerProfileVerificationState
                       color: ColorConstants.darkBlueColor,
                     ),
                   ),
-                  const Spacer(),
-                  Text(
-                    "Verify Information",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: ColorConstants.blackColor,
-                      fontWeight: FontWeight.w700,
+                  SizedBox(
+                    width: 10.sp,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 6.sp),
+                      child: TextInputField(
+                        textEditingController: _searchController,
+                        focusnodes: _searchFocusNode,
+                        placeholderText: searchText,
+                        obscureTextVal: false,
+                        keyboardtype: TextInputType.text,
+                        textcapitalization: TextCapitalization.words,
+                        onChangeFunc: (val) {
+                          const duration = Duration(milliseconds: 500);
+                          searchOnStoppedTyping?.cancel();
+                          searchOnStoppedTyping = Timer(
+                            duration,
+                            () {
+                              customerProfileVerificationBloc
+                                  .add(GetCustomerVerificationDetails(
+                                searchKey: _searchController.text.trim(),
+                                showLoading: true,
+                                page: 1,
+                              ));
+                            },
+                          );
+                        },
+                        validationFunc: (value) {
+                          return null;
+                        },
+                        prefixWidget: const Icon(
+                          Icons.search_rounded,
+                          color: ColorConstants.darkBlueColor,
+                        ),
+                        suffixWidget: InkWell(
+                          onTap: () {
+                            _searchController.clear();
+                            customerProfileVerificationBloc.add(
+                              GetCustomerVerificationDetails(
+                                searchKey: _searchController.text.trim(),
+                                showLoading: true,
+                                page: 1,
+                              ),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.close,
+                            color: ColorConstants.darkBlueColor,
+                          ),
+                        ),
+                        inputFormattersList: <TextInputFormatter>[
+                          FilteringTextInputFormatter.deny(
+                            RegExp(r"\s\s"),
+                          ),
+                          FilteringTextInputFormatter.deny(
+                            RegExp(
+                                r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  SizedBox(
-                    width: 25.sp,
-                  )
                 ],
               ),
             ),
           ),
+
+          // appBar: PreferredSize(
+          //   preferredSize: Size.fromHeight(70.sp),
+          //   child: Container(
+          //     padding: EdgeInsets.symmetric(horizontal: 16.sp),
+          //     width: SizerUtil.width,
+          //     height: 50.sp,
+          //     decoration: BoxDecoration(
+          //       color: ColorConstants.whiteColor,
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: ColorConstants.shadowBlackColor,
+          //           blurRadius: 8.sp,
+          //           offset: const Offset(0, 4),
+          //           spreadRadius: 4.sp,
+          //         )
+          //       ],
+          //     ),
+          //     child: Row(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       mainAxisAlignment: MainAxisAlignment.start,
+          //       children: [
+          //         InkWell(
+          //           onTap: () => backAction(),
+          //           child: Icon(
+          //             Icons.arrow_back_ios_new_sharp,
+          //             size: 16.sp,
+          //             color: ColorConstants.darkBlueColor,
+          //           ),
+          //         ),
+          //         const Spacer(),
+          //         Text(
+          //           "Verify Information",
+          //           style: TextStyle(
+          //             fontSize: 14.sp,
+          //             color: ColorConstants.blackColor,
+          //             fontWeight: FontWeight.w700,
+          //           ),
+          //         ),
+          //         const Spacer(),
+          //         SizedBox(
+          //           width: 25.sp,
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          // ),
           body: BlocBuilder<CustomerProfileVerificationBloc,
               CustomerProfileVerificationState>(
             bloc: customerProfileVerificationBloc,
@@ -121,6 +239,7 @@ class _CustomerProfileVerificationState
                         customerProfileVerificationBloc.saving = true;
                         customerProfileVerificationBloc.add(
                           GetCustomerVerificationDetails(
+                            searchKey: _searchController.text.trim(),
                             page: customerProfileVerificationBloc.page,
                             oldInfoList:
                                 customerProfileVerificationBloc.infoDetList ??
@@ -154,10 +273,12 @@ class _CustomerProfileVerificationState
                       InternetUtil().checkInternetConnection().then(
                         (internet) {
                           if (internet) {
+                            _searchController.clear();
                             customerProfileVerificationBloc.add(
                               GetCustomerVerificationDetails(
                                 page: 1,
                                 showLoading: true,
+                                searchKey: "",
                               ),
                             );
                             _refreshController.refreshCompleted();
@@ -423,6 +544,7 @@ class _CustomerProfileVerificationState
                     GetCustomerVerificationDetails(
                       page: 1,
                       showLoading: true,
+                      searchKey: "",
                     ),
                   ),
                   state: 1,
@@ -434,6 +556,7 @@ class _CustomerProfileVerificationState
                     GetCustomerVerificationDetails(
                       page: 1,
                       showLoading: true,
+                      searchKey: "",
                     ),
                   ),
                   state: 2,
