@@ -658,6 +658,7 @@ class NetworkService {
     String? guarantorAadhaar,
     String? guarantorPan,
     String? guarantorChequeNum,
+    required String? docType,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -715,6 +716,7 @@ class NetworkService {
         paramsKeyVal['guarantorAadhaar'] = guarantorAadhaar;
         paramsKeyVal['guarantorPan'] = guarantorPan;
         paramsKeyVal['guarantorChequeNum'] = guarantorChequeNum;
+        paramsKeyVal['docType'] = docType;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)
@@ -2043,6 +2045,7 @@ class NetworkService {
     required String? guarantorAadhaar,
     required String? guarantorPan,
     required String? guarantorChequeNum,
+    required String? docType,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -2096,6 +2099,7 @@ class NetworkService {
         paramsKeyVal['guarantorAadhaar'] = guarantorAadhaar;
         paramsKeyVal['guarantorPan'] = guarantorPan;
         paramsKeyVal['guarantorChequeNum'] = guarantorChequeNum;
+        paramsKeyVal['docType'] = docType;
         return _network
             .httpPost(
           apiHitTimeout,

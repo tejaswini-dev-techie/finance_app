@@ -522,6 +522,24 @@ class _VerifyCustomersDetailsScreenState
       propertyDocImagePath = response['data']['property_img'] ?? "";
       passBookImagePath = response['data']['pass_book_img'] ?? "";
       signatureImagePath = response['data']['signature_img'] ?? "";
+      _guarantorNameController.text = response['data']['guarantorName'] ?? "";
+      _guarantorPhNumController.text =
+          response['data']['guarantorMobNum'] ?? "";
+      _guarantorAltPhNumController.text =
+          response['data']['guarantorAltMobNum'] ?? "";
+      _guarantorEmailController.text = response['data']['guarantorEmail'] ?? "";
+      _guarantorAddressController.text =
+          response['data']['guarantorAddress'] ?? "";
+      _guarantorChequeNumController.text =
+          response['data']['guarantorChequeNum'] ?? "";
+      _guarantorAadhaarNumController.text =
+          response['data']['guarantorAadhaarNum'] ?? "";
+      _guarantorPanNumController.text =
+          response['data']['guarantorPanNum'] ?? "";
+      selectedDocValue.value = (response['data']['docType'] != null &&
+              response['data']['docType'].isNotEmpty)
+          ? response['data']['docType']
+          : "Select Document Type";
     }
     setState(() {});
   }
@@ -1791,7 +1809,7 @@ class _VerifyCustomersDetailsScreenState
 
                                         /* Agent Name */
                                         Text(
-                                          "Lead - Agent Name",
+                                          "Lead - Agent Phone Number",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 10.sp,
@@ -1803,15 +1821,33 @@ class _VerifyCustomersDetailsScreenState
                                         TextInputField(
                                           focusnodes: _agentNameFocusNode,
                                           suffixWidget: const Icon(
-                                            Icons.person_pin_rounded,
+                                            Icons.phone_locked,
                                             color: ColorConstants.darkBlueColor,
                                           ),
-                                          placeholderText: "Enter Agent Name",
+                                          placeholderText:
+                                              "Enter Agent Phone Number",
                                           textEditingController:
                                               _agentNameController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[6-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
                                           validationFunc: (value) {
                                             return ValidationUtil
-                                                .validateAgentName(value);
+                                                .validateAgentNumber(value);
                                           },
                                         ),
                                       ],
@@ -1831,7 +1867,7 @@ class _VerifyCustomersDetailsScreenState
 
                                         /* Agent Name */
                                         Text(
-                                          "Lead - Agent Name",
+                                          "Lead - Agent Phone Number",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 10.sp,
@@ -1843,15 +1879,33 @@ class _VerifyCustomersDetailsScreenState
                                         TextInputField(
                                           focusnodes: _agentNameFocusNode,
                                           suffixWidget: const Icon(
-                                            Icons.person_pin_rounded,
+                                            Icons.phone_locked,
                                             color: ColorConstants.darkBlueColor,
                                           ),
-                                          placeholderText: "Enter Agent Name",
+                                          placeholderText:
+                                              "Enter Agent Phone Number",
                                           textEditingController:
                                               _agentNameController,
+                                          inputFormattersList: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(
+                                                10),
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[6-9][0-9]*$'),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(r"\s\s"),
+                                            ),
+                                            FilteringTextInputFormatter.deny(
+                                              RegExp(
+                                                  r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                            ),
+                                          ],
+                                          keyboardtype: TextInputType.number,
                                           validationFunc: (value) {
                                             return ValidationUtil
-                                                .validateAgentName(value);
+                                                .validateAgentNumber(value);
                                           },
                                         ),
                                       ],
@@ -4457,8 +4511,11 @@ class _VerifyCustomersDetailsScreenState
 
     String? referenceError =
         ValidationUtil.validateReferenceName(_referenceController.text);
-    String? agentNameError =
-        ValidationUtil.validateAgentName(_agentNameController.text);
+    // String? agentNameError =
+    //     ValidationUtil.validateAgentName(_agentNameController.text);
+
+    String? agentNumError =
+        ValidationUtil.validateAgentNumber(_agentNameController.text);
 
     String? verifiedAgentError =
         ValidationUtil.validateByAgentName(_referenceController.text);
@@ -4561,6 +4618,7 @@ class _VerifyCustomersDetailsScreenState
             guarantorAadhaar: _guarantorAadhaarNumController.text,
             guarantorPan: _guarantorPanNumController.text,
             guarantorChequeNum: _guarantorChequeNumController.text,
+            docType: selectedDocValue.value,
           );
         } else if (widget.type == "2") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
@@ -4612,6 +4670,7 @@ class _VerifyCustomersDetailsScreenState
             guarantorAadhaar: _guarantorAadhaarNumController.text,
             guarantorPan: _guarantorPanNumController.text,
             guarantorChequeNum: _guarantorChequeNumController.text,
+            docType: selectedDocValue.value,
           );
         } else if (widget.type == "3") {
           result = await NetworkService().updateKYCDetails(
@@ -4669,6 +4728,7 @@ class _VerifyCustomersDetailsScreenState
             guarantorAadhaar: _guarantorAadhaarNumController.text,
             guarantorPan: _guarantorPanNumController.text,
             guarantorChequeNum: _guarantorChequeNumController.text,
+            docType: selectedDocValue.value,
           );
         } else {
           result = await NetworkService().updateKYCDetails(
@@ -4712,6 +4772,7 @@ class _VerifyCustomersDetailsScreenState
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
             workLocationLink: _workLocationLinkController.text,
+            docType: selectedDocValue.value,
           );
         }
 
@@ -4849,10 +4910,10 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_propertyDetailsFocusNode, propertyDetailsError);
       } else if ((widget.type == "1") && referenceError != null) {
         _showErrorAndFocus(_referenceFocusNode, referenceError);
-      } else if ((widget.type == "1") && agentNameError != null) {
-        _showErrorAndFocus(_agentNameFocusNode, agentNameError);
-      } else if ((widget.type == "2") && agentNameError != null) {
-        _showErrorAndFocus(_agentNameFocusNode, agentNameError);
+      } else if ((widget.type == "1") && agentNumError != null) {
+        _showErrorAndFocus(_agentNameFocusNode, agentNumError);
+      } else if ((widget.type == "2") && agentNumError != null) {
+        _showErrorAndFocus(_agentNameFocusNode, agentNumError);
       } else if ((widget.type == "3") && verifiedAgentError != null) {
         _showErrorAndFocus(_referenceFocusNode, verifiedAgentError);
       } else if ((widget.type == "3") &&

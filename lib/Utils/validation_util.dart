@@ -51,6 +51,19 @@ class ValidationUtil {
   }
   /* Agent Name Validation */
 
+  /* Agent Number Validation */
+  static String? validateAgentNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Mobile number cannot be empty';
+    } else if (value.length != 10) {
+      return 'Mobile number must be exactly 10 digits';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Mobile number can only contain digits';
+    }
+    return null;
+  }
+  /* Agent Number Validation */
+
   /* Verified By Agent Name Validation */
   static String? validateByAgentName(String? value) {
     if (value == null || value.isEmpty) {
