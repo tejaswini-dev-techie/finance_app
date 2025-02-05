@@ -816,6 +816,8 @@ class NetworkService {
     required String? signatureImage,
     required String? locLink,
     required String? workLocLink,
+    required String? aadhaarNum,
+    required String? panNum,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -855,6 +857,8 @@ class NetworkService {
         paramsKeyVal['signatureImage'] = signatureImage;
         paramsKeyVal['locLink'] = locLink;
         paramsKeyVal['workLocLink'] = workLocLink;
+        paramsKeyVal['aadhaarNum'] = aadhaarNum;
+        paramsKeyVal['panNum'] = panNum;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYURL, body: paramsKeyVal)
             .then(
@@ -908,6 +912,8 @@ class NetworkService {
     required String? signatureImage,
     required String? locLink,
     required String? workLocLink,
+    required String? aadhaarNum,
+    required String? panNum,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -950,6 +956,8 @@ class NetworkService {
         paramsKeyVal['signatureImage'] = signatureImage;
         paramsKeyVal['locLink'] = locLink;
         paramsKeyVal['workLocLink'] = workLocLink;
+        paramsKeyVal['aadhaarNum'] = aadhaarNum;
+        paramsKeyVal['panNum'] = panNum;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
                 body: paramsKeyVal)

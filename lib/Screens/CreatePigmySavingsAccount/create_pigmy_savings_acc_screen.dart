@@ -142,6 +142,8 @@ class _CreatePigmySavingsAccountScreenState
   final TextEditingController _locationLinkController = TextEditingController();
   final TextEditingController _workLocationLinkController =
       TextEditingController();
+  final TextEditingController _aadhaarController = TextEditingController();
+  final TextEditingController _panController = TextEditingController();
   /* TextEditing Controller */
 
   /* Focus Node */
@@ -176,6 +178,8 @@ class _CreatePigmySavingsAccountScreenState
   final FocusNode _bankBranchFocusNode = FocusNode();
   final FocusNode _bankIFSCCodeFocusNode = FocusNode();
   final FocusNode _bankAccNumFocusNode = FocusNode();
+  final FocusNode _aadhaarFocusNode = FocusNode();
+  final FocusNode _panFocusNode = FocusNode();
   /* Focus Node */
 
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
@@ -245,7 +249,8 @@ class _CreatePigmySavingsAccountScreenState
     _accNumController.addListener(_validateFields);
     _bankBranchController.addListener(_validateFields);
     _bankIFSCcodeController.addListener(_validateFields);
-    // _locationLinkController.addListener(_validateFields);
+    _aadhaarController.addListener(_validateFields);
+    _panController.addListener(_validateFields);
   }
 
   void _validateFields() {
@@ -319,6 +324,10 @@ class _CreatePigmySavingsAccountScreenState
     _bankIFSCcodeController.dispose();
     _locationLinkController.dispose();
     _workLocationLinkController.dispose();
+    _aadhaarController.dispose();
+    _panController.dispose();
+    _aadhaarFocusNode.dispose();
+    _panFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
@@ -350,7 +359,8 @@ class _CreatePigmySavingsAccountScreenState
     _accNumController.removeListener(_validateFields);
     _bankBranchController.removeListener(_validateFields);
     _bankIFSCcodeController.removeListener(_validateFields);
-    // _locationLinkController.removeListener(_validateFields);
+    _aadhaarController.removeListener(_validateFields);
+    _panController.removeListener(_validateFields);
 
     _scrollController.dispose();
   }
@@ -739,6 +749,97 @@ class _CreatePigmySavingsAccountScreenState
                                 },
                               ),
                               /* Email Address Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Aadhaar Input Field */
+                              Text(
+                                "Aadhaar Number",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _aadhaarFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.assignment_ind_sharp,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: aadhaarNumPlaceholderText,
+                                textEditingController: _aadhaarController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(12),
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[1-9][0-9]*$'),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                keyboardtype: TextInputType.number,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateAadhaar(
+                                    value,
+                                  );
+                                },
+                              ),
+                              /* Aadhaar Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* PAN Input Field */
+                              Text(
+                                "PAN Number",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _panFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.inventory_rounded,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: panNumPlaceholderText,
+                                textEditingController: _panController,
+                                textcapitalization:
+                                    TextCapitalization.characters,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[A-Z]{0,5}[0-9]{0,4}[A-Z]?$'),
+                                  ),
+                                  LengthLimitingTextInputFormatter(10),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                keyboardtype: TextInputType.text,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validatePAN(
+                                    value,
+                                  );
+                                },
+                              ),
+                              /* PAN Input Field */
 
                               SizedBox(
                                 height: 16.sp,
@@ -2749,6 +2850,9 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? emailError =
         ValidationUtil.validateEmailAddress(_emailController.text);
+    String? aadhaarError =
+        ValidationUtil.validateAadhaar(_aadhaarController.text);
+    String? panError = ValidationUtil.validatePAN(_panController.text);
     String? bankNameError =
         ValidationUtil.validateBankName(_bankNameController.text);
     String? accNumError =
@@ -2854,6 +2958,8 @@ class _CreatePigmySavingsAccountScreenState
             signatureImage: signatureImagePath,
             locLink: _locationLinkController.text,
             workLocLink: _workLocationLinkController.text,
+            aadhaarNum: _aadhaarController.text,
+            panNum: _panController.text,
           );
         } else {
           result = await NetworkService().createPIGMYDetails(
@@ -2893,6 +2999,8 @@ class _CreatePigmySavingsAccountScreenState
             signatureImage: signatureImagePath,
             locLink: _locationLinkController.text,
             workLocLink: _workLocationLinkController.text,
+            aadhaarNum: _aadhaarController.text,
+            panNum: _panController.text,
           );
         }
 
@@ -2937,6 +3045,10 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_altPhNumFocusNode, altMobileError);
       } else if (emailError != null) {
         _showErrorAndFocus(_emailFocusNode, emailError);
+      } else if (aadhaarError != null) {
+        _showErrorAndFocus(_aadhaarFocusNode, aadhaarError);
+      } else if (panError != null) {
+        _showErrorAndFocus(_panFocusNode, panError);
       } else if (bankNameError != null) {
         _showErrorAndFocus(_bankNameFocusNode, bankNameError);
       } else if (accNumError != null) {

@@ -540,6 +540,8 @@ class _VerifyCustomersDetailsScreenState
               response['data']['docType'].isNotEmpty)
           ? response['data']['docType']
           : "Select Document Type";
+      _workLocationLinkController.text = response['data']['workLocLink'] ?? "";
+      _locationLinkController.text = response['data']['locLink'] ?? "";
     }
     setState(() {});
   }
