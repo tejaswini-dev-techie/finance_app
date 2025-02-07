@@ -171,7 +171,7 @@ class _GroupPigmyReportsState extends State<GroupPigmyReports> {
                                       Navigator.pushNamed(
                                         context,
                                         RoutingConstants
-                                            .routeAgentUpdatePaymentDetailsScreen,
+                                            .routeUpdateGroupPaymentDetailsScreen,
                                         arguments: {"data": data},
                                       );
                                     } else {

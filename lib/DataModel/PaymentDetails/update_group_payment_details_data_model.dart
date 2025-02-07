@@ -117,6 +117,7 @@ class CustomersList {
   bool? showAmtToPaidBy;
   String? type; /* 1 - Weekly & Daily | 2 - Monthly */
   bool? isReadOnlyAmtEdit;
+  bool? isReadOnlyCheckBox;
 
   CustomersList({
     this.cusId,
@@ -129,6 +130,7 @@ class CustomersList {
     this.type,
     /* 1 - Weekly & Daily | 2 - Monthly */
     this.isReadOnlyAmtEdit,
+    this.isReadOnlyCheckBox,
   });
 
   CustomersList.fromJson(Map<String, dynamic> json) {
@@ -141,6 +143,7 @@ class CustomersList {
     showAmtToPaidBy = json['showAmtToPaidBy'] ?? false;
     type = json['type']; /* 1 - Weekly & Daily | 2 - Monthly */
     isReadOnlyAmtEdit = json['is_read_only_amt_edit'] ?? false;
+    isReadOnlyCheckBox = json['is_read_only_checkBox'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -154,6 +157,7 @@ class CustomersList {
     data['showAmtToPaidBy'] = showAmtToPaidBy;
     data['type'] = type; /* 1 - Weekly & Daily | 2 - Monthly */
     data['is_read_only_amt_edit'] = isReadOnlyAmtEdit;
+    data['is_read_only_checkBox'] = isReadOnlyCheckBox;
     return data;
   }
 }

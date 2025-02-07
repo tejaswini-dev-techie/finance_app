@@ -2116,39 +2116,39 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                   spacing:
                                                                       12.sp,
                                                                   children: [
-                                                                    InkWell(
-                                                                      onTap:
-                                                                          () {
-                                                                        updateGroupPaymentDetailsBloc
-                                                                            .userData!
-                                                                            .customersList![index]
-                                                                            .isSelected = !updateGroupPaymentDetailsBloc.userData!.customersList![index].isSelected!;
+                                                                    (updateGroupPaymentDetailsBloc.userData!.customersList![index].isReadOnlyCheckBox !=
+                                                                                null &&
+                                                                            updateGroupPaymentDetailsBloc.userData!.customersList![index].isReadOnlyCheckBox ==
+                                                                                true)
+                                                                        ? Icon(
+                                                                            Icons.check_box_rounded,
+                                                                            color:
+                                                                                ColorConstants.mintGreenColor,
+                                                                            size:
+                                                                                20.sp,
+                                                                          )
+                                                                        : InkWell(
+                                                                            onTap:
+                                                                                () {
+                                                                              updateGroupPaymentDetailsBloc.userData!.customersList![index].isSelected = !updateGroupPaymentDetailsBloc.userData!.customersList![index].isSelected!;
 
-                                                                        isCheckedAll = updateGroupPaymentDetailsBloc
-                                                                            .userData!
-                                                                            .customersList!
-                                                                            .every((customer) =>
-                                                                                customer.isSelected ??
-                                                                                false);
+                                                                              isCheckedAll = updateGroupPaymentDetailsBloc.userData!.customersList!.every((customer) => customer.isSelected ?? false);
 
-                                                                        refreshSelectedFields.value =
-                                                                            !refreshSelectedFields.value;
-                                                                        refreshSelectAllFields.value =
-                                                                            !refreshSelectAllFields.value;
-                                                                      },
-                                                                      child: (updateGroupPaymentDetailsBloc.userData!.customersList![index].isSelected ==
-                                                                              true)
-                                                                          ? Icon(
-                                                                              Icons.check_box,
-                                                                              color: ColorConstants.darkBlueColor,
-                                                                              size: 20.sp,
-                                                                            )
-                                                                          : Icon(
-                                                                              Icons.check_box_outline_blank,
-                                                                              color: ColorConstants.lightBlackColor,
-                                                                              size: 20.sp,
-                                                                            ),
-                                                                    ),
+                                                                              refreshSelectedFields.value = !refreshSelectedFields.value;
+                                                                              refreshSelectAllFields.value = !refreshSelectAllFields.value;
+                                                                            },
+                                                                            child: (updateGroupPaymentDetailsBloc.userData!.customersList![index].isSelected == true)
+                                                                                ? Icon(
+                                                                                    Icons.check_box,
+                                                                                    color: ColorConstants.darkBlueColor,
+                                                                                    size: 20.sp,
+                                                                                  )
+                                                                                : Icon(
+                                                                                    Icons.check_box_outline_blank,
+                                                                                    color: ColorConstants.lightBlackColor,
+                                                                                    size: 20.sp,
+                                                                                  ),
+                                                                          ),
                                                                     InkWell(
                                                                       onTap:
                                                                           () {
@@ -2193,6 +2193,9 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                               ColorConstants.lightBlackColor,
                                                                           fontWeight:
                                                                               FontWeight.w500,
+                                                                          decoration: (updateGroupPaymentDetailsBloc.userData!.customersList![index].isReadOnlyCheckBox != null && updateGroupPaymentDetailsBloc.userData!.customersList![index].isReadOnlyCheckBox == true)
+                                                                              ? TextDecoration.lineThrough
+                                                                              : null,
                                                                         ),
                                                                       ),
                                                                     ),

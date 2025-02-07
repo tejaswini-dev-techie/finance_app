@@ -171,7 +171,7 @@ class _GroupLoansReportsTabState extends State<GroupLoansReportsTab> {
                                       Navigator.pushNamed(
                                         context,
                                         RoutingConstants
-                                            .routeAgentUpdatePaymentDetailsScreen,
+                                            .routeUpdateGroupPaymentDetailsScreen,
                                         arguments: {"data": data},
                                       );
                                     } else {
