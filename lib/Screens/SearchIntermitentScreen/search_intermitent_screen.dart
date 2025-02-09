@@ -647,34 +647,30 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                               )
                             : const SizedBox.shrink(),
                         /* LIST */
-                        (searchDet?.listDetails != null &&
-                                searchDet!.listDetails!.isNotEmpty)
-                            ? ListView.separated(
-                                padding: EdgeInsets.symmetric(vertical: 12.sp),
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return SectionList(
-                                    listMenuDetails: searchDet!
-                                            .listDetails![index].listDetMenu ??
-                                        [],
-                                    onPayAction: onPayAction,
-                                    title: searchDet!
-                                            .listDetails![index].listDetTitle ??
-                                        "",
-                                    listDetails: searchDet!
-                                            .listDetails![index].listDet ??
-                                        [],
-                                  );
-                                },
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: 10.sp,
-                                  );
-                                },
-                                itemCount: searchDet!.listDetails!.length,
-                              )
-                            : const SizedBox.shrink(),
+                        ListView.separated(
+                          padding: EdgeInsets.symmetric(vertical: 12.sp),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return SectionList(
+                              listMenuDetails:
+                                  searchDet!.listDetails![index].listDetMenu ??
+                                      [],
+                              onPayAction: onPayAction,
+                              title:
+                                  searchDet!.listDetails![index].listDetTitle ??
+                                      "",
+                              listDetails:
+                                  searchDet!.listDetails![index].listDet ?? [],
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: 10.sp,
+                            );
+                          },
+                          itemCount: searchDet!.listDetails!.length,
+                        ),
                         /* LIST */
 
                         SizedBox(
