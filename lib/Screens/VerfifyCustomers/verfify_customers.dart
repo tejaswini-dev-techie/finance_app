@@ -213,6 +213,12 @@ class _VerifyCustomersDetailsScreenState
   String? signatureImagePath = "";
   /* Signature */
 
+  /* House Image */
+  ValueNotifier<bool> refreshHouseImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosHouseList = [];
+  String? houseImagePath = "";
+  /* House Image */
+
   /* Building */
   ValueNotifier<bool> refreshBuilding1Image = ValueNotifier<bool>(true);
   List<File> compressedPhotosBuilding1List = [];
@@ -892,7 +898,8 @@ class _VerifyCustomersDetailsScreenState
                                 ],
                                 validationFunc: (value) {
                                   return ValidationUtil.validateLocation(
-                                      value, 5);
+                                      value, 5,
+                                      pageType: widget.type);
                                 },
                               ),
                               /* Permanent Address Input Field */
@@ -978,7 +985,8 @@ class _VerifyCustomersDetailsScreenState
                                 ],
                                 validationFunc: (value) {
                                   return ValidationUtil.validateLocation(
-                                      value, 1);
+                                      value, 1,
+                                      pageType: widget.type);
                                 },
                               ),
                               /* Street Address Input Field */
@@ -1007,7 +1015,8 @@ class _VerifyCustomersDetailsScreenState
                                 textEditingController: _cityController,
                                 validationFunc: (value) {
                                   return ValidationUtil.validateLocation(
-                                      value, 3);
+                                      value, 3,
+                                      pageType: widget.type);
                                 },
                               ),
                               /* City Input Field */
@@ -1036,7 +1045,8 @@ class _VerifyCustomersDetailsScreenState
                                 textEditingController: _stateController,
                                 validationFunc: (value) {
                                   return ValidationUtil.validateLocation(
-                                      value, 2);
+                                      value, 2,
+                                      pageType: widget.type);
                                 },
                               ),
                               /* State Input Field */
@@ -1108,7 +1118,8 @@ class _VerifyCustomersDetailsScreenState
                                 textEditingController: _countryController,
                                 validationFunc: (value) {
                                   return ValidationUtil.validateLocation(
-                                      value, 4);
+                                      value, 4,
+                                      pageType: widget.type);
                                 },
                               ),
                               /* Country Input Field */
@@ -1760,7 +1771,7 @@ class _VerifyCustomersDetailsScreenState
 
                                         /* Reference Mobile Number Input Field */
                                         Text(
-                                          "Reference Contact Details",
+                                          "Reference - Group Leader Number",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 10.sp,
@@ -2315,6 +2326,106 @@ class _VerifyCustomersDetailsScreenState
                                     );
                                   }),
                               /* Add Signature Image */
+
+                              ((widget.type == "1") || (widget.type == "2"))
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 16.sp,
+                                        ),
+
+                                        /* Add Hosue Image */
+                                        ValueListenableBuilder(
+                                            valueListenable: refreshHouseImage,
+                                            builder: (context, bool val, _) {
+                                              return AddDocImagePlaceholder(
+                                                imagePath: houseImagePath ?? "",
+                                                placeholderText:
+                                                    "Add House Image",
+                                                addText: addText,
+                                                onImageTap: () async {
+                                                  await InternetUtil()
+                                                      .checkInternetConnection()
+                                                      .then((internet) async {
+                                                    if (internet) {
+                                                      showDocsAlertDialog(
+                                                        context: context,
+                                                        onCaptureAction:
+                                                            () async {
+                                                          compressedPhotosHouseList =
+                                                              [];
+                                                          compressedPhotosHouseList =
+                                                              await capturePhoto(
+                                                            type: 2,
+                                                            screenName: "KYC",
+                                                            maxImagesCount: 1,
+                                                            context: context,
+                                                            compressedPhotosList:
+                                                                compressedPhotosHouseList,
+                                                            // invalidFormatErrorText: "Invalid",
+                                                          );
+                                                          print(
+                                                              "houseImagePath: 1 ${compressedPhotosHouseList[0].path}");
+                                                          houseImagePath =
+                                                              await NetworkService()
+                                                                  .imageUpload(
+                                                            compressedPhotosHouseList[
+                                                                    0]
+                                                                .path,
+                                                          );
+                                                          print(
+                                                              "houseImagePath: 2$houseImagePath");
+                                                          refreshHouseImage
+                                                                  .value =
+                                                              !refreshHouseImage
+                                                                  .value;
+                                                        },
+                                                        onGalleryAction:
+                                                            () async {
+                                                          compressedPhotosHouseList =
+                                                              [];
+                                                          compressedPhotosHouseList =
+                                                              await pickPhotos(
+                                                            maxImagesCount: 1,
+                                                            context: context,
+                                                            compressedPhotosList:
+                                                                compressedPhotosHouseList,
+                                                            invalidFormatErrorText:
+                                                                "Invalid",
+                                                          );
+                                                          print(
+                                                              "houseImagePath: 1 ${compressedPhotosHouseList[0].path}");
+                                                          houseImagePath =
+                                                              await NetworkService()
+                                                                  .imageUpload(
+                                                            compressedPhotosHouseList[
+                                                                    0]
+                                                                .path,
+                                                          );
+
+                                                          refreshHouseImage
+                                                                  .value =
+                                                              !refreshHouseImage
+                                                                  .value;
+                                                        },
+                                                      );
+                                                    } else {
+                                                      ToastUtil().showSnackBar(
+                                                        context: context,
+                                                        message: internetAlert,
+                                                        isError: true,
+                                                      );
+                                                    }
+                                                  });
+                                                },
+                                              );
+                                            }),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                              /* Add Hosue Image */
 
                               // SizedBox(
                               //   height: 16.sp,
@@ -4083,7 +4194,8 @@ class _VerifyCustomersDetailsScreenState
                                               _guarantorNameController,
                                           validationFunc: (value) {
                                             return ValidationUtil
-                                                .validateGuarantorName(value);
+                                                .validateGuarantorName(
+                                                    value, widget.type);
                                           },
                                         ),
                                         /* Name Input Field */
@@ -4132,7 +4244,7 @@ class _VerifyCustomersDetailsScreenState
                                           validationFunc: (value) {
                                             return ValidationUtil
                                                 .validateGuarantorMobileNumber(
-                                                    value);
+                                                    value, widget.type);
                                           },
                                         ),
                                         /* Mobile Number Input Field */
@@ -4232,7 +4344,7 @@ class _VerifyCustomersDetailsScreenState
                                           validationFunc: (value) {
                                             return ValidationUtil
                                                 .validateGuarantorEmailAddress(
-                                                    value);
+                                                    value, widget.type);
                                           },
                                         ),
                                         /* Email Address Input Field */
@@ -4273,7 +4385,8 @@ class _VerifyCustomersDetailsScreenState
                                           ],
                                           validationFunc: (value) {
                                             return ValidationUtil
-                                                .validateLocation(value, 6);
+                                                .validateLocation(value, 6,
+                                                    pageType: widget.type);
                                           },
                                         ),
                                         /* Permanent Address Input Field */
@@ -4325,6 +4438,7 @@ class _VerifyCustomersDetailsScreenState
                                             return ValidationUtil
                                                 .validateGuarantorAadhaar(
                                               value,
+                                              widget.type,
                                             );
                                           },
                                         ),
@@ -4429,8 +4543,9 @@ class _VerifyCustomersDetailsScreenState
                                           keyboardtype: TextInputType.number,
                                           validationFunc: (value) {
                                             return ValidationUtil
-                                                .validateChequeNumber(
+                                                .validateGuarantorChequeNumber(
                                               value,
+                                              widget.type,
                                             );
                                           },
                                         ),
@@ -4465,23 +4580,27 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateEmailAddress(_emailController.text);
     String? altMobileError = ValidationUtil.validateAltMobileNumber(
         _altPhNumController.text, _phNumController.text);
-    String? permanentAddressError =
-        ValidationUtil.validateLocation(_permanentAddressController.text, 5);
-    String? streetAddressError =
-        ValidationUtil.validateLocation(_streetAddressController.text, 1);
-    String? cityError =
-        ValidationUtil.validateLocation(_cityController.text, 3);
-    String? stateError =
-        ValidationUtil.validateLocation(_stateController.text, 2);
+    String? permanentAddressError = ValidationUtil.validateLocation(
+        _permanentAddressController.text, 5,
+        pageType: widget.type);
+    String? streetAddressError = ValidationUtil.validateLocation(
+        _streetAddressController.text, 1,
+        pageType: widget.type);
+    String? cityError = ValidationUtil.validateLocation(_cityController.text, 3,
+        pageType: widget.type);
+    String? stateError = ValidationUtil.validateLocation(
+        _stateController.text, 2,
+        pageType: widget.type);
     String? zipError = ValidationUtil.validatePinCode(_zipController.text);
-    String? countryError =
-        ValidationUtil.validateLocation(_countryController.text, 4);
+    String? countryError = ValidationUtil.validateLocation(
+        _countryController.text, 4,
+        pageType: widget.type);
     String? aadhaarError =
         ValidationUtil.validateAadhaar(_aadhaarController.text);
     String? panError = ValidationUtil.validatePAN(_panController.text);
 
-    String? docTypeError =
-        ValidationUtil.validateDocType(selectedDocValue.value);
+    // String? docTypeError =
+    //     ValidationUtil.validateDocType(selectedDocValue.value);
     String? rcHolderNameError =
         ValidationUtil.validateRCHolderName(_rcHolderNameController.text);
     String? propertyHolderNameError = ValidationUtil.validatePropertyHolderName(
@@ -4524,104 +4643,123 @@ class _VerifyCustomersDetailsScreenState
     String? reasonError =
         ValidationUtil.validateWithdrawReason(_reasonController.text);
 
-    String? guarantorNameError =
-        ValidationUtil.validateGuarantorName(_guarantorNameController.text);
+    String? guarantorNameError = ValidationUtil.validateGuarantorName(
+        _guarantorNameController.text, widget.type);
     String? guarantorMobileError = ValidationUtil.validateGuarantorMobileNumber(
-        _guarantorPhNumController.text);
+        _guarantorPhNumController.text, widget.type);
     String? guarantorAltMobileError =
         ValidationUtil.validateGuarantorAltMobileNumber(
             _guarantorAltPhNumController.text, _guarantorPhNumController.text);
     String? guarantorEmailError = ValidationUtil.validateGuarantorEmailAddress(
-        _guarantorEmailController.text);
-    String? guarantorPermanentAddressError =
-        ValidationUtil.validateLocation(_guarantorAddressController.text, 6);
+        _guarantorEmailController.text, widget.type);
+    String? guarantorPermanentAddressError = ValidationUtil.validateLocation(
+        _guarantorAddressController.text, 6,
+        pageType: widget.type);
     String? guarantorAadhaarError = ValidationUtil.validateGuarantorAadhaar(
-        _guarantorAadhaarNumController.text);
+      _guarantorAadhaarNumController.text,
+      widget.type,
+    );
     String? guarantorPanError =
         ValidationUtil.validateGuarantorPAN(_guarantorPanNumController.text);
     String? guarantorChequeNumError =
-        ValidationUtil.validateChequeNumber(_guarantorChequeNumController.text);
+        ValidationUtil.validateGuarantorChequeNumber(
+            _guarantorChequeNumController.text, widget.type);
 
     final form = _formKey.currentState;
 
     if (form?.validate() ?? false) {
       isDisabled.value = false;
 
+      print("object 1 ${widget.type}");
+      print("photoImagePath: $photoImagePath");
+      print("aadhaarImagePath: $aadhaarImagePath");
+      print("panImagePath: $panImagePath");
+      print("passBookImagePath: $passBookImagePath");
+      print("signatureImagePath: $signatureImagePath");
+      print("selectedDocValue: ${selectedDocValue.value}");
+      print("widget.type: ${widget.type}");
+      print("chequeNumController: ${_chequeNumController.text}");
+      print("rcHOLDERImagePath: $rcHOLDERImagePath");
+      print("propertyDocImagePath: $propertyDocImagePath");
+      print("sel doc: ${selectedDocValue.value}");
+
       if (photoImagePath != null &&
-              photoImagePath!.isNotEmpty &&
-              aadhaarImagePath != null &&
-              aadhaarImagePath!.isNotEmpty &&
-              panImagePath != null &&
-              panImagePath!.isNotEmpty &&
-              // chequeImagePath != null &&
-              // chequeImagePath!.isNotEmpty &&
-              passBookImagePath != null &&
-              passBookImagePath!.isNotEmpty &&
-              signatureImagePath != null &&
-              signatureImagePath!.isNotEmpty &&
-              (((selectedDocValue.value == "Personal") &&
-                  _chequeNumController.text.isNotEmpty)) ||
-          (((selectedDocValue.value == "Vehicle") &&
-              rcHOLDERImagePath != null &&
-              rcHOLDERImagePath!.isNotEmpty)) ||
-          (((selectedDocValue.value == "Property") &&
-              propertyDocImagePath != null &&
-              propertyDocImagePath!.isNotEmpty))) {
+          photoImagePath!.isNotEmpty &&
+          aadhaarImagePath != null &&
+          aadhaarImagePath!.isNotEmpty &&
+          panImagePath != null &&
+          panImagePath!.isNotEmpty &&
+          passBookImagePath != null &&
+          passBookImagePath!.isNotEmpty &&
+          signatureImagePath != null &&
+          signatureImagePath!.isNotEmpty &&
+          (((((widget.type != "1") || (widget.type != "2")) ||
+                  (selectedDocValue.value == "Personal") &&
+                      _chequeNumController.text.isNotEmpty)) ||
+              (((widget.type != "1") || (widget.type != "2")) ||
+                  ((selectedDocValue.value == "Vehicle") &&
+                      rcHOLDERImagePath != null &&
+                      rcHOLDERImagePath!.isNotEmpty)) ||
+              (((widget.type != "1") || (widget.type != "2")) ||
+                  ((selectedDocValue.value == "Property") &&
+                      propertyDocImagePath != null &&
+                      propertyDocImagePath!.isNotEmpty)))) {
+        print("object 2: ${widget.type}");
         var result;
         if (widget.type == "1") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
-            userName: _nameController.text,
-            mobNum: _phNumController.text,
-            altMobNum: _altPhNumController.text,
-            emailAddress: _emailController.text,
-            streetAddress: _streetAddressController.text,
-            city: _cityController.text,
-            state: _stateController.text,
-            zipCode: _zipController.text,
-            country: _countryController.text,
-            aadhaarImage: aadhaarImagePath ?? "",
-            panImage: panImagePath ?? "",
-            reference: _referenceController.text,
-            type: widget.type,
-            referenceNumber: _referenceNumController.text,
-            panNumber: _panController.text,
-            aadhaarNumber: _aadhaarController.text,
-            rcHolderName: _rcHolderNameController.text,
-            rcImage: rcHOLDERImagePath ?? "",
-            houseImage: propertyDocImagePath,
-            propertyDetails: _propertyDetailsController.text,
-            propertyHolderName: _propertyHolderNameController.text,
-            chequeNumber: _chequeNumController.text,
-            bankName: _bankNameController.text,
-            bankBranchName: _bankBranchController.text,
-            bankIFSCCode: _bankIFSCcodeController.text,
-            accNumber: _accNumController.text,
-            passbookImage: passBookImagePath,
-            signatureImage: signatureImagePath,
-            buildingImagePath1: building1ImagePath,
-            buildingImagePath2: buildingImage2Path,
-            buildingImagePath3: building3ImagePath,
-            buildingImagePath4: building4ImagePath,
-            buildingImagePath5: building5ImagePath,
-            buildingImagePath6: building6ImagePath,
-            buildingImagePath7: building7ImagePath,
-            buildingStreetImagePath: buildingStreetImagePath,
-            buildingAreaImagePath: buildingAreaImagePath,
-            permanentAddress: _permanentAddressController.text,
-            agentName: _agentNameController.text,
-            photoImagePath: photoImagePath,
-            locLink: _locationLinkController.text,
-            workLocationLink: _workLocationLinkController.text,
-            guarantorName: _guarantorNameController.text,
-            guarantorMobNum: _guarantorPhNumController.text,
-            guarantorAltMobNum: _guarantorAltPhNumController.text,
-            guarantorEmailAddress: _guarantorEmailController.text,
-            guarantorAddress: _guarantorAddressController.text,
-            guarantorAadhaar: _guarantorAadhaarNumController.text,
-            guarantorPan: _guarantorPanNumController.text,
-            guarantorChequeNum: _guarantorChequeNumController.text,
-            docType: selectedDocValue.value,
-          );
+              userName: _nameController.text,
+              mobNum: _phNumController.text,
+              altMobNum: _altPhNumController.text,
+              emailAddress: _emailController.text,
+              streetAddress: _streetAddressController.text,
+              city: _cityController.text,
+              state: _stateController.text,
+              zipCode: _zipController.text,
+              country: _countryController.text,
+              aadhaarImage: aadhaarImagePath ?? "",
+              panImage: panImagePath ?? "",
+              reference: _referenceController.text,
+              type: widget.type,
+              referenceNumber: _referenceNumController.text,
+              panNumber: _panController.text,
+              aadhaarNumber: _aadhaarController.text,
+              rcHolderName: _rcHolderNameController.text,
+              rcImage: rcHOLDERImagePath ?? "",
+              propertyDocImage: propertyDocImagePath,
+              propertyDetails: _propertyDetailsController.text,
+              propertyHolderName: _propertyHolderNameController.text,
+              chequeNumber: _chequeNumController.text,
+              bankName: _bankNameController.text,
+              bankBranchName: _bankBranchController.text,
+              bankIFSCCode: _bankIFSCcodeController.text,
+              accNumber: _accNumController.text,
+              passbookImage: passBookImagePath,
+              signatureImage: signatureImagePath,
+              buildingImagePath1: building1ImagePath,
+              buildingImagePath2: buildingImage2Path,
+              buildingImagePath3: building3ImagePath,
+              buildingImagePath4: building4ImagePath,
+              buildingImagePath5: building5ImagePath,
+              buildingImagePath6: building6ImagePath,
+              buildingImagePath7: building7ImagePath,
+              buildingStreetImagePath: buildingStreetImagePath,
+              buildingAreaImagePath: buildingAreaImagePath,
+              permanentAddress: _permanentAddressController.text,
+              agentName: _agentNameController.text,
+              photoImagePath: photoImagePath,
+              locLink: _locationLinkController.text,
+              workLocationLink: _workLocationLinkController.text,
+              guarantorName: _guarantorNameController.text,
+              guarantorMobNum: _guarantorPhNumController.text,
+              guarantorAltMobNum: _guarantorAltPhNumController.text,
+              guarantorEmailAddress: _guarantorEmailController.text,
+              guarantorAddress: _guarantorAddressController.text,
+              guarantorAadhaar: _guarantorAadhaarNumController.text,
+              guarantorPan: _guarantorPanNumController.text,
+              guarantorChequeNum: _guarantorChequeNumController.text,
+              docType: selectedDocValue.value,
+              houseImage: houseImagePath);
         } else if (widget.type == "2") {
           result = await NetworkService().updateGroupIndividualCustomerDetails(
             userName: _nameController.text,
@@ -4639,7 +4777,7 @@ class _VerifyCustomersDetailsScreenState
             aadhaarNumber: _aadhaarController.text,
             rcHolderName: _rcHolderNameController.text,
             rcImage: rcHOLDERImagePath ?? "",
-            houseImage: propertyDocImagePath,
+            propertyDocImage: propertyDocImagePath,
             propertyDetails: _propertyDetailsController.text,
             propertyHolderName: _propertyHolderNameController.text,
             chequeNumber: _chequeNumController.text,
@@ -4673,6 +4811,7 @@ class _VerifyCustomersDetailsScreenState
             guarantorPan: _guarantorPanNumController.text,
             guarantorChequeNum: _guarantorChequeNumController.text,
             docType: selectedDocValue.value,
+            houseImage: houseImagePath,
           );
         } else if (widget.type == "3") {
           result = await NetworkService().updateKYCDetails(
@@ -4894,7 +5033,8 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_bankNameFocusNode, bankNameError);
       } else if (accNumError != null) {
         _showErrorAndFocus(_bankAccNumFocusNode, accNumError);
-      } else if (selectedDocValue.value == "Select Document Type") {
+      } else if (((widget.type != "1") && (widget.type != "2")) &&
+          (selectedDocValue.value == "Select Document Type")) {
         ToastUtil().showSnackBar(
           context: context,
           message: "Select Document Type",
@@ -4980,7 +5120,9 @@ class _VerifyCustomersDetailsScreenState
           message: propertyImageError,
           isError: true,
         );
-      } else if (widget.type != "0") {
+      } else if ((widget.type != "0") ||
+          (widget.type != "1") ||
+          (widget.type != "2")) {
         if (guarantorNameError != null) {
           _showErrorAndFocus(_guarantorNameFocusNode, guarantorNameError);
         } else if (guarantorMobileError != null) {

@@ -520,40 +520,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         /* Reset Password */
                         (profileBloc.userData?.type == "1")
-                            ? Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.sp, vertical: 10.sp),
-                                alignment: Alignment.centerRight,
-                                child: InkWell(
-                                  onTap: () => onResetAction(),
-                                  child: Text.rich(
-                                    TextSpan(
-                                      children: [
+                            ? (profileBloc.resetPasswordText != null &&
+                                    profileBloc.resetPasswordText!.isNotEmpty)
+                                ? Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.sp, vertical: 10.sp),
+                                    alignment: Alignment.centerRight,
+                                    child: InkWell(
+                                      onTap: () => onResetAction(),
+                                      child: Text.rich(
                                         TextSpan(
-                                          text: profileBloc.resetPasswordText,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w700,
-                                            color: ColorConstants.blackColor,
-                                          ),
-                                        ),
-                                        WidgetSpan(
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsets.only(bottom: 2.5.sp),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              color:
-                                                  ColorConstants.darkBlueColor,
-                                              size: 12.sp,
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  profileBloc.resetPasswordText,
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w700,
+                                                color:
+                                                    ColorConstants.blackColor,
+                                              ),
                                             ),
-                                          ),
+                                            WidgetSpan(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    bottom: 2.5.sp),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: ColorConstants
+                                                      .darkBlueColor,
+                                                  size: 12.sp,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              )
+                                  )
+                                : const SizedBox.shrink()
                             : const SizedBox.shrink(),
                         /* Reset Password */
 

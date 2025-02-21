@@ -93,6 +93,12 @@ class _CreatePigmySavingsAccountScreenState
   String? signatureImagePath = "";
   /* Signature */
 
+  /* House Image */
+  ValueNotifier<bool> refreshHouseImage = ValueNotifier<bool>(true);
+  List<File> compressedPhotosHouseList = [];
+  String? houseImagePath = "";
+  /* House Image */
+
   /* TextEditing Controller */
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
@@ -2624,6 +2630,86 @@ class _CreatePigmySavingsAccountScreenState
                                 height: 16.sp,
                               ),
 
+                              /* Add Hosue Image */
+                              ValueListenableBuilder(
+                                  valueListenable: refreshHouseImage,
+                                  builder: (context, bool val, _) {
+                                    return AddDocImagePlaceholder(
+                                      imagePath: houseImagePath ?? "",
+                                      placeholderText: "Add House Image",
+                                      addText: addText,
+                                      onImageTap: () async {
+                                        await InternetUtil()
+                                            .checkInternetConnection()
+                                            .then((internet) async {
+                                          if (internet) {
+                                            showDocsAlertDialog(
+                                              context: context,
+                                              onCaptureAction: () async {
+                                                compressedPhotosHouseList = [];
+                                                compressedPhotosHouseList =
+                                                    await capturePhoto(
+                                                  type: 2,
+                                                  screenName: "KYC",
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosHouseList,
+                                                  // invalidFormatErrorText: "Invalid",
+                                                );
+                                                print(
+                                                    "houseImagePath: 1 ${compressedPhotosHouseList[0].path}");
+                                                houseImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosHouseList[0]
+                                                      .path,
+                                                );
+                                                print(
+                                                    "houseImagePath: 2$houseImagePath");
+                                                refreshHouseImage.value =
+                                                    !refreshHouseImage.value;
+                                              },
+                                              onGalleryAction: () async {
+                                                compressedPhotosHouseList = [];
+                                                compressedPhotosHouseList =
+                                                    await pickPhotos(
+                                                  maxImagesCount: 1,
+                                                  context: context,
+                                                  compressedPhotosList:
+                                                      compressedPhotosHouseList,
+                                                  invalidFormatErrorText:
+                                                      "Invalid",
+                                                );
+                                                print(
+                                                    "houseImagePath: 1 ${compressedPhotosHouseList[0].path}");
+                                                houseImagePath =
+                                                    await NetworkService()
+                                                        .imageUpload(
+                                                  compressedPhotosHouseList[0]
+                                                      .path,
+                                                );
+
+                                                refreshHouseImage.value =
+                                                    !refreshHouseImage.value;
+                                              },
+                                            );
+                                          } else {
+                                            ToastUtil().showSnackBar(
+                                              context: context,
+                                              message: internetAlert,
+                                              isError: true,
+                                            );
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }),
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
                               /* Location Link */
                               Text(
                                 "Location Link",
@@ -2960,6 +3046,7 @@ class _CreatePigmySavingsAccountScreenState
             workLocLink: _workLocationLinkController.text,
             aadhaarNum: _aadhaarController.text,
             panNum: _panController.text,
+            houseImage: houseImagePath,
           );
         } else {
           result = await NetworkService().createPIGMYDetails(
@@ -3001,6 +3088,7 @@ class _CreatePigmySavingsAccountScreenState
             workLocLink: _workLocationLinkController.text,
             aadhaarNum: _aadhaarController.text,
             panNum: _panController.text,
+            houseImage: houseImagePath,
           );
         }
 

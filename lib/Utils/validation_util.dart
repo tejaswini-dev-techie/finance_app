@@ -116,7 +116,7 @@ class ValidationUtil {
   /* Email Address Validation */
   static String? validateEmailAddress(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Email address cannot be empty';
+      return null;
     } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         .hasMatch(value)) {
       return 'Please enter a valid email address';
@@ -126,7 +126,10 @@ class ValidationUtil {
   /* Email Address Validation */
 
   /* location */
-  static String? validateLocation(String? value, int type) {
+  static String? validateLocation(String? value, int type,
+      {String? pageType =
+          "0"} // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+      ) {
     /* type 1 - Street Address | 2 - State | 3 - City | 4 - Country | 5 - Permanent Address | 6 - Guarantor's location */
     if (value == null || value.isEmpty) {
       return (type == 1)
@@ -140,7 +143,9 @@ class ValidationUtil {
                       : (type == 5)
                           ? "Please enter Permanent Address"
                           : (type == 6)
-                              ? "Please enter Guarantor's location details"
+                              ? ((pageType == "1") || (pageType == "2"))
+                                  ? null
+                                  : "Please enter Guarantor's location details"
                               : "Please enter location details";
     }
     return null;
@@ -248,11 +253,16 @@ class ValidationUtil {
   /* Aadhaar Validation */
 
   /* Guarantor Aadhaar Validation */
-  static String? validateGuarantorAadhaar(String? value) {
+  static String? validateGuarantorAadhaar(
+    String? value,
+    String? type,
+  ) {
     final aadhaarPattern =
         RegExp(r"^[2-9]{1}[0-9]{11}$"); // Aadhaar regex pattern
     if (value == null || value.isEmpty) {
-      return 'Please enter Guarantor\'s Aadhaar number';
+      return ((type == "1") || (type == "2"))
+          ? null
+          : 'Please enter Guarantor\'s Aadhaar number';
     } else if (!aadhaarPattern.hasMatch(value)) {
       return 'Please enter a valid 12-digit Aadhaar number';
     }
@@ -278,7 +288,7 @@ class ValidationUtil {
     // PAN regex pattern: 5 uppercase letters, 4 digits, and 1 uppercase letter
     final panPattern = RegExp(r"^[A-Z]{5}[0-9]{4}[A-Z]{1}$");
     if (value == null || value.isEmpty) {
-      return 'Please enter Guarantor\'s PAN number';
+      return null;
     } else if (!panPattern.hasMatch(value)) {
       return 'Please enter a valid 10-character Guarantor\'s PAN number';
     }
@@ -301,6 +311,21 @@ class ValidationUtil {
     final chequePattern = RegExp(r"^[0-9]{6,10}$");
     if (value == null || value.isEmpty) {
       return 'Please enter cheque number';
+    } else if (!chequePattern.hasMatch(value)) {
+      return 'Please enter a valid cheque number (6-10 digits)';
+    }
+    return null;
+  }
+  /* Cheque Number Validation */
+
+  /* Cheque Number Validation */
+  static String? validateGuarantorChequeNumber(String? value, String? type) {
+    // Cheque number regex pattern: 6 to 10 digits
+    final chequePattern = RegExp(r"^[0-9]{6,10}$");
+    if (value == null || value.isEmpty) {
+      return ((type == "1") || (type == "2"))
+          ? null
+          : 'Please enter cheque number';
     } else if (!chequePattern.hasMatch(value)) {
       return 'Please enter a valid cheque number (6-10 digits)';
     }
@@ -521,9 +546,15 @@ class ValidationUtil {
   /* Frequency Validation */
 
   /* Guarantor Name Validation */
-  static String? validateGuarantorName(String? value) {
+  static String? validateGuarantorName(
+    String? value,
+    String?
+        type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+  ) {
     if (value == null || value.isEmpty) {
-      return 'Please enter Guarantor name';
+      return ((type == "1") || (type == "2"))
+          ? null
+          : 'Please enter Guarantor name';
     } else if (value.length < 3) {
       return 'Guarantor Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -534,9 +565,15 @@ class ValidationUtil {
   /* Name Validation */
 
   /* Guarantor Mobile Number Validation */
-  static String? validateGuarantorMobileNumber(String? value) {
+  static String? validateGuarantorMobileNumber(
+    String? value,
+    String?
+        type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+  ) {
     if (value == null || value.isEmpty) {
-      return 'Guarantor Mobile number cannot be empty';
+      return ((type == "1") || (type == "2"))
+          ? null
+          : 'Guarantor Mobile number cannot be empty';
     } else if (value.length != 10) {
       return 'Guarantor Mobile number must be exactly 10 digits';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
@@ -548,7 +585,9 @@ class ValidationUtil {
 
   /* Guarantor Alternate Mobile Number Validation */
   static String? validateGuarantorAltMobileNumber(
-      String? value, String? primaryMobileNumber) {
+    String? value,
+    String? primaryMobileNumber,
+  ) {
     if (value == null || value.isEmpty) {
       // Return null because validation should only occur if there's a value
       return null;
@@ -564,9 +603,13 @@ class ValidationUtil {
   /* Guarantor Alternate Mobile Number Validation */
 
   /* Guarantor Email Address Validation */
-  static String? validateGuarantorEmailAddress(String? value) {
+  static String? validateGuarantorEmailAddress(
+    String? value,
+    String?
+        type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+  ) {
     if (value == null || value.isEmpty) {
-      return 'Guarantor Email address cannot be empty';
+      return null;
     } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         .hasMatch(value)) {
       return 'Please enter a valid Guarantor email address';

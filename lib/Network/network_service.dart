@@ -818,6 +818,7 @@ class NetworkService {
     required String? workLocLink,
     required String? aadhaarNum,
     required String? panNum,
+    required String? houseImage,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -859,6 +860,7 @@ class NetworkService {
         paramsKeyVal['workLocLink'] = workLocLink;
         paramsKeyVal['aadhaarNum'] = aadhaarNum;
         paramsKeyVal['panNum'] = panNum;
+        paramsKeyVal['houseImage'] = houseImage;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYURL, body: paramsKeyVal)
             .then(
@@ -914,6 +916,7 @@ class NetworkService {
     required String? workLocLink,
     required String? aadhaarNum,
     required String? panNum,
+    required String? houseImage,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -958,6 +961,7 @@ class NetworkService {
         paramsKeyVal['workLocLink'] = workLocLink;
         paramsKeyVal['aadhaarNum'] = aadhaarNum;
         paramsKeyVal['panNum'] = panNum;
+        paramsKeyVal['houseImage'] = houseImage;
         return _network
             .httpPost(apiHitTimeout, APIURLs.createPIGMYbyAgentURL,
                 body: paramsKeyVal)
@@ -972,11 +976,7 @@ class NetworkService {
   /* Create PIGMY - by Agent */
 
   /* Withdraw PIGMY */
-  var resultWithdrawPIGMYDetailsUpdate = {
-    "status": true,
-    "logout": false,
-    "message": "PIGMY Withdraw request updated successfully"
-  };
+
   Future<dynamic> withdrawPIGMYDetailsUpdate({
     required String? userName,
     required String? mobNum,
@@ -2054,6 +2054,7 @@ class NetworkService {
     required String? guarantorPan,
     required String? guarantorChequeNum,
     required String? docType,
+    required String? propertyDocImage,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -2076,6 +2077,7 @@ class NetworkService {
         paramsKeyVal['rcImage'] = rcImage;
         paramsKeyVal['rcHolderName'] = rcHolderName;
         paramsKeyVal['houseImage'] = houseImage;
+        paramsKeyVal['propertyDocImage'] = propertyDocImage;
         paramsKeyVal['propertyHolderName'] = propertyHolderName;
         paramsKeyVal['propertyDetails'] = propertyDetails;
         paramsKeyVal['chequeNumber'] = chequeNumber;
