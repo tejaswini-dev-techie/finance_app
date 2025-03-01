@@ -526,6 +526,7 @@ class _VerifyCustomersDetailsScreenState
       panImagePath = response['data']['pan_img'] ?? "";
       rcHOLDERImagePath = response['data']['rc_img'] ?? "";
       propertyDocImagePath = response['data']['property_img'] ?? "";
+      houseImagePath = response['data']['house_img'] ?? "";
       passBookImagePath = response['data']['pass_book_img'] ?? "";
       signatureImagePath = response['data']['signature_img'] ?? "";
       _guarantorNameController.text = response['data']['guarantorName'] ?? "";
@@ -1341,7 +1342,7 @@ class _VerifyCustomersDetailsScreenState
                                   FilteringTextInputFormatter.digitsOnly,
                                   LengthLimitingTextInputFormatter(18),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[1-9][0-9]*$'),
+                                    RegExp(r'^[0-9][0-9]*$'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s\s"),
@@ -2327,7 +2328,9 @@ class _VerifyCustomersDetailsScreenState
                                   }),
                               /* Add Signature Image */
 
-                              ((widget.type == "1") || (widget.type == "2"))
+                              ((widget.type == "1") ||
+                                      (widget.type == "2") ||
+                                      (widget.type == "3"))
                                   ? Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -4629,6 +4632,7 @@ class _VerifyCustomersDetailsScreenState
         ValidationUtil.validateImage(passBookImagePath, 6);
     String? signatureImageError =
         ValidationUtil.validateImage(signatureImagePath, 7);
+    String? houseImageError = ValidationUtil.validateImage(houseImagePath, 9);
 
     String? referenceError =
         ValidationUtil.validateReferenceName(_referenceController.text);
@@ -4832,7 +4836,7 @@ class _VerifyCustomersDetailsScreenState
             aadhaarNumber: _aadhaarController.text,
             rcHolderName: _rcHolderNameController.text,
             rcImage: rcHOLDERImagePath ?? "",
-            houseImage: propertyDocImagePath,
+            propertyDocImage: propertyDocImagePath,
             propertyDetails: _propertyDetailsController.text,
             propertyHolderName: _propertyHolderNameController.text,
             chequeNumber: _chequeNumController.text,
@@ -4870,6 +4874,7 @@ class _VerifyCustomersDetailsScreenState
             guarantorPan: _guarantorPanNumController.text,
             guarantorChequeNum: _guarantorChequeNumController.text,
             docType: selectedDocValue.value,
+            houseImage: houseImagePath,
           );
         } else {
           result = await NetworkService().updateKYCDetails(
@@ -4889,6 +4894,7 @@ class _VerifyCustomersDetailsScreenState
             aadhaarNumber: _aadhaarController.text,
             rcHolderName: _rcHolderNameController.text,
             rcImage: rcHOLDERImagePath ?? "",
+            propertyDocImage: propertyDocImagePath,
             houseImage: propertyDocImagePath,
             propertyDetails: _propertyDetailsController.text,
             propertyHolderName: _propertyHolderNameController.text,
@@ -4977,15 +4983,13 @@ class _VerifyCustomersDetailsScreenState
           message: signatureImageError,
           isError: true,
         );
-      }
-      // else if (chequeImageError != null) {
-      //   ToastUtil().showSnackBar(
-      //     context: context,
-      //     message: chequeImageError,
-      //     isError: true,
-      //   );
-      // }
-      else if ((selectedDocValue.value == "Vehicle") &&
+      } else if (houseImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: houseImageError,
+          isError: true,
+        );
+      } else if ((selectedDocValue.value == "Vehicle") &&
           (rcImageError != null)) {
         ToastUtil().showSnackBar(
           context: context,
@@ -5098,15 +5102,13 @@ class _VerifyCustomersDetailsScreenState
           message: signatureImageError,
           isError: true,
         );
-      }
-      // else if (chequeImageError != null) {
-      //   ToastUtil().showSnackBar(
-      //     context: context,
-      //     message: chequeImageError,
-      //     isError: true,
-      //   );
-      // }
-      else if ((selectedDocValue.value == "Vehicle") &&
+      } else if (houseImageError != null) {
+        ToastUtil().showSnackBar(
+          context: context,
+          message: houseImageError,
+          isError: true,
+        );
+      } else if ((selectedDocValue.value == "Vehicle") &&
           (rcImageError != null)) {
         ToastUtil().showSnackBar(
           context: context,

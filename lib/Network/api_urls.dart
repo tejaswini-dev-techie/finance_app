@@ -6,11 +6,11 @@ class APIURLs {
   /* Staging */
 
   /* Production */
-  // static const baseURL = "http://20.41.251.210:5000/api";
+  static const baseURL = "http://20.41.251.210:5000/api";
   /* Production */
 
   /* QA */
-  static const baseURL = "http://20.41.251.210:3001/api";
+  // static const baseURL = "http://20.41.251.210:3001/api";
   /* QA */
 
   static const loginURL = "$baseURL/auth/user-login";

@@ -901,7 +901,7 @@ class _CreatePigmySavingsAccountScreenState
                                   FilteringTextInputFormatter.digitsOnly,
                                   LengthLimitingTextInputFormatter(18),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[1-9][0-9]*$'),
+                                    RegExp(r'^[0-9][0-9]*$'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s\s"),
@@ -1487,8 +1487,8 @@ class _CreatePigmySavingsAccountScreenState
                                 ],
                                 keyboardtype: TextInputType.number,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validateMobileNumber(
-                                      value);
+                                  return ValidationUtil
+                                      .validateNomineeMobileNumber(value);
                                 },
                               ),
                               /* Nominee Mobile Number Input Field */
@@ -1562,7 +1562,7 @@ class _CreatePigmySavingsAccountScreenState
                                 ],
                                 keyboardtype: TextInputType.number,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validateAadhaar(
+                                  return ValidationUtil.validateNomineeAadhaar(
                                     value,
                                   );
                                 },
@@ -1609,7 +1609,7 @@ class _CreatePigmySavingsAccountScreenState
                                 ],
                                 keyboardtype: TextInputType.text,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validatePAN(
+                                  return ValidationUtil.validateNomineePAN(
                                     value,
                                   );
                                 },
@@ -1670,7 +1670,8 @@ class _CreatePigmySavingsAccountScreenState
                                 textEditingController:
                                     _nomineeBankNameController,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validateBankName(value);
+                                  return ValidationUtil.validateNomineeBankName(
+                                      value);
                                 },
                               ),
                               /* Nominee Bank Name Input Field */
@@ -1702,7 +1703,7 @@ class _CreatePigmySavingsAccountScreenState
                                   FilteringTextInputFormatter.digitsOnly,
                                   LengthLimitingTextInputFormatter(18),
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[1-9][0-9]*$'),
+                                    RegExp(r'^[0-9][0-9]*$'),
                                   ),
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s\s"),
@@ -1714,8 +1715,8 @@ class _CreatePigmySavingsAccountScreenState
                                 ],
                                 keyboardtype: TextInputType.number,
                                 validationFunc: (value) {
-                                  return ValidationUtil.validateAccountNumber(
-                                      value);
+                                  return ValidationUtil
+                                      .validateNomineeAccountNumber(value);
                                 },
                               ),
                               /* Nominee Bank Acc Number Input Field */
@@ -2964,20 +2965,20 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateFrequency(selectedValue.value);
     String? nomineeNameError =
         ValidationUtil.validateNomineeName(_nomineeNameController.text);
-    String? nomineePhNumError =
-        ValidationUtil.validateMobileNumber(_nomineePhoneNumberController.text);
+    String? nomineePhNumError = ValidationUtil.validateNomineeMobileNumber(
+        _nomineePhoneNumberController.text);
     String? nomineeRelationError =
         ValidationUtil.validateNomineeRelation(_nomineeRelationController.text);
-    String? nomineeAadhaarError =
-        ValidationUtil.validateAadhaar(_nomineeAadhaarNumberController.text);
+    String? nomineeAadhaarError = ValidationUtil.validateNomineeAadhaar(
+        _nomineeAadhaarNumberController.text);
     String? nomineePanNumError =
-        ValidationUtil.validatePAN(_nomineePanNumberController.text);
+        ValidationUtil.validateNomineePAN(_nomineePanNumberController.text);
     String? nomineeAccHolderNameError =
         ValidationUtil.validateNomineeAccHolderName(
             _nomineeAccountNameController.text);
     String? nomineeBankNameError =
-        ValidationUtil.validateBankName(_nomineeBankNameController.text);
-    String? nomineeAccNumError = ValidationUtil.validateAccountNumber(
+        ValidationUtil.validateNomineeBankName(_nomineeBankNameController.text);
+    String? nomineeAccNumError = ValidationUtil.validateNomineeAccountNumber(
         _nomineeAccountNumberController.text);
     // String? ifscCodeError =
     //     ValidationUtil.validateIFSC(_nomineeIFSCController.text);

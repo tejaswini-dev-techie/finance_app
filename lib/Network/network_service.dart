@@ -659,6 +659,7 @@ class NetworkService {
     String? guarantorPan,
     String? guarantorChequeNum,
     required String? docType,
+    required String? propertyDocImage,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -717,6 +718,7 @@ class NetworkService {
         paramsKeyVal['guarantorPan'] = guarantorPan;
         paramsKeyVal['guarantorChequeNum'] = guarantorChequeNum;
         paramsKeyVal['docType'] = docType;
+        paramsKeyVal['propertyDocImage'] = propertyDocImage;
         return _network
             .httpPut(apiHitTimeout, APIURLs.updateKYCDetailsURL,
                 body: paramsKeyVal)

@@ -213,6 +213,57 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
     }
   }
 
+  void showProfileDialog(BuildContext context, String? profileImageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              profileImageUrl ?? "",
+              fit: BoxFit.fill,
+              width: 260.sp,
+              height: 260.sp,
+              filterQuality:
+                  Platform.isIOS ? FilterQuality.medium : FilterQuality.low,
+              loadingBuilder: (BuildContext? context, Widget? child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child!;
+                }
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[400]!,
+                  enabled: true,
+                  child: Container(
+                    width: 260.sp,
+                    height: 260.sp,
+                    color: Colors.grey,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[400]!,
+                  enabled: true,
+                  child: Container(
+                    width: 260.sp,
+                    height: 260.sp,
+                    color: Colors.grey,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -314,48 +365,59 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                     ),
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 40.sp,
-                          backgroundColor: ColorConstants.greyShadow,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(40.sp),
-                            child: Image.network(
-                              searchDet?.profileImage ?? "",
-                              fit: BoxFit.fill,
-                              width: 60.sp,
-                              height: 60.sp,
-                              filterQuality: Platform.isIOS
-                                  ? FilterQuality.medium
-                                  : FilterQuality.low,
-                              loadingBuilder: (BuildContext? context,
-                                  Widget? child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child!;
-                                }
-                                return Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
-                                  highlightColor: Colors.grey[400]!,
-                                  enabled: true,
-                                  child: Container(
-                                    width: 60.sp,
-                                    height: 60.sp,
-                                    color: Colors.grey,
-                                  ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
-                                  highlightColor: Colors.grey[400]!,
-                                  enabled: true,
-                                  child: Container(
-                                    width: 60.sp,
-                                    height: 60.sp,
-                                    color: Colors.grey,
-                                  ),
-                                );
-                              },
+                        GestureDetector(
+                          onTap: () {
+                            if (searchDet?.profileImage != null &&
+                                searchDet!.profileImage!.isNotEmpty) {
+                              showProfileDialog(
+                                context,
+                                searchDet?.profileImage ?? "",
+                              );
+                            }
+                          },
+                          child: CircleAvatar(
+                            radius: 40.sp,
+                            backgroundColor: ColorConstants.greyShadow,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(40.sp),
+                              child: Image.network(
+                                searchDet?.profileImage ?? "",
+                                fit: BoxFit.fill,
+                                width: 60.sp,
+                                height: 60.sp,
+                                filterQuality: Platform.isIOS
+                                    ? FilterQuality.medium
+                                    : FilterQuality.low,
+                                loadingBuilder: (BuildContext? context,
+                                    Widget? child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child!;
+                                  }
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[400]!,
+                                    enabled: true,
+                                    child: Container(
+                                      width: 60.sp,
+                                      height: 60.sp,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[400]!,
+                                    enabled: true,
+                                    child: Container(
+                                      width: 60.sp,
+                                      height: 60.sp,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -628,11 +690,29 @@ class _SearchIntermitentScreenState extends State<SearchIntermitentScreen> {
                                                   null &&
                                               searchDet!.docsList![index]
                                                   .imagePath!.isNotEmpty)
-                                          ? ImageData(
-                                              imagePath: searchDet!
-                                                      .docsList![index]
-                                                      .imagePath ??
-                                                  "",
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                if (searchDet!.docsList![index]
+                                                            .imagePath !=
+                                                        null &&
+                                                    searchDet!
+                                                        .docsList![index]
+                                                        .imagePath!
+                                                        .isNotEmpty) {
+                                                  showProfileDialog(
+                                                    context,
+                                                    searchDet?.docsList?[index]
+                                                            .imagePath ??
+                                                        "",
+                                                  );
+                                                }
+                                              },
+                                              child: ImageData(
+                                                imagePath: searchDet!
+                                                        .docsList![index]
+                                                        .imagePath ??
+                                                    "",
+                                              ),
                                             )
                                           : const SizedBox.shrink(),
                                     ],

@@ -90,6 +90,19 @@ class ValidationUtil {
   }
   /* Mobile Number Validation */
 
+  /* Validate Nominee Mobile Number Validation */
+  static String? validateNomineeMobileNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    } else if (value.length != 10) {
+      return 'Mobile number must be exactly 10 digits';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Mobile number can only contain digits';
+    }
+    return null;
+  }
+  /* Validate Nominee Mobile Number Validation */
+
   /* Password Validation */
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
@@ -252,6 +265,19 @@ class ValidationUtil {
   }
   /* Aadhaar Validation */
 
+  /* Nominee Aadhaar Validation */
+  static String? validateNomineeAadhaar(String? value) {
+    final aadhaarPattern =
+        RegExp(r"^[2-9]{1}[0-9]{11}$"); // Aadhaar regex pattern
+    if (value == null || value.isEmpty) {
+      return null;
+    } else if (!aadhaarPattern.hasMatch(value)) {
+      return 'Please enter a valid 12-digit Aadhaar number';
+    }
+    return null;
+  }
+  /* Nominee Aadhaar Validation */
+
   /* Guarantor Aadhaar Validation */
   static String? validateGuarantorAadhaar(
     String? value,
@@ -282,6 +308,19 @@ class ValidationUtil {
     return null;
   }
   /* PAN Validation */
+
+  /* Nominee PAN Validation */
+  static String? validateNomineePAN(String? value) {
+    // PAN regex pattern: 5 uppercase letters, 4 digits, and 1 uppercase letter
+    final panPattern = RegExp(r"^[A-Z]{5}[0-9]{4}[A-Z]{1}$");
+    if (value == null || value.isEmpty) {
+      return null;
+    } else if (!panPattern.hasMatch(value)) {
+      return 'Please enter a valid 10-character PAN number';
+    }
+    return null;
+  }
+  /* Nominee PAN Validation */
 
   /* Guarantor PAN Validation */
   static String? validateGuarantorPAN(String? value) {
@@ -388,7 +427,9 @@ class ValidationUtil {
                                   ? "Please upload valid Signature Image"
                                   : (type == 8)
                                       ? 'Please upload valid Photo Image'
-                                      : 'Please upload valid Image';
+                                      : (type == 9)
+                                          ? 'Please upload valid House Image'
+                                          : 'Please upload valid Image';
     }
     return null;
   }
@@ -414,6 +455,15 @@ class ValidationUtil {
   }
 /* Bank Name Validation */
 
+/* Nominee Bank Name Validation */
+  static String? validateNomineeBankName(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    return null;
+  }
+/* Nominee Bank Name Validation */
+
 /* Bank Account Number Validation */
   static String? validateAccountNumber(String? value) {
     if (value == null || value.isEmpty) {
@@ -427,10 +477,23 @@ class ValidationUtil {
   }
 /* Bank Account Number Validation */
 
+/* Nominee Bank Account Number Validation */
+  static String? validateNomineeAccountNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Account number should contain only numbers';
+    } else if (value.length < 8 || value.length > 18) {
+      return 'Account number must be between 8 and 18 digits long';
+    }
+    return null;
+  }
+/* Nominee Bank Account Number Validation */
+
 /* Bank Branch Name Validation */
   static String? validateBranchName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter the bank branch name';
+      return null;
     } else if (value.length < 3) {
       return 'Branch name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9]').hasMatch(value)) {
@@ -456,7 +519,7 @@ class ValidationUtil {
 /* Nominee Name Validation */
   static String? validateNomineeName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter nominee name';
+      return null;
     } else if (value.length < 3) {
       return 'Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -469,7 +532,7 @@ class ValidationUtil {
   /* Nominee Relation Validation */
   static String? validateNomineeRelation(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter nominee relation';
+      return null;
     } else if (value.length < 3) {
       return 'Relation must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -482,7 +545,7 @@ class ValidationUtil {
   /* Nominee Acc Holder Name Validation */
   static String? validateNomineeAccHolderName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter bank account holder name';
+      return null;
     } else if (value.length < 3) {
       return 'Bank account holder name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {

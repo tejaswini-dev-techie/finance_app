@@ -479,8 +479,8 @@ class _CustomerProfileVerificationState
                                                     color: (customerProfileVerificationBloc
                                                                 .infoDetList![
                                                                     index]
-                                                                .payStatusType ==
-                                                            "2") // 1-VERIFIED | 2-PENDING
+                                                                .payStatusType !=
+                                                            "1") // 1-VERIFIED | 2-PENDING | 3-Rejected
                                                         ? ColorConstants
                                                             .mintRedColor
                                                         : ColorConstants
