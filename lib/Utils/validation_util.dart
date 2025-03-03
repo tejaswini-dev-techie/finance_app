@@ -615,7 +615,7 @@ class ValidationUtil {
         type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
   ) {
     if (value == null || value.isEmpty) {
-      return ((type == "1") || (type == "2"))
+      return ((type == "1") || (type == "2") || (type == "3"))
           ? null
           : 'Please enter Guarantor name';
     } else if (value.length < 3) {
@@ -634,7 +634,7 @@ class ValidationUtil {
         type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
   ) {
     if (value == null || value.isEmpty) {
-      return ((type == "1") || (type == "2"))
+      return ((type == "1") || (type == "2") || (type == "3"))
           ? null
           : 'Guarantor Mobile number cannot be empty';
     } else if (value.length != 10) {
