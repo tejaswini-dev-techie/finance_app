@@ -52,6 +52,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   String stateText = "";
   String zipText = "";
   String countryText = "";
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
   /* JSON Text */
 
   /* TextEditing Controller */
@@ -59,6 +61,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -66,6 +69,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _streetAddressController =
       TextEditingController();
+  final TextEditingController _landMarkController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _zipController = TextEditingController();
@@ -74,11 +78,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _confirmPasswordFocusNode = FocusNode();
   final FocusNode _streetAddressFocusNode = FocusNode();
+  final FocusNode _landmarkFocusNode = FocusNode();
   final FocusNode _cityFocusNode = FocusNode();
   final FocusNode _stateFocusNode = FocusNode();
   final FocusNode _zipFocusNode = FocusNode();
@@ -93,11 +99,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     super.initState();
     getAppContentDet();
     _nameController.addListener(_validateFields);
+    _fatherNameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _passwordController.addListener(_validateFields);
     _confirmPasswordController.addListener(_validateFields);
     _streetAddressController.addListener(_validateFields);
+    _landMarkController.addListener(_validateFields);
     _cityController.addListener(_validateFields);
     _stateController.addListener(_validateFields);
     _zipController.addListener(_validateFields);
@@ -118,33 +126,39 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   void dispose() {
     super.dispose();
     _nameController.dispose();
+    _fatherNameController.dispose();
     _phNumController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _emailController.dispose();
     _streetAddressController.dispose();
+    _landMarkController.dispose();
     _cityController.dispose();
     _zipController.dispose();
     _stateController.dispose();
     _countryController.dispose();
 
     _nameFocusNode.dispose();
+    _fatherNameFocusNode.dispose();
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
     _streetAddressFocusNode.dispose();
+    _landmarkFocusNode.dispose();
     _cityFocusNode.dispose();
     _stateFocusNode.dispose();
     _zipFocusNode.dispose();
     _countryFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
+    _fatherNameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
     _emailController.removeListener(_validateFields);
     _passwordController.removeListener(_validateFields);
     _confirmPasswordController.removeListener(_validateFields);
     _streetAddressController.removeListener(_validateFields);
+    _landMarkController.removeListener(_validateFields);
     _cityController.removeListener(_validateFields);
     _stateController.removeListener(_validateFields);
     _zipController.removeListener(_validateFields);
@@ -409,6 +423,37 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         height: 16.sp,
                                       ),
 
+                                      /* Father Input Field*/
+                                      Text(
+                                        fatherNameText,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: ColorConstants.lightBlackColor,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      TextInputField(
+                                        focusnodes: _fatherNameFocusNode,
+                                        suffixWidget: const Icon(
+                                          Icons.person_pin_circle_rounded,
+                                          color: ColorConstants.darkBlueColor,
+                                        ),
+                                        placeholderText:
+                                            fatherNamePlaceHolderText,
+                                        textEditingController:
+                                            _fatherNameController,
+                                        validationFunc: (value) {
+                                          return ValidationUtil
+                                              .validateFatherName(value);
+                                        },
+                                      ),
+                                      /* Father Name Input Field */
+
+                                      SizedBox(
+                                        height: 16.sp,
+                                      ),
+
                                       /* Mobile Number Input Field */
                                       Text(
                                         phNumText,
@@ -619,6 +664,48 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         height: 16.sp,
                                       ),
 
+                                      /* Landmark Input Field*/
+                                      Text(
+                                        "Landmark",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: ColorConstants.lightBlackColor,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      TextInputField(
+                                        focusnodes: _landmarkFocusNode,
+                                        suffixWidget: const Icon(
+                                          Icons.location_on,
+                                          color: ColorConstants.darkBlueColor,
+                                        ),
+                                        placeholderText: "Landmark",
+                                        textEditingController:
+                                            _landMarkController,
+                                        inputFormattersList: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.deny(
+                                            RegExp(r"\s\s"),
+                                          ),
+                                          FilteringTextInputFormatter.deny(
+                                            RegExp(
+                                                r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                          ),
+                                        ],
+                                        validationFunc: (value) {
+                                          return ValidationUtil
+                                              .validateLocation(
+                                            value,
+                                            7,
+                                          );
+                                        },
+                                      ),
+                                      /* Landmark Input Field */
+
+                                      SizedBox(
+                                        height: 16.sp,
+                                      ),
+
                                       /* City Input Field*/
                                       Text(
                                         cityText,
@@ -770,6 +857,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Future<void> onSignup() async {
     // Validation checks
     String? nameError = ValidationUtil.validateName(_nameController.text);
+    String? fatherNameError =
+        ValidationUtil.validateFatherName(_fatherNameController.text);
     String? mobileError =
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? emailError =
@@ -780,6 +869,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         _confirmPasswordController.text, _passwordController.text);
     String? streetAddressError =
         ValidationUtil.validateLocation(_streetAddressController.text, 1);
+    String? landmarkError = ValidationUtil.validateLocation(
+      _landMarkController.text,
+      7,
+    );
     String? cityError =
         ValidationUtil.validateLocation(_cityController.text, 3);
     String? stateError =
@@ -795,10 +888,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       isDisabled.value = false;
       var result = await NetworkService().signUpService(
         name: _nameController.text,
+        fatherName: _fatherNameController.text,
         primaryPhone: _phNumController.text,
         email: _emailController.text,
         password: _passwordController.text,
         address: _streetAddressController.text,
+        landMark: _landMarkController.text,
         city: _cityController.text,
         state: _stateController.text,
         zip: _zipController.text,
@@ -836,6 +931,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       // Check for individual errors and focus accordingly
       if (nameError != null) {
         _showErrorAndFocus(_nameFocusNode, nameError);
+      } else if (fatherNameError != null) {
+        _showErrorAndFocus(_fatherNameFocusNode, fatherNameError);
       } else if (mobileError != null) {
         _showErrorAndFocus(_phNumFocusNode, mobileError);
       } else if (emailError != null) {
@@ -846,6 +943,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         _showErrorAndFocus(_confirmPasswordFocusNode, confirmPasswordError);
       } else if (streetAddressError != null) {
         _showErrorAndFocus(_streetAddressFocusNode, streetAddressError);
+      } else if (landmarkError != null) {
+        _showErrorAndFocus(_landmarkFocusNode, landmarkError);
       } else if (cityError != null) {
         _showErrorAndFocus(_cityFocusNode, cityError);
       } else if (stateError != null) {

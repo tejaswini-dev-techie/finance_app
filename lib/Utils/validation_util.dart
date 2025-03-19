@@ -25,10 +25,24 @@ class ValidationUtil {
   }
   /* Name Validation */
 
+  /* Father Name Validation */
+  static String? validateFatherName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Father\'s name';
+    } else if (value.length < 3) {
+      return 'Name must be at least 3 characters long';
+    } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+      return 'Father\'s name should not contain numbers or special characters';
+    }
+    return null;
+  }
+  /* Father Name Validation */
+
   /* Reference Name Validation */
   static String? validateReferenceName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter Reference Name';
+      return null;
+      // 'Please enter Reference Name';
     } else if (value.length < 3) {
       return 'Reference Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -41,7 +55,8 @@ class ValidationUtil {
   /* Agent Name Validation */
   static String? validateAgentName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter Agent Name';
+      return null;
+      // 'Please enter Agent Name';
     } else if (value.length < 3) {
       return 'Agent Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -54,7 +69,8 @@ class ValidationUtil {
   /* Agent Number Validation */
   static String? validateAgentNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Mobile number cannot be empty';
+      return null;
+      // 'Mobile number cannot be empty';
     } else if (value.length != 10) {
       return 'Mobile number must be exactly 10 digits';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
@@ -67,7 +83,8 @@ class ValidationUtil {
   /* Verified By Agent Name Validation */
   static String? validateByAgentName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter Verifed By Agent Name';
+      return null;
+      // 'Please enter Verifed By Agent Name';
     } else if (value.length < 3) {
       return 'Verifed By Agent Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -145,21 +162,22 @@ class ValidationUtil {
       ) {
     /* type 1 - Street Address | 2 - State | 3 - City | 4 - Country | 5 - Permanent Address | 6 - Guarantor's location */
     if (value == null || value.isEmpty) {
-      return (type == 1)
-          ? 'Please enter Current Address'
-          : (type == 2)
-              ? 'Please enter State'
-              : (type == 3)
-                  ? 'Please enter City'
-                  : (type == 4)
-                      ? 'Please enter Country'
-                      : (type == 5)
-                          ? "Please enter Permanent Address"
-                          : (type == 6)
-                              ? ((pageType == "1") || (pageType == "2"))
-                                  ? null
-                                  : "Please enter Guarantor's location details"
-                              : "Please enter location details";
+      return null;
+      // (type == 1)
+      //     ? 'Please enter Current Address'
+      //     : (type == 2)
+      //         ? 'Please enter State'
+      //         : (type == 3)
+      //             ? 'Please enter City'
+      //             : (type == 4)
+      //                 ? 'Please enter Country'
+      //                 : (type == 5)
+      //                     ? "Please enter Permanent Address"
+      //                     : (type == 6)
+      //                         ? ((pageType == "1") || (pageType == "2"))
+      //                             ? null
+      //                             : "Please enter Guarantor's location details"
+      //                         : "Please enter location details";
     }
     return null;
   }
@@ -168,7 +186,8 @@ class ValidationUtil {
   /* Pincode Validation */
   static String? validatePinCode(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Pin Code cannot be empty';
+      return null;
+      // 'Pin Code cannot be empty';
     } else if (value.length != 6) {
       return 'Pin Code must be exactly 6 digits';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
@@ -181,7 +200,8 @@ class ValidationUtil {
   /* Deposit Amount Validation */
   static String? validateDepositAmount(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Amount cannot be empty';
+      return null;
+      // 'Amount cannot be empty';
     } else if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(value)) {
       return 'Amount can only contain digits';
     }
@@ -222,7 +242,8 @@ class ValidationUtil {
   /* Frequency Validation */
   static String? validateFrequency(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please select the frequency';
+      return null;
+      // 'Please select the frequency';
     } else if (value == "Select PIGMY Frequency") {
       return 'Please select the frequency';
     }
@@ -233,7 +254,8 @@ class ValidationUtil {
   /* Withdrawal Amount Validation */
   static String? validateWithdrawAmount(String? value, {String balAmt = "0"}) {
     if (value == null || value.isEmpty) {
-      return 'Withdraw Amount cannot be empty';
+      return null;
+      // 'Withdraw Amount cannot be empty';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
       return 'Withdraw Amount can only contain digits';
     } else if (int.parse(value) > int.parse(balAmt)) {
@@ -246,7 +268,8 @@ class ValidationUtil {
   /* Withdrawal Reason Validation */
   static String? validateWithdrawReason(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Reason cannot be empty';
+      return null;
+      // 'Reason cannot be empty';
     }
     return null;
   }
@@ -257,7 +280,8 @@ class ValidationUtil {
     final aadhaarPattern =
         RegExp(r"^[2-9]{1}[0-9]{11}$"); // Aadhaar regex pattern
     if (value == null || value.isEmpty) {
-      return 'Please enter Aadhaar number';
+      return null;
+      // 'Please enter Aadhaar number';
     } else if (!aadhaarPattern.hasMatch(value)) {
       return 'Please enter a valid 12-digit Aadhaar number';
     }
@@ -286,9 +310,10 @@ class ValidationUtil {
     final aadhaarPattern =
         RegExp(r"^[2-9]{1}[0-9]{11}$"); // Aadhaar regex pattern
     if (value == null || value.isEmpty) {
-      return ((type == "1") || (type == "2"))
-          ? null
-          : 'Please enter Guarantor\'s Aadhaar number';
+      return null;
+      // ((type == "1") || (type == "2"))
+      //     ? null
+      //     : 'Please enter Guarantor\'s Aadhaar number';
     } else if (!aadhaarPattern.hasMatch(value)) {
       return 'Please enter a valid 12-digit Aadhaar number';
     }
@@ -301,7 +326,8 @@ class ValidationUtil {
     // PAN regex pattern: 5 uppercase letters, 4 digits, and 1 uppercase letter
     final panPattern = RegExp(r"^[A-Z]{5}[0-9]{4}[A-Z]{1}$");
     if (value == null || value.isEmpty) {
-      return 'Please enter PAN number';
+      return null;
+      // 'Please enter PAN number';
     } else if (!panPattern.hasMatch(value)) {
       return 'Please enter a valid 10-character PAN number';
     }
@@ -338,7 +364,8 @@ class ValidationUtil {
   /* CODE or ID Validation */
   static String? validateCode(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Code cannot be empty';
+      return null;
+      // 'Code cannot be empty';
     }
     return null;
   }
@@ -349,7 +376,8 @@ class ValidationUtil {
     // Cheque number regex pattern: 6 to 10 digits
     final chequePattern = RegExp(r"^[0-9]{6,10}$");
     if (value == null || value.isEmpty) {
-      return 'Please enter cheque number';
+      return null;
+      // 'Please enter cheque number';
     } else if (!chequePattern.hasMatch(value)) {
       return 'Please enter a valid cheque number (6-10 digits)';
     }
@@ -362,9 +390,10 @@ class ValidationUtil {
     // Cheque number regex pattern: 6 to 10 digits
     final chequePattern = RegExp(r"^[0-9]{6,10}$");
     if (value == null || value.isEmpty) {
-      return ((type == "1") || (type == "2"))
-          ? null
-          : 'Please enter cheque number';
+      return null;
+      // ((type == "1") || (type == "2"))
+      //     ? null
+      //     : 'Please enter cheque number';
     } else if (!chequePattern.hasMatch(value)) {
       return 'Please enter a valid cheque number (6-10 digits)';
     }
@@ -375,7 +404,8 @@ class ValidationUtil {
   /* Property Details Validation */
   static String? validatePropertyDetails(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Property Details cannot be empty';
+      return null;
+      // 'Property Details cannot be empty';
     }
     return null;
   }
@@ -384,7 +414,8 @@ class ValidationUtil {
   /* RC Holder Name Validation */
   static String? validateRCHolderName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter RC Holder name';
+      return null;
+      // 'Please enter RC Holder name';
     } else if (value.length < 3) {
       return 'Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -397,7 +428,8 @@ class ValidationUtil {
   /* Property Holder Name Validation */
   static String? validatePropertyHolderName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter Property Holder name';
+      return null;
+      // 'Please enter Property Holder name';
     } else if (value.length < 3) {
       return 'Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -408,37 +440,39 @@ class ValidationUtil {
   /* Property Holder Name Validation */
 
   /* Image Error */
-  static String? validateImage(String? value, int type) {
-    // type 1 - Aadhaar | 2 - PAN | 3 - Cheque | 4 - RC | 5 - Property | 6 - Bank Pass book
-    if (value == null || value.isEmpty) {
-      return (type == 1)
-          ? 'Please upload valid Aadhaar Image'
-          : (type == 2)
-              ? 'Please upload valid PAN Image'
-              : (type == 3)
-                  ? 'Please upload valid Cheque Image'
-                  : (type == 4)
-                      ? 'Please upload valid RC Image'
-                      : (type == 5)
-                          ? 'Please upload valid Property Image'
-                          : (type == 6)
-                              ? "Please upload valid Bank Pass book Image"
-                              : (type == 7)
-                                  ? "Please upload valid Signature Image"
-                                  : (type == 8)
-                                      ? 'Please upload valid Photo Image'
-                                      : (type == 9)
-                                          ? 'Please upload valid House Image'
-                                          : 'Please upload valid Image';
-    }
-    return null;
-  }
+  // static String? validateImage(String? value, int type) {
+  //   // type 1 - Aadhaar | 2 - PAN | 3 - Cheque | 4 - RC | 5 - Property | 6 - Bank Pass book
+  //   if (value == null || value.isEmpty) {
+  //     return null;
+  //     // (type == 1)
+  //     //     ? 'Please upload valid Aadhaar Image'
+  //     //     : (type == 2)
+  //     //         ? 'Please upload valid PAN Image'
+  //     //         : (type == 3)
+  //     //             ? 'Please upload valid Cheque Image'
+  //     //             : (type == 4)
+  //     //                 ? 'Please upload valid RC Image'
+  //     //                 : (type == 5)
+  //     //                     ? 'Please upload valid Property Image'
+  //     //                     : (type == 6)
+  //     //                         ? "Please upload valid Bank Pass book Image"
+  //     //                         : (type == 7)
+  //     //                             ? "Please upload valid Signature Image"
+  //     //                             : (type == 8)
+  //     //                                 ? 'Please upload valid Photo Image'
+  //     //                                 : (type == 9)
+  //     //                                     ? 'Please upload valid House Image'
+  //     //                                     : 'Please upload valid Image';
+  //   }
+  //   return null;
+  // }
   /* Image Error */
 
   /* Loan Amount Validation */
   static String? validateLoanAmount(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Loan Amount cannot be empty';
+      return null;
+      // 'Loan Amount cannot be empty';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
       return 'Loan Amount can only contain digits';
     }
@@ -449,7 +483,8 @@ class ValidationUtil {
   /* Bank Name Validation */
   static String? validateBankName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter the bank name';
+      return null;
+      // 'Please enter the bank name';
     }
     return null;
   }
@@ -467,7 +502,8 @@ class ValidationUtil {
 /* Bank Account Number Validation */
   static String? validateAccountNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter bank account number';
+      return null;
+      // 'Please enter bank account number';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
       return 'Account number should contain only numbers';
     } else if (value.length < 8 || value.length > 18) {
@@ -558,7 +594,8 @@ class ValidationUtil {
   /* Fields Validation */
   static String? validateFieldsValue(String? value) {
     if (value == null || value.isEmpty) {
-      return 'This field is mandatory';
+      return null;
+      // 'This field is mandatory';
     } else if (value.length < 3) {
       return 'Field must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -571,7 +608,8 @@ class ValidationUtil {
   /* Tenure Validation */
   static String? validateTenure(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter the tenure';
+      return null;
+      // 'Please enter the tenure';
     }
     return null;
   }
@@ -580,7 +618,8 @@ class ValidationUtil {
   /* Amount To be Paid Validation */
   static String? validateAmtToBePaid(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Field cannot be empty';
+      return null;
+      // 'Field cannot be empty';
     }
     return null;
   }
@@ -589,7 +628,8 @@ class ValidationUtil {
   /* Frequency Validation */
   static String? validatePigmyPlan(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please select the PIGMY Plan';
+      return null;
+      // 'Please select the PIGMY Plan';
     } else if (value == "Select PIGMY Plan") {
       return 'Please select the PIGMY Plan';
     }
@@ -600,7 +640,8 @@ class ValidationUtil {
   /* Frequency Validation */
   static String? validateDocType(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please select the document type';
+      return null;
+      // 'Please select the document type';
     } else if (value == "Select Document Type") {
       return 'Please select the document type';
     }
@@ -615,9 +656,10 @@ class ValidationUtil {
         type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
   ) {
     if (value == null || value.isEmpty) {
-      return ((type == "1") || (type == "2") || (type == "3"))
-          ? null
-          : 'Please enter Guarantor name';
+      return null;
+      // ((type == "1") || (type == "2") || (type == "3"))
+      //     ? null
+      //     : 'Please enter Guarantor name';
     } else if (value.length < 3) {
       return 'Guarantor Name must be at least 3 characters long';
     } else if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
@@ -634,9 +676,10 @@ class ValidationUtil {
         type, // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
   ) {
     if (value == null || value.isEmpty) {
-      return ((type == "1") || (type == "2") || (type == "3"))
-          ? null
-          : 'Guarantor Mobile number cannot be empty';
+      return null;
+      // ((type == "1") || (type == "2") || (type == "3"))
+      //     ? null
+      //     : 'Guarantor Mobile number cannot be empty';
     } else if (value.length != 10) {
       return 'Guarantor Mobile number must be exactly 10 digits';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {

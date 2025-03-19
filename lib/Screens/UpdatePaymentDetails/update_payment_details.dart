@@ -43,6 +43,7 @@ class _UpdateCustomersPaymentDetailsScreenState
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _loanCodeController = TextEditingController();
   final TextEditingController _agentCodeController = TextEditingController();
@@ -55,6 +56,7 @@ class _UpdateCustomersPaymentDetailsScreenState
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _loanCodeFocusNode = FocusNode();
   final FocusNode _agentCodeFocusNode = FocusNode();
@@ -123,6 +125,9 @@ class _UpdateCustomersPaymentDetailsScreenState
   final _loadingController = StreamController<bool>.broadcast();
   Stream<bool> get loadingStream => _loadingController.stream;
   void setIsLoading(bool loading) => _loadingController.add(loading);
+
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
 
   @override
   void initState() {
@@ -450,6 +455,39 @@ class _UpdateCustomersPaymentDetailsScreenState
                                             },
                                           ),
                                           /* Name Input Field */
+
+                                          SizedBox(
+                                            height: 16.sp,
+                                          ),
+
+                                          /* Father Input Field*/
+                                          Text(
+                                            fatherNameText,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: ColorConstants
+                                                  .lightBlackColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          TextInputField(
+                                            focusnodes: _fatherNameFocusNode,
+                                            suffixWidget: const Icon(
+                                              Icons.person_pin_circle_rounded,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                            ),
+                                            placeholderText:
+                                                fatherNamePlaceHolderText,
+                                            textEditingController:
+                                                _fatherNameController,
+                                            validationFunc: (value) {
+                                              return ValidationUtil
+                                                  .validateFatherName(value);
+                                            },
+                                          ),
+                                          /* Father Name Input Field */
 
                                           SizedBox(
                                             height: 16.sp,

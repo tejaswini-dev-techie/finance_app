@@ -45,6 +45,7 @@ class _UpdateGroupPaymentDetailsScreenState
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _loanCodeController = TextEditingController();
   final TextEditingController _agentCodeController = TextEditingController();
@@ -58,6 +59,7 @@ class _UpdateGroupPaymentDetailsScreenState
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _loanCodeFocusNode = FocusNode();
   final FocusNode _agentCodeFocusNode = FocusNode();
@@ -126,6 +128,9 @@ class _UpdateGroupPaymentDetailsScreenState
 
   String? internetAlert = "Please check your internet connection";
 
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
+
   // Progress indicator
   final _loadingController = StreamController<bool>.broadcast();
   Stream<bool> get loadingStream => _loadingController.stream;
@@ -139,6 +144,7 @@ class _UpdateGroupPaymentDetailsScreenState
       type: widget.type,
     ));
     _nameController.addListener(_validateFields);
+    _fatherNameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _loanCodeController.addListener(_validateFields);
     _agentCodeController.addListener(_validateFields);
@@ -155,6 +161,7 @@ class _UpdateGroupPaymentDetailsScreenState
     super.dispose();
 
     _nameController.dispose();
+    _fatherNameController.dispose();
     _phNumController.dispose();
     _loanCodeController.dispose();
     _agentCodeController.dispose();
@@ -179,6 +186,7 @@ class _UpdateGroupPaymentDetailsScreenState
     _userAmountFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
+    _fatherNameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
     _loanCodeController.removeListener(_validateFields);
     _agentCodeController.removeListener(_validateFields);
@@ -710,6 +718,10 @@ class _UpdateGroupPaymentDetailsScreenState
                         } else if (state is UpdateGroupPaymentDetailsLoaded) {
                           _nameController.text =
                               updateGroupPaymentDetailsBloc.userData?.name ??
+                                  "";
+                          _fatherNameController.text =
+                              updateGroupPaymentDetailsBloc
+                                      .userData?.fatherName ??
                                   "";
                           _phNumController.text =
                               updateGroupPaymentDetailsBloc.userData?.mobNum ??
@@ -1949,6 +1961,7 @@ class _UpdateGroupPaymentDetailsScreenState
                                                                 userName:
                                                                     _nameController
                                                                         .text,
+
                                                                 mobNum:
                                                                     _phNumController
                                                                         .text,
@@ -2384,6 +2397,8 @@ class _UpdateGroupPaymentDetailsScreenState
   Future<void> onSubmitAction() async {
     // Validation checks
     String? nameError = ValidationUtil.validateGroupName(_nameController.text);
+    String? fatherNameError =
+        ValidationUtil.validateGroupName(_fatherNameController.text);
     String? mobileError =
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? loanCodeError =

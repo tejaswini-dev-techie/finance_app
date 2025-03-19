@@ -72,10 +72,12 @@ class NetworkService {
   };
   Future<dynamic> signUpService({
     required String? name,
+    required String? fatherName,
     required String? primaryPhone,
     required String? email,
     required String? password,
     required String? address,
+    required String? landMark,
     required String? city,
     required String? state,
     required String? zip,
@@ -84,11 +86,13 @@ class NetworkService {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['name'] = '$name';
+        paramsKeyVal['fatherName'] = "$fatherName";
         paramsKeyVal['mobile_number'] = '$primaryPhone';
         paramsKeyVal['phoneNumber'] = '$primaryPhone';
         paramsKeyVal['email'] = '$email';
         paramsKeyVal['password'] = '$password';
         paramsKeyVal['address'] = '$address';
+        paramsKeyVal['landMark'] = landMark;
         paramsKeyVal['city'] = '$city';
         paramsKeyVal['state'] = '$state';
         paramsKeyVal['zip'] = '$zip';
@@ -606,6 +610,7 @@ class NetworkService {
   Future<dynamic> updateKYCDetails({
     required String? aadhaarImage,
     required String? userName,
+    required String? fatherName,
     required String? mobNum,
     required String? altMobNum,
     required String? emailAddress,
@@ -660,6 +665,7 @@ class NetworkService {
     String? guarantorChequeNum,
     required String? docType,
     required String? propertyDocImage,
+    required String? landMark,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -674,10 +680,12 @@ class NetworkService {
         paramsKeyVal['aadhaarNumber'] = aadhaarNumber;
         paramsKeyVal['panNumber'] = panNumber;
         paramsKeyVal['userName'] = userName;
+        paramsKeyVal['fatherName'] = fatherName;
         paramsKeyVal['mobNum'] = mobNum;
         paramsKeyVal['altMobNum'] = altMobNum;
         paramsKeyVal['emailAddress'] = emailAddress;
         paramsKeyVal['streetAddress'] = streetAddress;
+        paramsKeyVal['landMark'] = landMark;
         paramsKeyVal['city'] = city;
         paramsKeyVal['state'] = state;
         paramsKeyVal['zipCode'] = zipCode;
@@ -740,6 +748,7 @@ class NetworkService {
   };
   Future<dynamic> updateEnquiryDetails({
     required String? userName,
+    required String? fatherName,
     required String? mobNum,
     required String? altMobNum,
     required String? emailAddress,
@@ -753,6 +762,7 @@ class NetworkService {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['userName'] = userName;
+        paramsKeyVal['fatherName'] = fatherName;
         paramsKeyVal['mobNum'] = mobNum;
         paramsKeyVal['altMobNum'] = altMobNum;
         paramsKeyVal['emailAddress'] = emailAddress;
@@ -787,6 +797,7 @@ class NetworkService {
     required String? altMobNum,
     required String? emailAddress,
     required String? streetAddress,
+    required String? landMark,
     required String? city,
     required String? state,
     required String? zipCode,
@@ -829,6 +840,7 @@ class NetworkService {
         paramsKeyVal['altMobNum'] = altMobNum;
         paramsKeyVal['emailAddress'] = emailAddress;
         paramsKeyVal['streetAddress'] = streetAddress;
+        paramsKeyVal['landMark'] = landMark;
         paramsKeyVal['city'] = city;
         paramsKeyVal['state'] = state;
         paramsKeyVal['zipCode'] = zipCode;
@@ -882,6 +894,7 @@ class NetworkService {
     required String? altMobNum,
     required String? emailAddress,
     required String? streetAddress,
+    required String? landMark,
     required String? city,
     required String? state,
     required String? zipCode,
@@ -927,6 +940,7 @@ class NetworkService {
         paramsKeyVal['altMobNum'] = altMobNum;
         paramsKeyVal['emailAddress'] = emailAddress;
         paramsKeyVal['streetAddress'] = streetAddress;
+        paramsKeyVal['landMark'] = landMark;
         paramsKeyVal['city'] = city;
         paramsKeyVal['state'] = state;
         paramsKeyVal['zipCode'] = zipCode;
@@ -984,8 +998,8 @@ class NetworkService {
     required String? mobNum,
     required String? altMobNum,
     required String? emailAddress,
-    // required String? streetAddress,
-    // required String? city,
+    required String? fatherName,
+    // required String? landmark,
     // required String? state,
     // required String? zipCode,
     // required String? country,
@@ -998,6 +1012,7 @@ class NetworkService {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['userName'] = userName;
+        paramsKeyVal['fatherName'] = fatherName;
         paramsKeyVal['mobNum'] = mobNum;
         paramsKeyVal['altMobNum'] = altMobNum;
         paramsKeyVal['emailAddress'] = emailAddress;
@@ -2006,6 +2021,7 @@ class NetworkService {
   Future<dynamic> updateGroupIndividualCustomerDetails({
     required String? aadhaarImage,
     required String? userName,
+    required String? fatherName,
     required String? mobNum,
     required String? altMobNum,
     required String? emailAddress,
@@ -2057,6 +2073,7 @@ class NetworkService {
     required String? guarantorChequeNum,
     required String? docType,
     required String? propertyDocImage,
+    required String? landMark,
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
@@ -2064,10 +2081,12 @@ class NetworkService {
         paramsKeyVal['aadhaarNumber'] = aadhaarNumber;
         paramsKeyVal['panNumber'] = panNumber;
         paramsKeyVal['userName'] = userName;
+        paramsKeyVal['fatherName'] = fatherName;
         paramsKeyVal['mobNum'] = mobNum;
         paramsKeyVal['altMobNum'] = altMobNum;
         paramsKeyVal['emailAddress'] = emailAddress;
         paramsKeyVal['streetAddress'] = streetAddress;
+        paramsKeyVal['landMark'] = landMark;
         paramsKeyVal['city'] = city;
         paramsKeyVal['state'] = state;
         paramsKeyVal['zipCode'] = zipCode;

@@ -104,6 +104,7 @@ class _CreatePigmySavingsAccountScreenState
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _altPhNumController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -111,6 +112,7 @@ class _CreatePigmySavingsAccountScreenState
       TextEditingController();
   final TextEditingController _streetAddressController =
       TextEditingController();
+  final TextEditingController _landMarkController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _zipController = TextEditingController();
@@ -154,11 +156,13 @@ class _CreatePigmySavingsAccountScreenState
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _altPhNumFocusNode = FocusNode();
   final FocusNode _permanentAddressFocusNode = FocusNode();
   final FocusNode _streetAddressFocusNode = FocusNode();
+  final FocusNode _landmarkFocusNode = FocusNode();
   final FocusNode _cityFocusNode = FocusNode();
   final FocusNode _stateFocusNode = FocusNode();
   final FocusNode _zipFocusNode = FocusNode();
@@ -221,6 +225,9 @@ class _CreatePigmySavingsAccountScreenState
   ValueNotifier<String?> selectedPigmyPlanValue =
       ValueNotifier<String>("Select PIGMY plans");
 
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
+
   @override
   void initState() {
     super.initState();
@@ -231,6 +238,7 @@ class _CreatePigmySavingsAccountScreenState
     _altPhNumController.addListener(_validateFields);
     _permanentAddressController.addListener(_validateFields);
     _streetAddressController.addListener(_validateFields);
+    _landMarkController.addListener(_validateFields);
     _cityController.addListener(_validateFields);
     _stateController.addListener(_validateFields);
     _zipController.addListener(_validateFields);
@@ -278,6 +286,7 @@ class _CreatePigmySavingsAccountScreenState
     _emailController.dispose();
     _permanentAddressController.dispose();
     _streetAddressController.dispose();
+    _landMarkController.dispose();
     _cityController.dispose();
     _zipController.dispose();
     _stateController.dispose();
@@ -341,6 +350,7 @@ class _CreatePigmySavingsAccountScreenState
     _altPhNumController.removeListener(_validateFields);
     _permanentAddressController.removeListener(_validateFields);
     _streetAddressController.removeListener(_validateFields);
+    _landMarkController.removeListener(_validateFields);
     _cityController.removeListener(_validateFields);
     _stateController.removeListener(_validateFields);
     _zipController.removeListener(_validateFields);
@@ -622,6 +632,35 @@ class _CreatePigmySavingsAccountScreenState
                                 },
                               ),
                               /* Name Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Father Input Field*/
+                              Text(
+                                fatherNameText,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _fatherNameFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.person_pin_circle_rounded,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: fatherNamePlaceHolderText,
+                                textEditingController: _fatherNameController,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateFatherName(
+                                      value);
+                                },
+                              ),
+                              /* Father Name Input Field */
 
                               SizedBox(
                                 height: 16.sp,
@@ -1121,6 +1160,47 @@ class _CreatePigmySavingsAccountScreenState
                                 },
                               ),
                               /* Street Address Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Landmark Input Field*/
+                              Text(
+                                "Landmark",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _landmarkFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.location_on,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: "Landmark",
+                                textEditingController: _landMarkController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateLocation(
+                                    value,
+                                    7,
+                                    pageType: widget.type,
+                                  );
+                                },
+                              ),
+                              /* Landmark Input Field */
 
                               SizedBox(
                                 height: 16.sp,
@@ -2952,6 +3032,8 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateLocation(_permanentAddressController.text, 5);
     String? streetAddressError =
         ValidationUtil.validateLocation(_streetAddressController.text, 1);
+    String? landmarkError =
+        ValidationUtil.validateLocation(_landMarkController.text, 1);
     String? cityError =
         ValidationUtil.validateLocation(_cityController.text, 3);
     String? stateError =
@@ -2992,9 +3074,9 @@ class _CreatePigmySavingsAccountScreenState
         ValidationUtil.validateAgentName(_agentNameController.text);
     String? agentPhNumError =
         ValidationUtil.validateMobileNumber(_agentPhNumController.text);
-    String? photoImageError = ValidationUtil.validateImage(photoImagePath, 8);
-    String? signatureImageError =
-        ValidationUtil.validateImage(signatureImagePath, 7);
+    // String? photoImageError = ValidationUtil.validateImage(photoImagePath, 8);
+    // String? signatureImageError =
+    //     ValidationUtil.validateImage(signatureImagePath, 7);
 
     final form = _formKey.currentState;
 
@@ -3011,6 +3093,7 @@ class _CreatePigmySavingsAccountScreenState
             altMobNum: _altPhNumController.text,
             emailAddress: _emailController.text,
             streetAddress: _streetAddressController.text,
+            landMark: _landMarkController.text,
             city: _cityController.text,
             state: _stateController.text,
             zipCode: _zipController.text,
@@ -3056,6 +3139,7 @@ class _CreatePigmySavingsAccountScreenState
             altMobNum: _altPhNumController.text,
             emailAddress: _emailController.text,
             streetAddress: _streetAddressController.text,
+            landMark: _landMarkController.text,
             city: _cityController.text,
             state: _stateController.text,
             zipCode: _zipController.text,
@@ -3148,6 +3232,8 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_permanentAddressFocusNode, permanentAddressError);
       } else if (streetAddressError != null) {
         _showErrorAndFocus(_streetAddressFocusNode, streetAddressError);
+      } else if (landmarkError != null) {
+        _showErrorAndFocus(_landmarkFocusNode, landmarkError);
       } else if (cityError != null) {
         _showErrorAndFocus(_cityFocusNode, cityError);
       } else if (stateError != null) {
@@ -3201,19 +3287,20 @@ class _CreatePigmySavingsAccountScreenState
         _showErrorAndFocus(_agentNameFocusNode, agentNameError);
       } else if ((widget.type == "2") && agentPhNumError != null) {
         _showErrorAndFocus(_agentPhNumFocusNode, agentPhNumError);
-      } else if (photoImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: photoImageError,
-          isError: true,
-        );
-      } else if (signatureImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: signatureImageError,
-          isError: true,
-        );
       }
+      // else if (photoImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: photoImageError,
+      //     isError: true,
+      //   );
+      // } else if (signatureImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: signatureImageError,
+      //     isError: true,
+      //   );
+      // }
     }
   }
 

@@ -58,6 +58,28 @@ class RouteGenerator {
           }
         }
 
+      /* Session Expired Screen */
+      case RoutingConstants.routeSessionExpired:
+        {
+          if (args != "" && args != null) {
+            Map<String, dynamic> data;
+            data = args;
+            return MaterialPageRoute(
+              builder: (_) => const LoginScreen(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          } else {
+            return MaterialPageRoute(
+              builder: (_) => const LoginScreen(),
+              settings: RouteSettings(
+                name: settings.name,
+              ),
+            );
+          }
+        }
+
       /* Create Account Screen */
       case RoutingConstants.routeCreateAccountScreen:
         {

@@ -24,6 +24,7 @@ class WithdrawPigmyDataModel {
 
 class Data {
   String? name;
+  String? fatherName;
   String? mobNum;
   String? altMobNum;
   String? emailAddress;
@@ -38,6 +39,7 @@ class Data {
 
   Data({
     this.name,
+    this.fatherName,
     this.mobNum,
     this.altMobNum,
     this.emailAddress,
@@ -53,6 +55,7 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     name = json['name'];
+    fatherName = json['father_name'];
     mobNum = json['mob_num'];
     altMobNum = json['alt_mob_num'];
     emailAddress = json['email_address'];
@@ -69,6 +72,7 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = name;
+    data['father_name'] = fatherName;
     data['mob_num'] = mobNum;
     data['alt_mob_num'] = altMobNum;
     data['email_address'] = emailAddress;

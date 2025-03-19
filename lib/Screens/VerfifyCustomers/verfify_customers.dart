@@ -49,6 +49,8 @@ class _VerifyCustomersDetailsScreenState
 
   String nameText = "";
   String namePlaceHolderText = "";
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
   String altPhNumText = "";
   String phNumText = "";
   String phNumPlaceholderText = "";
@@ -93,6 +95,7 @@ class _VerifyCustomersDetailsScreenState
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _altPhNumController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -100,6 +103,7 @@ class _VerifyCustomersDetailsScreenState
       TextEditingController();
   final TextEditingController _streetAddressController =
       TextEditingController();
+  final TextEditingController _landMarkController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _zipController = TextEditingController();
@@ -127,11 +131,13 @@ class _VerifyCustomersDetailsScreenState
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _altPhNumFocusNode = FocusNode();
   final FocusNode _permanentAddressFocusNode = FocusNode();
   final FocusNode _streetAddressFocusNode = FocusNode();
+  final FocusNode _landmarkFocusNode = FocusNode();
   final FocusNode _cityFocusNode = FocusNode();
   final FocusNode _stateFocusNode = FocusNode();
   final FocusNode _zipFocusNode = FocusNode();
@@ -306,11 +312,13 @@ class _VerifyCustomersDetailsScreenState
     super.initState();
     getAppContentDet();
     _nameController.addListener(_validateFields);
+    _fatherNameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _altPhNumController.addListener(_validateFields);
     _permanentAddressController.addListener(_validateFields);
     _streetAddressController.addListener(_validateFields);
+    _landMarkController.addListener(_validateFields);
     _cityController.addListener(_validateFields);
     _stateController.addListener(_validateFields);
     _zipController.addListener(_validateFields);
@@ -344,11 +352,13 @@ class _VerifyCustomersDetailsScreenState
     super.dispose();
 
     _nameController.dispose();
+    _fatherNameController.dispose();
     _phNumController.dispose();
     _altPhNumController.dispose();
     _emailController.dispose();
     _permanentAddressController.dispose();
     _streetAddressController.dispose();
+    _landMarkController.dispose();
     _cityController.dispose();
     _zipController.dispose();
     _stateController.dispose();
@@ -379,11 +389,13 @@ class _VerifyCustomersDetailsScreenState
     _guarantorPanNumController.dispose();
 
     _nameFocusNode.dispose();
+    _fatherNameFocusNode.dispose();
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
     _altPhNumFocusNode.dispose();
     _permanentAddressFocusNode.dispose();
     _streetAddressFocusNode.dispose();
+    _landmarkFocusNode.dispose();
     _cityFocusNode.dispose();
     _stateFocusNode.dispose();
     _zipFocusNode.dispose();
@@ -413,11 +425,13 @@ class _VerifyCustomersDetailsScreenState
     _guarantorPanNumFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
+    _fatherNameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
     _emailController.removeListener(_validateFields);
     _altPhNumController.removeListener(_validateFields);
     _permanentAddressController.removeListener(_validateFields);
     _streetAddressController.removeListener(_validateFields);
+    _landMarkController.removeListener(_validateFields);
     _cityController.removeListener(_validateFields);
     _stateController.removeListener(_validateFields);
     _zipController.removeListener(_validateFields);
@@ -499,12 +513,14 @@ class _VerifyCustomersDetailsScreenState
     if (response != null && response['data'] != null) {
       accFeeText = response['data']['acc_fee_text'] ?? "";
       _nameController.text = response['data']['name'] ?? "";
+      _fatherNameController.text = response['data']['father_name'] ?? "";
       _phNumController.text = response['data']['mob_num'] ?? "";
       _altPhNumController.text = response['data']['alt_mob_num'] ?? "";
       _emailController.text = response['data']['email_address'] ?? "";
       _permanentAddressController.text =
           response['data']['permanent_address'] ?? "";
       _streetAddressController.text = response['data']['address'] ?? "";
+      _landMarkController.text = response['data']['landMark'] ?? "";
       _cityController.text = response['data']['city'] ?? "";
       _stateController.text = response['data']['state'] ?? "";
       _zipController.text = response['data']['pincode'] ?? "";
@@ -736,6 +752,35 @@ class _VerifyCustomersDetailsScreenState
                                 height: 16.sp,
                               ),
 
+                              /* Father Input Field*/
+                              Text(
+                                fatherNameText,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _fatherNameFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.person_pin_circle_rounded,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: fatherNamePlaceHolderText,
+                                textEditingController: _fatherNameController,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateFatherName(
+                                      value);
+                                },
+                              ),
+                              /* Father Name Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
                               /* Mobile Number Input Field */
                               Text(
                                 phNumText,
@@ -908,6 +953,7 @@ class _VerifyCustomersDetailsScreenState
                               SizedBox(
                                 height: 8.sp,
                               ),
+
                               ValueListenableBuilder(
                                   valueListenable: refreshAddress,
                                   builder: (context, val, _) {
@@ -991,6 +1037,47 @@ class _VerifyCustomersDetailsScreenState
                                 },
                               ),
                               /* Street Address Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Landmark Input Field*/
+                              Text(
+                                "Landmark",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _landmarkFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.location_on,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: "Landmark",
+                                textEditingController: _landMarkController,
+                                inputFormattersList: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s\s"),
+                                  ),
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(
+                                        r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'),
+                                  ),
+                                ],
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateLocation(
+                                    value,
+                                    7,
+                                    pageType: widget.type,
+                                  );
+                                },
+                              ),
+                              /* Landmark Input Field */
 
                               SizedBox(
                                 height: 16.sp,
@@ -2013,7 +2100,7 @@ class _VerifyCustomersDetailsScreenState
                                   valueListenable: refreshAadhaarImage,
                                   builder: (context, bool val, _) {
                                     return AddDocImagePlaceholder(
-                                      placeholderText: "Add Aadhaar Image",
+                                      placeholderText: "Add Location 1 Image",
                                       addText: addText,
                                       imagePath: aadhaarImagePath ?? "",
                                       onImageTap: () async {
@@ -2093,7 +2180,7 @@ class _VerifyCustomersDetailsScreenState
                                   builder: (context, bool val, _) {
                                     return AddDocImagePlaceholder(
                                       imagePath: panImagePath ?? "",
-                                      placeholderText: "Add PAN Image",
+                                      placeholderText: "Add Location 2 Image",
                                       addText: addText,
                                       onImageTap: () async {
                                         await InternetUtil()
@@ -4577,6 +4664,8 @@ class _VerifyCustomersDetailsScreenState
   Future<void> onSubmitAction() async {
     // Validation checks
     String? nameError = ValidationUtil.validateName(_nameController.text);
+    String? fatherNameError =
+        ValidationUtil.validateFatherName(_fatherNameController.text);
     String? mobileError =
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? emailError =
@@ -4588,6 +4677,9 @@ class _VerifyCustomersDetailsScreenState
         pageType: widget.type);
     String? streetAddressError = ValidationUtil.validateLocation(
         _streetAddressController.text, 1,
+        pageType: widget.type);
+    String? landmarkError = ValidationUtil.validateLocation(
+        _landMarkController.text, 7,
         pageType: widget.type);
     String? cityError = ValidationUtil.validateLocation(_cityController.text, 3,
         pageType: widget.type);
@@ -4620,19 +4712,20 @@ class _VerifyCustomersDetailsScreenState
     //     ValidationUtil.validateIFSC(_bankIFSCcodeController.text);
     String? bankBranchError =
         ValidationUtil.validateBranchName(_bankBranchController.text);
-    String? photoImageError = ValidationUtil.validateImage(photoImagePath, 8);
-    String? aadhaarImageError =
-        ValidationUtil.validateImage(aadhaarImagePath, 1);
-    String? panImageError = ValidationUtil.validateImage(panImagePath, 2);
+
+    // String? photoImageError = ValidationUtil.validateImage(photoImagePath, 8);
+    // String? aadhaarImageError =
+    //     ValidationUtil.validateImage(aadhaarImagePath, 1);
+    // String? panImageError = ValidationUtil.validateImage(panImagePath, 2);
     // String? chequeImageError = ValidationUtil.validateImage(chequeImagePath, 3);
-    String? rcImageError = ValidationUtil.validateImage(rcHOLDERImagePath, 4);
-    String? propertyImageError =
-        ValidationUtil.validateImage(propertyDocImagePath, 5);
-    String? passbookImageError =
-        ValidationUtil.validateImage(passBookImagePath, 6);
-    String? signatureImageError =
-        ValidationUtil.validateImage(signatureImagePath, 7);
-    String? houseImageError = ValidationUtil.validateImage(houseImagePath, 9);
+    // String? rcImageError = ValidationUtil.validateImage(rcHOLDERImagePath, 4);
+    // String? propertyImageError =
+    //     ValidationUtil.validateImage(propertyDocImagePath, 5);
+    // String? passbookImageError =
+    //     ValidationUtil.validateImage(passBookImagePath, 6);
+    // String? signatureImageError =
+    //     ValidationUtil.validateImage(signatureImagePath, 7);
+    // String? houseImageError = ValidationUtil.validateImage(houseImagePath, 9);
 
     String? referenceError =
         ValidationUtil.validateReferenceName(_referenceController.text);
@@ -4674,228 +4767,53 @@ class _VerifyCustomersDetailsScreenState
     if (form?.validate() ?? false) {
       isDisabled.value = false;
 
-      print("object 1 ${widget.type}");
-      print("photoImagePath: $photoImagePath");
-      print("aadhaarImagePath: $aadhaarImagePath");
-      print("panImagePath: $panImagePath");
-      print("passBookImagePath: $passBookImagePath");
-      print("signatureImagePath: $signatureImagePath");
-      print("selectedDocValue: ${selectedDocValue.value}");
-      print("widget.type: ${widget.type}");
-      print("chequeNumController: ${_chequeNumController.text}");
-      print("rcHOLDERImagePath: $rcHOLDERImagePath");
-      print("propertyDocImagePath: $propertyDocImagePath");
-      print("sel doc: ${selectedDocValue.value}");
+      // if (
+      //   photoImagePath != null &&
+      //     photoImagePath!.isNotEmpty &&
+      //     aadhaarImagePath != null &&
+      //     aadhaarImagePath!.isNotEmpty &&
+      //     panImagePath != null &&
+      //     panImagePath!.isNotEmpty &&
+      //     passBookImagePath != null &&
+      //     passBookImagePath!.isNotEmpty &&
+      //     signatureImagePath != null &&
+      //     signatureImagePath!.isNotEmpty &&
+      //     (((((widget.type != "1") || (widget.type != "2")) ||
+      //             (selectedDocValue.value == "Personal") &&
+      //                 _chequeNumController.text.isNotEmpty)) ||
+      //         (((widget.type != "1") || (widget.type != "2")) ||
+      //             ((selectedDocValue.value == "Vehicle") &&
+      //                 rcHOLDERImagePath != null &&
+      //                 rcHOLDERImagePath!.isNotEmpty)) ||
+      //         (((widget.type != "1") || (widget.type != "2")) ||
+      //             ((selectedDocValue.value == "Property") &&
+      //                 propertyDocImagePath != null &&
+      //                 propertyDocImagePath!.isNotEmpty)))) {
 
-      if (photoImagePath != null &&
-          photoImagePath!.isNotEmpty &&
-          aadhaarImagePath != null &&
-          aadhaarImagePath!.isNotEmpty &&
-          panImagePath != null &&
-          panImagePath!.isNotEmpty &&
-          passBookImagePath != null &&
-          passBookImagePath!.isNotEmpty &&
-          signatureImagePath != null &&
-          signatureImagePath!.isNotEmpty &&
-          (((((widget.type != "1") || (widget.type != "2")) ||
-                  (selectedDocValue.value == "Personal") &&
-                      _chequeNumController.text.isNotEmpty)) ||
-              (((widget.type != "1") || (widget.type != "2")) ||
-                  ((selectedDocValue.value == "Vehicle") &&
-                      rcHOLDERImagePath != null &&
-                      rcHOLDERImagePath!.isNotEmpty)) ||
-              (((widget.type != "1") || (widget.type != "2")) ||
-                  ((selectedDocValue.value == "Property") &&
-                      propertyDocImagePath != null &&
-                      propertyDocImagePath!.isNotEmpty)))) {
-        print("object 2: ${widget.type}");
-        var result;
-        if (widget.type == "1") {
-          result = await NetworkService().updateGroupIndividualCustomerDetails(
-              userName: _nameController.text,
-              mobNum: _phNumController.text,
-              altMobNum: _altPhNumController.text,
-              emailAddress: _emailController.text,
-              streetAddress: _streetAddressController.text,
-              city: _cityController.text,
-              state: _stateController.text,
-              zipCode: _zipController.text,
-              country: _countryController.text,
-              aadhaarImage: aadhaarImagePath ?? "",
-              panImage: panImagePath ?? "",
-              reference: _referenceController.text,
-              type: widget.type,
-              referenceNumber: _referenceNumController.text,
-              panNumber: _panController.text,
-              aadhaarNumber: _aadhaarController.text,
-              rcHolderName: _rcHolderNameController.text,
-              rcImage: rcHOLDERImagePath ?? "",
-              propertyDocImage: propertyDocImagePath,
-              propertyDetails: _propertyDetailsController.text,
-              propertyHolderName: _propertyHolderNameController.text,
-              chequeNumber: _chequeNumController.text,
-              bankName: _bankNameController.text,
-              bankBranchName: _bankBranchController.text,
-              bankIFSCCode: _bankIFSCcodeController.text,
-              accNumber: _accNumController.text,
-              passbookImage: passBookImagePath,
-              signatureImage: signatureImagePath,
-              buildingImagePath1: building1ImagePath,
-              buildingImagePath2: buildingImage2Path,
-              buildingImagePath3: building3ImagePath,
-              buildingImagePath4: building4ImagePath,
-              buildingImagePath5: building5ImagePath,
-              buildingImagePath6: building6ImagePath,
-              buildingImagePath7: building7ImagePath,
-              buildingStreetImagePath: buildingStreetImagePath,
-              buildingAreaImagePath: buildingAreaImagePath,
-              permanentAddress: _permanentAddressController.text,
-              agentName: _agentNameController.text,
-              photoImagePath: photoImagePath,
-              locLink: _locationLinkController.text,
-              workLocationLink: _workLocationLinkController.text,
-              guarantorName: _guarantorNameController.text,
-              guarantorMobNum: _guarantorPhNumController.text,
-              guarantorAltMobNum: _guarantorAltPhNumController.text,
-              guarantorEmailAddress: _guarantorEmailController.text,
-              guarantorAddress: _guarantorAddressController.text,
-              guarantorAadhaar: _guarantorAadhaarNumController.text,
-              guarantorPan: _guarantorPanNumController.text,
-              guarantorChequeNum: _guarantorChequeNumController.text,
-              docType: selectedDocValue.value,
-              houseImage: houseImagePath);
-        } else if (widget.type == "2") {
-          result = await NetworkService().updateGroupIndividualCustomerDetails(
+      var result;
+      if (widget.type == "1") {
+        result = await NetworkService().updateGroupIndividualCustomerDetails(
             userName: _nameController.text,
+            fatherName: _fatherNameController.text,
             mobNum: _phNumController.text,
             altMobNum: _altPhNumController.text,
             emailAddress: _emailController.text,
             streetAddress: _streetAddressController.text,
+            landMark: _landMarkController.text,
             city: _cityController.text,
             state: _stateController.text,
             zipCode: _zipController.text,
             country: _countryController.text,
             aadhaarImage: aadhaarImagePath ?? "",
             panImage: panImagePath ?? "",
-            panNumber: _panController.text,
-            aadhaarNumber: _aadhaarController.text,
-            rcHolderName: _rcHolderNameController.text,
-            rcImage: rcHOLDERImagePath ?? "",
-            propertyDocImage: propertyDocImagePath,
-            propertyDetails: _propertyDetailsController.text,
-            propertyHolderName: _propertyHolderNameController.text,
-            chequeNumber: _chequeNumController.text,
-            bankName: _bankNameController.text,
-            bankBranchName: _bankBranchController.text,
-            bankIFSCCode: _bankIFSCcodeController.text,
-            accNumber: _accNumController.text,
-            passbookImage: passBookImagePath,
-            signatureImage: signatureImagePath,
-            type: widget.type,
-            buildingImagePath1: building1ImagePath,
-            buildingImagePath2: buildingImage2Path,
-            buildingImagePath3: building3ImagePath,
-            buildingImagePath4: building4ImagePath,
-            buildingImagePath5: building5ImagePath,
-            buildingImagePath6: building6ImagePath,
-            buildingImagePath7: building7ImagePath,
-            buildingStreetImagePath: buildingStreetImagePath,
-            buildingAreaImagePath: buildingAreaImagePath,
-            permanentAddress: _permanentAddressController.text,
-            agentName: _agentNameController.text,
-            photoImagePath: photoImagePath,
-            locLink: _locationLinkController.text,
-            workLocationLink: _workLocationLinkController.text,
-            guarantorName: _guarantorNameController.text,
-            guarantorMobNum: _guarantorPhNumController.text,
-            guarantorAltMobNum: _guarantorAltPhNumController.text,
-            guarantorEmailAddress: _guarantorEmailController.text,
-            guarantorAddress: _guarantorAddressController.text,
-            guarantorAadhaar: _guarantorAadhaarNumController.text,
-            guarantorPan: _guarantorPanNumController.text,
-            guarantorChequeNum: _guarantorChequeNumController.text,
-            docType: selectedDocValue.value,
-            houseImage: houseImagePath,
-          );
-        } else if (widget.type == "3") {
-          result = await NetworkService().updateKYCDetails(
-            type:
-                "3", // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
-            userName: _nameController.text,
-            mobNum: _phNumController.text,
-            altMobNum: _altPhNumController.text,
-            emailAddress: _emailController.text,
-            streetAddress: _streetAddressController.text,
-            city: _cityController.text,
-            state: _stateController.text,
-            zipCode: _zipController.text,
-            country: _countryController.text,
-            aadhaarImage: aadhaarImagePath ?? "",
-            panImage: panImagePath ?? "",
-            panNumber: _panController.text,
-            aadhaarNumber: _aadhaarController.text,
-            rcHolderName: _rcHolderNameController.text,
-            rcImage: rcHOLDERImagePath ?? "",
-            propertyDocImage: propertyDocImagePath,
-            propertyDetails: _propertyDetailsController.text,
-            propertyHolderName: _propertyHolderNameController.text,
-            chequeNumber: _chequeNumController.text,
-            bankName: _bankNameController.text,
-            bankBranchName: _bankBranchController.text,
-            bankIFSCCode: _bankIFSCcodeController.text,
-            accNumber: _accNumController.text,
-            passbookImage: passBookImagePath,
-            signatureImage: signatureImagePath,
-            reason: _reasonController.text,
             reference: _referenceController.text,
-            isVerified: (isVerified == true) ? true : false,
-            customerID: widget.id,
-            referenceNum: _referenceNumController.text,
-            buildingImagePath1: building1ImagePath,
-            buildingImagePath2: buildingImage2Path,
-            buildingImagePath3: building3ImagePath,
-            buildingImagePath4: building4ImagePath,
-            buildingImagePath5: building5ImagePath,
-            buildingImagePath6: building6ImagePath,
-            buildingImagePath7: building7ImagePath,
-            buildingStreetImagePath: buildingStreetImagePath,
-            buildingAreaImagePath: buildingAreaImagePath,
-            permanentAddress: _permanentAddressController.text,
-            agentName: _agentNameController.text,
-            photoImagePath: photoImagePath,
-            locLink: _locationLinkController.text,
-            workLocationLink: _workLocationLinkController.text,
-            guarantorName: _guarantorNameController.text,
-            guarantorMobNum: _guarantorPhNumController.text,
-            guarantorAltMobNum: _guarantorAltPhNumController.text,
-            guarantorEmailAddress: _guarantorEmailController.text,
-            guarantorAddress: _guarantorAddressController.text,
-            guarantorAadhaar: _guarantorAadhaarNumController.text,
-            guarantorPan: _guarantorPanNumController.text,
-            guarantorChequeNum: _guarantorChequeNumController.text,
-            docType: selectedDocValue.value,
-            houseImage: houseImagePath,
-          );
-        } else {
-          result = await NetworkService().updateKYCDetails(
-            type: "0",
-            userName: _nameController.text,
-            mobNum: _phNumController.text,
-            altMobNum: _altPhNumController.text,
-            emailAddress: _emailController.text,
-            streetAddress: _streetAddressController.text,
-            city: _cityController.text,
-            state: _stateController.text,
-            zipCode: _zipController.text,
-            country: _countryController.text,
-            aadhaarImage: aadhaarImagePath ?? "",
-            panImage: panImagePath ?? "",
+            type: widget.type,
+            referenceNumber: _referenceNumController.text,
             panNumber: _panController.text,
             aadhaarNumber: _aadhaarController.text,
             rcHolderName: _rcHolderNameController.text,
             rcImage: rcHOLDERImagePath ?? "",
             propertyDocImage: propertyDocImagePath,
-            houseImage: propertyDocImagePath,
             propertyDetails: _propertyDetailsController.text,
             propertyHolderName: _propertyHolderNameController.text,
             chequeNumber: _chequeNumController.text,
@@ -4919,95 +4837,269 @@ class _VerifyCustomersDetailsScreenState
             photoImagePath: photoImagePath,
             locLink: _locationLinkController.text,
             workLocationLink: _workLocationLinkController.text,
+            guarantorName: _guarantorNameController.text,
+            guarantorMobNum: _guarantorPhNumController.text,
+            guarantorAltMobNum: _guarantorAltPhNumController.text,
+            guarantorEmailAddress: _guarantorEmailController.text,
+            guarantorAddress: _guarantorAddressController.text,
+            guarantorAadhaar: _guarantorAadhaarNumController.text,
+            guarantorPan: _guarantorPanNumController.text,
+            guarantorChequeNum: _guarantorChequeNumController.text,
             docType: selectedDocValue.value,
-          );
-        }
+            houseImage: houseImagePath);
+      } else if (widget.type == "2") {
+        result = await NetworkService().updateGroupIndividualCustomerDetails(
+          userName: _nameController.text,
+          fatherName: _fatherNameController.text,
+          mobNum: _phNumController.text,
+          altMobNum: _altPhNumController.text,
+          emailAddress: _emailController.text,
+          streetAddress: _streetAddressController.text,
+          landMark: _landMarkController.text,
+          city: _cityController.text,
+          state: _stateController.text,
+          zipCode: _zipController.text,
+          country: _countryController.text,
+          aadhaarImage: aadhaarImagePath ?? "",
+          panImage: panImagePath ?? "",
+          panNumber: _panController.text,
+          aadhaarNumber: _aadhaarController.text,
+          rcHolderName: _rcHolderNameController.text,
+          rcImage: rcHOLDERImagePath ?? "",
+          propertyDocImage: propertyDocImagePath,
+          propertyDetails: _propertyDetailsController.text,
+          propertyHolderName: _propertyHolderNameController.text,
+          chequeNumber: _chequeNumController.text,
+          bankName: _bankNameController.text,
+          bankBranchName: _bankBranchController.text,
+          bankIFSCCode: _bankIFSCcodeController.text,
+          accNumber: _accNumController.text,
+          passbookImage: passBookImagePath,
+          signatureImage: signatureImagePath,
+          type: widget.type,
+          buildingImagePath1: building1ImagePath,
+          buildingImagePath2: buildingImage2Path,
+          buildingImagePath3: building3ImagePath,
+          buildingImagePath4: building4ImagePath,
+          buildingImagePath5: building5ImagePath,
+          buildingImagePath6: building6ImagePath,
+          buildingImagePath7: building7ImagePath,
+          buildingStreetImagePath: buildingStreetImagePath,
+          buildingAreaImagePath: buildingAreaImagePath,
+          permanentAddress: _permanentAddressController.text,
+          agentName: _agentNameController.text,
+          photoImagePath: photoImagePath,
+          locLink: _locationLinkController.text,
+          workLocationLink: _workLocationLinkController.text,
+          guarantorName: _guarantorNameController.text,
+          guarantorMobNum: _guarantorPhNumController.text,
+          guarantorAltMobNum: _guarantorAltPhNumController.text,
+          guarantorEmailAddress: _guarantorEmailController.text,
+          guarantorAddress: _guarantorAddressController.text,
+          guarantorAadhaar: _guarantorAadhaarNumController.text,
+          guarantorPan: _guarantorPanNumController.text,
+          guarantorChequeNum: _guarantorChequeNumController.text,
+          docType: selectedDocValue.value,
+          houseImage: houseImagePath,
+        );
+      } else if (widget.type == "3") {
+        result = await NetworkService().updateKYCDetails(
+          type:
+              "3", // type: 0 - KYC | 1 - Add Group Customer | 2 - Register Individual Customer | 3- Verification SCreen - Customer Details
+          userName: _nameController.text,
+          fatherName: _fatherNameController.text,
+          mobNum: _phNumController.text,
+          altMobNum: _altPhNumController.text,
+          emailAddress: _emailController.text,
+          streetAddress: _streetAddressController.text,
+          landMark: _landMarkController.text,
+          city: _cityController.text,
+          state: _stateController.text,
+          zipCode: _zipController.text,
+          country: _countryController.text,
+          aadhaarImage: aadhaarImagePath ?? "",
+          panImage: panImagePath ?? "",
+          panNumber: _panController.text,
+          aadhaarNumber: _aadhaarController.text,
+          rcHolderName: _rcHolderNameController.text,
+          rcImage: rcHOLDERImagePath ?? "",
+          propertyDocImage: propertyDocImagePath,
+          propertyDetails: _propertyDetailsController.text,
+          propertyHolderName: _propertyHolderNameController.text,
+          chequeNumber: _chequeNumController.text,
+          bankName: _bankNameController.text,
+          bankBranchName: _bankBranchController.text,
+          bankIFSCCode: _bankIFSCcodeController.text,
+          accNumber: _accNumController.text,
+          passbookImage: passBookImagePath,
+          signatureImage: signatureImagePath,
+          reason: _reasonController.text,
+          reference: _referenceController.text,
+          isVerified: (isVerified == true) ? true : false,
+          customerID: widget.id,
+          referenceNum: _referenceNumController.text,
+          buildingImagePath1: building1ImagePath,
+          buildingImagePath2: buildingImage2Path,
+          buildingImagePath3: building3ImagePath,
+          buildingImagePath4: building4ImagePath,
+          buildingImagePath5: building5ImagePath,
+          buildingImagePath6: building6ImagePath,
+          buildingImagePath7: building7ImagePath,
+          buildingStreetImagePath: buildingStreetImagePath,
+          buildingAreaImagePath: buildingAreaImagePath,
+          permanentAddress: _permanentAddressController.text,
+          agentName: _agentNameController.text,
+          photoImagePath: photoImagePath,
+          locLink: _locationLinkController.text,
+          workLocationLink: _workLocationLinkController.text,
+          guarantorName: _guarantorNameController.text,
+          guarantorMobNum: _guarantorPhNumController.text,
+          guarantorAltMobNum: _guarantorAltPhNumController.text,
+          guarantorEmailAddress: _guarantorEmailController.text,
+          guarantorAddress: _guarantorAddressController.text,
+          guarantorAadhaar: _guarantorAadhaarNumController.text,
+          guarantorPan: _guarantorPanNumController.text,
+          guarantorChequeNum: _guarantorChequeNumController.text,
+          docType: selectedDocValue.value,
+          houseImage: houseImagePath,
+        );
+      } else {
+        result = await NetworkService().updateKYCDetails(
+          type: "0",
+          userName: _nameController.text,
+          fatherName: _fatherNameController.text,
+          mobNum: _phNumController.text,
+          altMobNum: _altPhNumController.text,
+          emailAddress: _emailController.text,
+          streetAddress: _streetAddressController.text,
+          landMark: _landMarkController.text,
+          city: _cityController.text,
+          state: _stateController.text,
+          zipCode: _zipController.text,
+          country: _countryController.text,
+          aadhaarImage: aadhaarImagePath ?? "",
+          panImage: panImagePath ?? "",
+          panNumber: _panController.text,
+          aadhaarNumber: _aadhaarController.text,
+          rcHolderName: _rcHolderNameController.text,
+          rcImage: rcHOLDERImagePath ?? "",
+          propertyDocImage: propertyDocImagePath,
+          houseImage: propertyDocImagePath,
+          propertyDetails: _propertyDetailsController.text,
+          propertyHolderName: _propertyHolderNameController.text,
+          chequeNumber: _chequeNumController.text,
+          bankName: _bankNameController.text,
+          bankBranchName: _bankBranchController.text,
+          bankIFSCCode: _bankIFSCcodeController.text,
+          accNumber: _accNumController.text,
+          passbookImage: passBookImagePath,
+          signatureImage: signatureImagePath,
+          buildingImagePath1: building1ImagePath,
+          buildingImagePath2: buildingImage2Path,
+          buildingImagePath3: building3ImagePath,
+          buildingImagePath4: building4ImagePath,
+          buildingImagePath5: building5ImagePath,
+          buildingImagePath6: building6ImagePath,
+          buildingImagePath7: building7ImagePath,
+          buildingStreetImagePath: buildingStreetImagePath,
+          buildingAreaImagePath: buildingAreaImagePath,
+          permanentAddress: _permanentAddressController.text,
+          agentName: _agentNameController.text,
+          photoImagePath: photoImagePath,
+          locLink: _locationLinkController.text,
+          workLocationLink: _workLocationLinkController.text,
+          docType: selectedDocValue.value,
+        );
+      }
 
-        if (result != null && result['status'] == true) {
-          if (!mounted) return;
-          if (result['message'] != null && result['message'].isNotEmpty) {
-            ToastUtil().showSnackBar(
-              context: context,
-              message: result['message'],
-              isError: false,
-            );
-          }
-
-          Future.delayed(const Duration(seconds: 1)).then((value) {
-            // All validations passed, navigate to the next screen
-            Map<String, dynamic> data = {};
-            data = {
-              "tab_index": 0,
-            };
-            Navigator.pushReplacementNamed(
-              context,
-              RoutingConstants.routeDashboardScreen,
-              arguments: {"data": data},
-            );
-          });
-        } else {
-          if (!mounted) return;
+      if (result != null && result['status'] == true) {
+        if (!mounted) return;
+        if (result['message'] != null && result['message'].isNotEmpty) {
           ToastUtil().showSnackBar(
             context: context,
-            message: result['message'] ?? "Something went wrong",
-            isError: true,
+            message: result['message'],
+            isError: false,
           );
         }
-      } else if (photoImageError != null) {
+
+        Future.delayed(const Duration(seconds: 1)).then((value) {
+          // All validations passed, navigate to the next screen
+          Map<String, dynamic> data = {};
+          data = {
+            "tab_index": 0,
+          };
+          Navigator.pushReplacementNamed(
+            context,
+            RoutingConstants.routeDashboardScreen,
+            arguments: {"data": data},
+          );
+        });
+      } else {
+        if (!mounted) return;
         ToastUtil().showSnackBar(
           context: context,
-          message: photoImageError,
-          isError: true,
-        );
-      } else if (aadhaarImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: aadhaarImageError,
-          isError: true,
-        );
-      } else if (panImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: panImageError,
-          isError: true,
-        );
-      } else if (passbookImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: passbookImageError,
-          isError: true,
-        );
-      } else if (signatureImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: signatureImageError,
-          isError: true,
-        );
-      } else if (houseImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: houseImageError,
-          isError: true,
-        );
-      } else if ((selectedDocValue.value == "Vehicle") &&
-          (rcImageError != null)) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: rcImageError,
-          isError: true,
-        );
-      } else if ((selectedDocValue.value == "Property") &&
-          (propertyImageError != null)) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: propertyImageError,
+          message: result['message'] ?? "Something went wrong",
           isError: true,
         );
       }
+      // }
+      // else if (photoImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: photoImageError,
+      //     isError: true,
+      //   );
+      // } else if (aadhaarImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: aadhaarImageError,
+      //     isError: true,
+      //   );
+      // } else if (panImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: panImageError,
+      //     isError: true,
+      //   );
+      // } else if (passbookImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: passbookImageError,
+      //     isError: true,
+      //   );
+      // } else if (signatureImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: signatureImageError,
+      //     isError: true,
+      //   );
+      // } else if (houseImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: houseImageError,
+      //     isError: true,
+      //   );
+      // } else if ((selectedDocValue.value == "Vehicle") &&
+      //     (rcImageError != null)) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: rcImageError,
+      //     isError: true,
+      //   );
+      // } else if ((selectedDocValue.value == "Property") &&
+      //     (propertyImageError != null)) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: propertyImageError,
+      //     isError: true,
+      //   );
+      // }
     } else {
       // Check for individual errors and focus accordingly
       if (nameError != null) {
         _showErrorAndFocus(_nameFocusNode, nameError);
+      } else if (fatherNameError != null) {
+        _showErrorAndFocus(_fatherNameFocusNode, fatherNameError);
       } else if (mobileError != null) {
         _showErrorAndFocus(_phNumFocusNode, mobileError);
       } else if (altMobileError != null) {
@@ -5018,6 +5110,8 @@ class _VerifyCustomersDetailsScreenState
         _showErrorAndFocus(_permanentAddressFocusNode, permanentAddressError);
       } else if (streetAddressError != null) {
         _showErrorAndFocus(_streetAddressFocusNode, streetAddressError);
+      } else if (landmarkError != null) {
+        _showErrorAndFocus(_landmarkFocusNode, landmarkError);
       } else if (cityError != null) {
         _showErrorAndFocus(_cityFocusNode, cityError);
       } else if (stateError != null) {
@@ -5072,57 +5166,60 @@ class _VerifyCustomersDetailsScreenState
       // }
       else if (bankBranchError != null) {
         _showErrorAndFocus(_bankBranchFocusNode, bankBranchError);
-      } else if (photoImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: photoImageError,
-          isError: true,
-        );
-      } else if (aadhaarImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: aadhaarImageError,
-          isError: true,
-        );
-      } else if (panImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: panImageError,
-          isError: true,
-        );
-      } else if (passbookImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: passbookImageError,
-          isError: true,
-        );
-      } else if (signatureImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: signatureImageError,
-          isError: true,
-        );
-      } else if (houseImageError != null) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: houseImageError,
-          isError: true,
-        );
-      } else if ((selectedDocValue.value == "Vehicle") &&
-          (rcImageError != null)) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: rcImageError,
-          isError: true,
-        );
-      } else if ((selectedDocValue.value == "Property") &&
-          (propertyImageError != null)) {
-        ToastUtil().showSnackBar(
-          context: context,
-          message: propertyImageError,
-          isError: true,
-        );
-      } else if ((widget.type != "0") ||
+      }
+      // else if (photoImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: photoImageError,
+      //     isError: true,
+      //   );
+      // } else if (aadhaarImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: aadhaarImageError,
+      //     isError: true,
+      //   );
+      // } else if (panImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: panImageError,
+      //     isError: true,
+      //   );
+      // } else if (passbookImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: passbookImageError,
+      //     isError: true,
+      //   );
+      // } else if (signatureImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: signatureImageError,
+      //     isError: true,
+      //   );
+      // } else if (houseImageError != null) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: houseImageError,
+      //     isError: true,
+      //   );
+      // } else if ((selectedDocValue.value == "Vehicle") &&
+      //     (rcImageError != null)) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: rcImageError,
+      //     isError: true,
+      //   );
+      // } else if ((selectedDocValue.value == "Property") &&
+      //     (propertyImageError != null)) {
+      //   ToastUtil().showSnackBar(
+      //     context: context,
+      //     message: propertyImageError,
+      //     isError: true,
+      //   );
+      // }
+
+      else if ((widget.type != "0") ||
           (widget.type != "1") ||
           (widget.type != "2")) {
         if (guarantorNameError != null) {

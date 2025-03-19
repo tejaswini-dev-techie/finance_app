@@ -25,6 +25,7 @@ class UpdateGroupPaymentDetailsDataModel {
 class Data {
   String? id;
   String? name;
+  String? fatherName;
   String? mobNum;
   String? codeId;
   String? agent;
@@ -43,6 +44,7 @@ class Data {
   Data({
     this.id,
     this.name,
+    this.fatherName,
     this.mobNum,
     this.codeId,
     this.agent,
@@ -62,6 +64,7 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
+    fatherName = json['father_name'];
     mobNum = json['mob_num'];
     codeId = json['code_id'];
     agent = json['agent'];
@@ -87,6 +90,7 @@ class Data {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
+    data['father_name'] = fatherName;
     data['mob_num'] = mobNum;
     data['code_id'] = codeId;
     data['agent'] = agent;

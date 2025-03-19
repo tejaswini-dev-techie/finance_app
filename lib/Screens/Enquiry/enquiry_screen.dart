@@ -40,12 +40,15 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
   String countryText = "";
   String loanAmount = "";
   String loanAmountPlaceholderText = "";
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
 
   /* TextEditing Controller */
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _altPhNumController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -60,6 +63,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _altPhNumFocusNode = FocusNode();
@@ -79,6 +83,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
     super.initState();
     getAppContentDet();
     _nameController.addListener(_validateFields);
+    _fatherNameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _altPhNumController.addListener(_validateFields);
@@ -104,6 +109,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
   void dispose() {
     super.dispose();
     _nameController.dispose();
+    _fatherNameController.dispose();
     _phNumController.dispose();
     _altPhNumController.dispose();
     _emailController.dispose();
@@ -115,6 +121,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
     _loanAmountController.dispose();
 
     _nameFocusNode.dispose();
+    _fatherNameFocusNode.dispose();
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
     _altPhNumFocusNode.dispose();
@@ -126,6 +133,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
     _loanAmountFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
+    _fatherNameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
     _emailController.removeListener(_validateFields);
     _altPhNumController.removeListener(_validateFields);
@@ -305,6 +313,35 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
                                 },
                               ),
                               /* Name Input Field */
+
+                              SizedBox(
+                                height: 16.sp,
+                              ),
+
+                              /* Father Input Field*/
+                              Text(
+                                fatherNameText,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ColorConstants.lightBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextInputField(
+                                focusnodes: _fatherNameFocusNode,
+                                suffixWidget: const Icon(
+                                  Icons.person_pin_circle_rounded,
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                                placeholderText: fatherNamePlaceHolderText,
+                                textEditingController: _fatherNameController,
+                                validationFunc: (value) {
+                                  return ValidationUtil.validateFatherName(
+                                      value);
+                                },
+                              ),
+                              /* Father Name Input Field */
 
                               SizedBox(
                                 height: 16.sp,
@@ -671,6 +708,8 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
   Future<void> onReqCallBackAction() async {
     // Validation checks
     String? nameError = ValidationUtil.validateName(_nameController.text);
+    String? fatherError =
+        ValidationUtil.validateFatherName(_fatherNameController.text);
     String? mobileError =
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? emailError =
@@ -696,6 +735,7 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
 
       var result = await NetworkService().updateEnquiryDetails(
         userName: _nameController.text,
+        fatherName: _fatherNameController.text,
         mobNum: _phNumController.text,
         altMobNum: _altPhNumController.text,
         emailAddress: _emailController.text,
@@ -741,6 +781,8 @@ class _EnquiryScreenState extends State<EnquiryScreen> {
       // Check for individual errors and focus accordingly
       if (nameError != null) {
         _showErrorAndFocus(_nameFocusNode, nameError);
+      } else if (fatherError != null) {
+        _showErrorAndFocus(_fatherNameFocusNode, fatherError);
       } else if (mobileError != null) {
         _showErrorAndFocus(_phNumFocusNode, mobileError);
       } else if (altMobileError != null) {

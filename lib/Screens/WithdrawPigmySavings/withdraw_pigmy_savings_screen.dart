@@ -35,6 +35,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fatherNameController = TextEditingController();
   final TextEditingController _phNumController = TextEditingController();
   final TextEditingController _altPhNumController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -53,6 +54,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
 
   /* Focus Node */
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _fatherNameFocusNode = FocusNode();
   final FocusNode _phNumFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _altPhNumFocusNode = FocusNode();
@@ -70,6 +72,9 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
   ValueNotifier<bool> refreshInputFields = ValueNotifier<bool>(false);
   ValueNotifier<bool> isDisabled = ValueNotifier<bool>(true);
 
+  String fatherNameText = "Father's Name";
+  String fatherNamePlaceHolderText = "Father's Name";
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +83,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
       customerID: widget.customerID,
     ));
     _nameController.addListener(_validateFields);
+    _fatherNameController.addListener(_validateFields);
     _phNumController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _altPhNumController.addListener(_validateFields);
@@ -96,6 +102,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
   void dispose() {
     super.dispose();
     _nameController.dispose();
+    _fatherNameController.dispose();
     _phNumController.dispose();
     _altPhNumController.dispose();
     _emailController.dispose();
@@ -110,6 +117,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     // _agentPhNumController.dispose();
 
     _nameFocusNode.dispose();
+    _fatherNameFocusNode.dispose();
     _phNumFocusNode.dispose();
     _emailFocusNode.dispose();
     _altPhNumFocusNode.dispose();
@@ -124,6 +132,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
     // _agentPhNumFocusNode.dispose();
 
     _nameController.removeListener(_validateFields);
+    _fatherNameController.removeListener(_validateFields);
     _phNumController.removeListener(_validateFields);
     _emailController.removeListener(_validateFields);
     _altPhNumController.removeListener(_validateFields);
@@ -229,6 +238,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
             } else if (state is WithdrawPigmySavingsLoaded) {
               _nameController.text =
                   withdrawPigmySavingsBloc.userData?.name ?? "";
+              _fatherNameController.text =
+                  withdrawPigmySavingsBloc.userData?.fatherName ?? "";
               _phNumController.text =
                   withdrawPigmySavingsBloc.userData?.mobNum ?? "";
               _altPhNumController.text =
@@ -450,6 +461,36 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
                                       },
                                     ),
                                     /* Name Input Field */
+
+                                    SizedBox(
+                                      height: 16.sp,
+                                    ),
+/* Father Input Field*/
+                                    Text(
+                                      fatherNameText,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: ColorConstants.lightBlackColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    TextInputField(
+                                      focusnodes: _fatherNameFocusNode,
+                                      suffixWidget: const Icon(
+                                        Icons.person_pin_circle_rounded,
+                                        color: ColorConstants.darkBlueColor,
+                                      ),
+                                      placeholderText:
+                                          fatherNamePlaceHolderText,
+                                      textEditingController:
+                                          _fatherNameController,
+                                      validationFunc: (value) {
+                                        return ValidationUtil
+                                            .validateFatherName(value);
+                                      },
+                                    ),
+                                    /* Father Name Input Field */
 
                                     SizedBox(
                                       height: 16.sp,
@@ -1129,6 +1170,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
   Future<void> onWithdrawNowAction() async {
     // Validation checks
     String? nameError = ValidationUtil.validateName(_nameController.text);
+    String? fatherNameError =
+        ValidationUtil.validateFatherName(_fatherNameController.text);
     String? mobileError =
         ValidationUtil.validateMobileNumber(_phNumController.text);
     String? emailError =
@@ -1164,6 +1207,7 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
       var result = await NetworkService().withdrawPIGMYDetailsUpdate(
         type: widget.type,
         userName: _nameController.text,
+        fatherName: _fatherNameController.text,
         mobNum: _phNumController.text,
         altMobNum: _altPhNumController.text,
         emailAddress: _emailController.text,
@@ -1212,6 +1256,8 @@ class _WithdrawPigmySavingsState extends State<WithdrawPigmySavings> {
       // Check for individual errors and focus accordingly
       if (nameError != null) {
         _showErrorAndFocus(_nameFocusNode, nameError);
+      } else if (fatherNameError != null) {
+        _showErrorAndFocus(_fatherNameFocusNode, fatherNameError);
       } else if (mobileError != null) {
         _showErrorAndFocus(_phNumFocusNode, mobileError);
       } else if (altMobileError != null) {
