@@ -6,7 +6,7 @@ class APIURLs {
   /* Staging */
 
   /* Production */
-  static const baseURL = "http://20.41.251.210:5000/api";
+  static const baseURL = "https://api.hpfinanceco.com/api";
   /* Production */
 
   /* QA */

@@ -1338,7 +1338,7 @@ class _CreatePigmySavingsAccountScreenState
 
                               /* Deposit Amount Input Field */
                               Text(
-                                depositAmtText,
+                                "Collection Amount",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 10.sp,

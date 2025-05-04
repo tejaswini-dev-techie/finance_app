@@ -85,7 +85,7 @@
             "state_text": "State",
             "zip_text": "Zip/Postal Code",
             "country_text": "Country",
-            "deposit_amt_text": "Deposit Amount",
+            "deposit_amt_text": "Collection Amount",
             "deposit_amt_placeholder_text": "100",
             "frequency_text": "Frequency",
             "frequency_placeholder_text": "Daily, Weekly, Montly",

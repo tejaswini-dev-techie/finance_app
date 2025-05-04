@@ -200,8 +200,7 @@ class ValidationUtil {
   /* Deposit Amount Validation */
   static String? validateDepositAmount(String? value) {
     if (value == null || value.isEmpty) {
-      return null;
-      // 'Amount cannot be empty';
+      return 'Amount cannot be empty';
     } else if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(value)) {
       return 'Amount can only contain digits';
     }
