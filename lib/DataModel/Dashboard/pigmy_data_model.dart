@@ -38,6 +38,7 @@ class Data {
   String? learnPigmyBtnText;
   String? withdrawPigmyBtnText;
   String? pigmyTransactionHistoryBtnText;
+  String? groupAccOpeningBtnText;
   String? upcomingText;
   List<UpcomingList>? upcomingList;
   String? footerText;
@@ -60,6 +61,7 @@ class Data {
     this.upcomingList,
     this.footerText,
     this.groupMemDet,
+    this.groupAccOpeningBtnText,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -71,7 +73,7 @@ class Data {
     pigmyStatusNudgeTitle = json['pigmy_status_nudge_title'];
     pigmyStatusNudgeSubtitle = json['pigmy_status_nudge_subtitle'];
     pigmyStatusNudgeBtn = json['pigmy_status_nudge_btn'];
-    groupMemDet = json['group_mem_det'] ?? "Group Members Details";
+    groupMemDet = json['group_mem_det'] ?? "";
     if (json['pigmy_menus_list'] != null) {
       pigmyMenusList = <PigmyMenusList>[];
       json['pigmy_menus_list'].forEach((v) {
@@ -89,6 +91,7 @@ class Data {
         upcomingList!.add(UpcomingList.fromJson(v));
       });
     }
+    groupAccOpeningBtnText = json['group_acc_opening_btn_text'] ?? "Group Account Opening";
   }
 
   Map<String, dynamic> toJson() {
@@ -114,6 +117,7 @@ class Data {
     if (upcomingList != null) {
       data['upcoming_list'] = upcomingList!.map((v) => v.toJson()).toList();
     }
+    data['group_acc_opening_btn_text'] = groupAccOpeningBtnText;
     return data;
   }
 }

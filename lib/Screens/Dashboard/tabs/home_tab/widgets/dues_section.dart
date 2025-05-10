@@ -93,27 +93,30 @@ class _DuesSectionState extends State<DuesSection> {
                           color: ColorConstants.darkBlueColor,
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 6.sp,
-                          vertical: 4.sp,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4.sp),
-                          color: ColorConstants.darkBlueColor,
-                          border: Border.all(
-                            color: ColorConstants.darkBlueColor,
-                          ),
-                        ),
-                        child: Text(
-                          widget.dataList![index].payNowTex ?? '',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w700,
-                            color: ColorConstants.whiteColor,
-                          ),
-                        ),
-                      )
+                      (widget.dataList![index].payNowTex != null &&
+                              widget.dataList![index].payNowTex!.isNotEmpty)
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6.sp,
+                                vertical: 4.sp,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.sp),
+                                color: ColorConstants.darkBlueColor,
+                                border: Border.all(
+                                  color: ColorConstants.darkBlueColor,
+                                ),
+                              ),
+                              child: Text(
+                                widget.dataList![index].payNowTex ?? '',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: ColorConstants.whiteColor,
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink()
                     ],
                   ),
                 ],

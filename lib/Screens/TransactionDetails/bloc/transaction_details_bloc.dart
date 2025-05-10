@@ -46,6 +46,7 @@ class TransactionDetailsBloc
         await NetworkService()
             .transactionHistoryDetailsService(
           page: event.page,
+          type: event.type,
         )
             .then((TransactionHistoryDataModel? responseObj) {
           if (responseObj != null && responseObj.status == true) {

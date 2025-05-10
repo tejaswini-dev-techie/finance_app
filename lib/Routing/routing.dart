@@ -328,7 +328,9 @@ class RouteGenerator {
             Map<String, dynamic> data;
             data = args;
             return MaterialPageRoute(
-              builder: (_) => const TransactionDetails(),
+              builder: (_) => TransactionDetails(
+                type: data['data']['type'] ?? "1",
+              ),
               settings: RouteSettings(
                 name: settings.name,
               ),

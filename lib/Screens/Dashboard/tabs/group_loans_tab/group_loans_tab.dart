@@ -72,8 +72,12 @@ class _GroupLoansTabState extends State<GroupLoansTab> {
     InternetUtil().checkInternetConnection().then(
       (internet) async {
         if (internet) {
-          Navigator.pushNamed(
-              context, RoutingConstants.routeTransactionDetails);
+          Navigator.pushNamed(context, RoutingConstants.routeTransactionDetails,
+              arguments: {
+                'data': {
+                  'type': '2',
+                },
+              });
         } else {
           ToastUtil().showSnackBar(
             context: context,

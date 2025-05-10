@@ -32,6 +32,7 @@ class _PigmyHistoryScreenState extends State<PigmyHistoryScreen> {
       GetPigmyTransactionDetailsEvent(
         page: 1,
         showLoading: true,
+        type: widget.pageType,
       ),
     );
   }
@@ -140,6 +141,7 @@ class _PigmyHistoryScreenState extends State<PigmyHistoryScreen> {
                                   page: pigmyHistoryBloc.page,
                                   oldPigmyHistoryList:
                                       pigmyHistoryBloc.pigmyHistoryList ?? [],
+                                  type: widget.pageType,
                                 ),
                               );
                             }
@@ -167,6 +169,7 @@ class _PigmyHistoryScreenState extends State<PigmyHistoryScreen> {
                                     GetPigmyTransactionDetailsEvent(
                                       page: 1,
                                       showLoading: true,
+                                      type: widget.pageType,
                                     ),
                                   );
                                   _refreshController.refreshCompleted();
@@ -380,6 +383,7 @@ class _PigmyHistoryScreenState extends State<PigmyHistoryScreen> {
                     GetPigmyTransactionDetailsEvent(
                       page: 1,
                       showLoading: true,
+                      type: widget.pageType,
                     ),
                   ),
                   state: 1,
@@ -391,6 +395,7 @@ class _PigmyHistoryScreenState extends State<PigmyHistoryScreen> {
                     GetPigmyTransactionDetailsEvent(
                       page: 1,
                       showLoading: true,
+                      type: widget.pageType,
                     ),
                   ),
                   state: 2,

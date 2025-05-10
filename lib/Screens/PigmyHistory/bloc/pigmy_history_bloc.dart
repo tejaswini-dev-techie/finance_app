@@ -44,6 +44,7 @@ class PigmyHistoryBloc extends Bloc<PigmyHistoryEvent, PigmyHistoryState> {
         await NetworkService()
             .pigmyTransactionHistoryDetailsService(
           page: event.page,
+          type: event.type,
         )
             .then((PigmyTransactionHistoryDataModel? responseObj) {
           if (responseObj != null && responseObj.status == true) {

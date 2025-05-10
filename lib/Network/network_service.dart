@@ -277,8 +277,10 @@ class NetworkService {
   Future<PigmyDataModel> pigmyDetailsService() {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['type'] = '1';
         return _network
-            .httpGet(apiHitTimeout, APIURLs.pigmyURL, body: paramsKeyVal)
+            .httpGetQuery(apiHitTimeout, APIURLs.pigmyURL,
+                queryParams: paramsKeyVal)
             .then(
           (dynamic res) {
             return PigmyDataModel.fromJson(res);
@@ -293,8 +295,10 @@ class NetworkService {
   Future<PigmyDataModel> groupPigmyDetailsService() {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
+        paramsKeyVal['type'] = '2';
         return _network
-            .httpGet(apiHitTimeout, APIURLs.groupPigmyURL, body: paramsKeyVal)
+            .httpGetQuery(apiHitTimeout, APIURLs.groupPigmyURL,
+                queryParams: paramsKeyVal)
             .then(
           (dynamic res) {
             return PigmyDataModel.fromJson(res);
@@ -1177,10 +1181,12 @@ class NetworkService {
   Future<PigmyTransactionHistoryDataModel>
       pigmyTransactionHistoryDetailsService({
     int? page,
+    required String? type, // type: 1 - PIGMY | 2 - Group PIGMY
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['page'] = "$page";
+        paramsKeyVal['type'] = type;
         return _network
             .httpGetQuery(
           apiHitTimeout,
@@ -1198,44 +1204,14 @@ class NetworkService {
   /* PIGMY Transaction History */
 
   /* Transaction History */
-  var transRes = {
-    "status": true,
-    "logout": false,
-    "message": "Loaded Successfully",
-    "data": {
-      "transaction_hist_list": [
-        {
-          "id": "1",
-          "header_text": "PAID TO",
-          "mem_name": "HP FINANCE",
-          "payment_date": "16th August 2024 6:45 PM",
-          "footer_text": "PIGMYCODE1234",
-          "amt_text": "₹1200",
-          "pay_status": "PAID",
-          "pay_status_type": "1",
-          "transaction_details": {
-            "header_text": "PAID TO",
-            "title": "HP FINANCE",
-            "subtitle": "16th August 2024 6:45 PM",
-            "amt_text": "1200",
-            "pay_status": "PAID",
-            "pay_status_type": "1",
-            "transaction_acc_details": {
-              "title": "",
-              "subtitle": "",
-              "type": "1"
-            }
-          }
-        }
-      ]
-    }
-  };
   Future<TransactionHistoryDataModel> transactionHistoryDetailsService({
     int? page,
+    required String? type, // type: 1 - Loan | 2 - Group Loan
   }) {
     return GetDeviceInfo().getDeviceInfo().then(
       (paramsKeyVal) {
         paramsKeyVal['page'] = "$page";
+        paramsKeyVal['type'] = type;
         return _network
             .httpGetQuery(
           apiHitTimeout,
@@ -1253,30 +1229,6 @@ class NetworkService {
   /* Transaction History */
 
   /* Agents Dashboard */
-  // var agentsRes = {
-  //   "status": true,
-  //   "logout": false,
-  //   "message": "Loaded Successfully",
-  //   "data": {
-  //     "agent_menus_list": [
-  //       {
-  //         "menu_id": "1",
-  //         "menu_title": "PIGMY ID",
-  //         "menu_img": "",
-  //         "menu_subtile": "1234"
-  //       },
-  //       {
-  //         "menu_id": "2",
-  //         "menu_title": "Savings Balance",
-  //         "menu_img": "",
-  //         "menu_subtile": "₹1200"
-  //       }
-  //     ],
-  //     "find_btn_text": "Find Customer Details",
-  //     "verify_btn_text": "Verify Customer Details",
-  //     "update_payment_det_text": "UpdatePaymentdetails"
-  //   }
-  // };
   Future<AgentsDashboardDataModel> agentsDashboardService({
     String? startDate,
     String? endDate,

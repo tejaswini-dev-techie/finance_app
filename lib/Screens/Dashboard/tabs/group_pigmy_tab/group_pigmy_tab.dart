@@ -335,38 +335,52 @@ class _GroupPigmyTabState extends State<GroupPigmyTab> {
                           SizedBox(
                             height: 5.sp,
                           ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: InkWell(
-                              onTap: () => onGropCreationAction(),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      "Group Account Opening",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: ColorConstants.darkBlueColor,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                          (groupPigmyBloc.pigmyData?.groupAccOpeningBtnText !=
+                                      null &&
+                                  groupPigmyBloc.pigmyData!
+                                      .groupAccOpeningBtnText!.isNotEmpty)
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: InkWell(
+                                    onTap: () => onGropCreationAction(),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            groupPigmyBloc.pigmyData
+                                                    ?.groupAccOpeningBtnText ??
+                                                "Group Account Opening",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  ColorConstants.darkBlueColor,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: ColorConstants.darkBlueColor,
+                                          size: 12.sp,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: ColorConstants.darkBlueColor,
-                                    size: 12.sp,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5.sp,
-                          ),
+                                )
+                              : const SizedBox.shrink(),
+                          (groupPigmyBloc.pigmyData?.groupAccOpeningBtnText !=
+                                      null &&
+                                  groupPigmyBloc.pigmyData!
+                                      .groupAccOpeningBtnText!.isNotEmpty)
+                              ? SizedBox(
+                                  height: 5.sp,
+                                )
+                              : const SizedBox.shrink(),
                           (groupPigmyBloc.pigmyData?.groupMemDet != null &&
                                   groupPigmyBloc
                                       .pigmyData!.groupMemDet!.isNotEmpty)

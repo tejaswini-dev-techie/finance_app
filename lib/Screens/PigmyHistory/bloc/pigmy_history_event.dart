@@ -7,7 +7,11 @@ class GetPigmyTransactionDetailsEvent extends PigmyHistoryEvent {
   final List<PigmyHistList>? oldPigmyHistoryList;
   final int? page;
   final bool? showLoading;
+  final String? type;
 
   GetPigmyTransactionDetailsEvent(
-      {this.oldPigmyHistoryList, this.page, this.showLoading});
+      {this.oldPigmyHistoryList,
+      this.page,
+      this.showLoading,
+      required this.type});
 }

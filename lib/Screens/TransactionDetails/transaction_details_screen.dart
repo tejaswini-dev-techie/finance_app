@@ -11,7 +11,8 @@ import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
 import 'package:sizer/sizer.dart';
 
 class TransactionDetails extends StatefulWidget {
-  const TransactionDetails({super.key});
+  final String? type; // type: 1 - Loan | 2 - Group Loan
+  const TransactionDetails({super.key, this.type});
 
   @override
   State<TransactionDetails> createState() => _TransactionDetailsState();
@@ -27,8 +28,8 @@ class _TransactionDetailsState extends State<TransactionDetails> {
   @override
   void initState() {
     super.initState();
-    transactionDetailsBloc
-        .add(GetTransactionDetailsEvent(page: 1, showLoading: true));
+    transactionDetailsBloc.add(GetTransactionDetailsEvent(
+        page: 1, showLoading: true, type: widget.type));
   }
 
   @override
@@ -128,6 +129,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                                       transactionDetailsBloc
                                               .transactionHistoryList ??
                                           [],
+                                  type: widget.type,
                                 ),
                               );
                             }
@@ -156,6 +158,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                                     GetTransactionDetailsEvent(
                                       page: 1,
                                       showLoading: true,
+                                      type: widget.type,
                                     ),
                                   );
                                   _refreshController.refreshCompleted();
@@ -780,14 +783,16 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                 return noInternetWidget(
                   context: context,
                   retryAction: () => transactionDetailsBloc.add(
-                      GetTransactionDetailsEvent(page: 1, showLoading: true)),
+                      GetTransactionDetailsEvent(
+                          page: 1, showLoading: true, type: widget.type)),
                   state: 1,
                 );
               } else {
                 return noInternetWidget(
                   context: context,
                   retryAction: () => transactionDetailsBloc.add(
-                      GetTransactionDetailsEvent(page: 1, showLoading: true)),
+                      GetTransactionDetailsEvent(
+                          page: 1, showLoading: true, type: widget.type)),
                   state: 2,
                 );
               }

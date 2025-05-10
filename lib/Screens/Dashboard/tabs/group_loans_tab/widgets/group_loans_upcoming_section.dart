@@ -143,7 +143,9 @@ class _GroupLoansUpcomingSectionState extends State<GroupLoansUpcomingSection> {
                           color: ColorConstants.darkBlueColor,
                         ),
                       ),
-                      Container(
+                   ( widget.groupLoansBloc.grouploanData!
+                                  .upcomingList![index].payNowTex != null &&  widget.groupLoansBloc.grouploanData!
+                                  .upcomingList![index].payNowTex!.isNotEmpty)  ? Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 6.sp,
                           vertical: 4.sp,
@@ -165,7 +167,7 @@ class _GroupLoansUpcomingSectionState extends State<GroupLoansUpcomingSection> {
                             color: ColorConstants.whiteColor,
                           ),
                         ),
-                      )
+                      ): const SizedBox.shrink(),
                     ],
                   ),
                 ],
